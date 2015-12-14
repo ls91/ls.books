@@ -33,12 +33,29 @@ public class AuthorDaoTest {
         testDatabaseUtilities.teardownSchema();
     }
 
+    //Create
     @Test
-    public void getAuthorsShouldReturnAlistOfAllAuthorsOrderedByLastThenFirstName() throws SQLException {
+    public void createAuthorShouldAddAnewRecordToTheAuthorsTable() {
         List<Author> results = testAuthorDao.getAuthors();
 
         assertEquals(0, results.size());
 
+        Author author = new Author(0, "FOO", "BAR");
+        testAuthorDao.createAuthor(author);
+        
+        results = testAuthorDao.getAuthors();
+        
+        assertEquals(1, results.size());
+        assertEquals(author, results.get(0));
+    }
+
+    //Read
+    @Test
+    public void getAuthorsShouldReturnAlistOfAllAuthorsOrderedByLastThenFirstName() throws SQLException {
+        List<Author> results = testAuthorDao.getAuthors();
+        
+        assertEquals(0, results.size());
+        
         Author author1 = new Author(1, "South", "Luke");
         Author author2 = new Author(1, "South", "Jo");
         Author author3 = new Author(1, "Cussler", "Clive");
@@ -53,27 +70,57 @@ public class AuthorDaoTest {
         assertEquals(author2, results.get(1));
         assertEquals(author1, results.get(2));
     }
-
+    
     @Test
-    public void getAuthorShouldReturnTheAuthorAsSelectedById() throws SQLException {
-        Author result = testAuthorDao.getAuthor(1);
-
+    public void getAuthorByIdShouldReturnTheAuthorAsSelectedById() throws SQLException {
+        Author result = testAuthorDao.getAuthorById(1);
+        
         assertNull(result);
-
+        
         Author author1 = new Author(1, "South", "Luke");
         Author author2 = new Author(2, "South", "Jo");
         Author author3 = new Author(3, "Cussler", "Clive");
         testDatabaseUtilities.addAuthor(author1);
         testDatabaseUtilities.addAuthor(author2);
         testDatabaseUtilities.addAuthor(author3);
-
-        result = testAuthorDao.getAuthor(1);
+        
+        result = testAuthorDao.getAuthorById(1);
         assertEquals(author1, result);
-
-        result = testAuthorDao.getAuthor(2);
+        
+        result = testAuthorDao.getAuthorById(2);
         assertEquals(author2, result);
-
-        result = testAuthorDao.getAuthor(3);
+        
+        result = testAuthorDao.getAuthorById(3);
         assertEquals(author3, result);
+    }
+    
+    //Update
+    @Test
+    public void updateAuthorShouldModifyTheExistingRecordWithAnyAttributeThatChanges() {
+        Author author = new Author(0, "FOO", "BAR");
+        testAuthorDao.createAuthor(author);
+        Author result = testAuthorDao.getAuthorById(0);
+        assertEquals(author, result);
+
+        author.setFirstName("FOO");
+        author.setLastName("BAR");
+        testAuthorDao.updateAuthor(author);
+
+        result = testAuthorDao.getAuthorById(0);
+        assertEquals(author, result);
+    }
+    
+    //Delete
+    @Test
+    public void deleteAuthorByIdShouldRemoveTheAuthorFromTheTable() {
+        Author author = new Author(0, "FOO", "BAR");
+        testAuthorDao.createAuthor(author);
+        Author result = testAuthorDao.getAuthorById(0);
+        assertEquals(author, result);
+
+        testAuthorDao.deleteAuthorById(0);
+
+        result = testAuthorDao.getAuthorById(0);
+        assertNull(result);
     }
 }
