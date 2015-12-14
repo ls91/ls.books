@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://maven.restlet.com"
+    }
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.7'
+    compile 'org.restlet.jse:org.restlet:2.3.4'
+    compile 'com.google.code.gson:gson:1.7.1'
+    compile 'org.jdbi:jdbi:2.63.1'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.h2database:h2:1.4.188'
+}
