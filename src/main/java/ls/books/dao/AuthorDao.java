@@ -33,7 +33,16 @@ public interface AuthorDao {
             + "from    authors "
             + "where   id = :id")
     @Mapper(AuthorMapper.class)
-    Author getAuthorById(@Bind("id") int id);
+    Author findAuthorById(@Bind("id") int id);
+
+    @SqlQuery("select   id, "
+            + "         first_name, "
+            + "         last_name "
+            + "from     authors "
+            + "where    lower(first_name)   like    concat('%', lower(:query), '%') "
+            + "or       lower(last_name)    like    concat('%', lower(:query), '%') ")
+    @Mapper(AuthorMapper.class)
+    List<Author> findAuthorsByNameLike(@Bind("query") String query);
 
     //Update
     @SqlUpdate("update  authors"

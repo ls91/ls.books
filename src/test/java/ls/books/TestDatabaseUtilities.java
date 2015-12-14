@@ -1,14 +1,10 @@
 package ls.books;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.sql.DataSource;
-
-import ls.books.domain.Author;
 
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -53,28 +49,5 @@ public class TestDatabaseUtilities {
                 + "FIRST_NAME VARCHAR(500))");
         createTable.close();
         connection.close();
-    }
-
-    public void addAuthor(Author author) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO AUTHORS (ID, LAST_NAME, FIRST_NAME) VALUES (?, ?, ?)");
-        insertStatement.setInt(1, author.getId());
-        insertStatement.setString(2, author.getLastName());
-        insertStatement.setString(3, author.getFirstName());
-        insertStatement.execute();
-        insertStatement.close();
-        connection.close();
-    }
-
-    public int countRecordsIn(final String tableName) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("select count(*) from " + tableName);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        int rowCount = resultSet.getInt(1);
-        resultSet.close();
-        connection.close();
-
-        return rowCount;
     }
 }

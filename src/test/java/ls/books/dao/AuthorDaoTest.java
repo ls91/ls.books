@@ -59,9 +59,9 @@ public class AuthorDaoTest {
         Author author1 = new Author(1, "South", "Luke");
         Author author2 = new Author(1, "South", "Jo");
         Author author3 = new Author(1, "Cussler", "Clive");
-        testDatabaseUtilities.addAuthor(author1);
-        testDatabaseUtilities.addAuthor(author2);
-        testDatabaseUtilities.addAuthor(author3);
+        testAuthorDao.createAuthor(author1);
+        testAuthorDao.createAuthor(author2);
+        testAuthorDao.createAuthor(author3);
         
         results = testAuthorDao.getAuthors();
         
@@ -72,41 +72,63 @@ public class AuthorDaoTest {
     }
     
     @Test
-    public void getAuthorByIdShouldReturnTheAuthorAsSelectedById() throws SQLException {
-        Author result = testAuthorDao.getAuthorById(1);
+    public void findAuthorByIdShouldReturnTheAuthorAsSelectedById() throws SQLException {
+        Author result = testAuthorDao.findAuthorById(1);
         
         assertNull(result);
         
         Author author1 = new Author(1, "South", "Luke");
         Author author2 = new Author(2, "South", "Jo");
         Author author3 = new Author(3, "Cussler", "Clive");
-        testDatabaseUtilities.addAuthor(author1);
-        testDatabaseUtilities.addAuthor(author2);
-        testDatabaseUtilities.addAuthor(author3);
+        testAuthorDao.createAuthor(author1);
+        testAuthorDao.createAuthor(author2);
+        testAuthorDao.createAuthor(author3);
         
-        result = testAuthorDao.getAuthorById(1);
+        result = testAuthorDao.findAuthorById(1);
         assertEquals(author1, result);
         
-        result = testAuthorDao.getAuthorById(2);
+        result = testAuthorDao.findAuthorById(2);
         assertEquals(author2, result);
         
-        result = testAuthorDao.getAuthorById(3);
+        result = testAuthorDao.findAuthorById(3);
         assertEquals(author3, result);
     }
-    
+
+    @Test
+    public void findAuthorsByNameLike() {
+        Author author1 = new Author(1, "South", "Luke");
+        Author author2 = new Author(2, "South", "Jo");
+        Author author3 = new Author(3, "Jones", "Jo");
+        testAuthorDao.createAuthor(author1);
+        testAuthorDao.createAuthor(author2);
+        testAuthorDao.createAuthor(author3);
+
+        assertEquals(3, testAuthorDao.getAuthors().size());
+
+        List<Author> results = testAuthorDao.findAuthorsByNameLike("so");
+        assertEquals(2, results.size());
+        assertEquals(author1, results.get(0));
+        assertEquals(author2, results.get(1));
+
+        results = testAuthorDao.findAuthorsByNameLike("jo");
+        assertEquals(2, results.size());
+        assertEquals(author2, results.get(0));
+        assertEquals(author3, results.get(1));
+    }
+
     //Update
     @Test
     public void updateAuthorShouldModifyTheExistingRecordWithAnyAttributeThatChanges() {
         Author author = new Author(0, "FOO", "BAR");
         testAuthorDao.createAuthor(author);
-        Author result = testAuthorDao.getAuthorById(0);
+        Author result = testAuthorDao.findAuthorById(0);
         assertEquals(author, result);
 
         author.setFirstName("FOO");
         author.setLastName("BAR");
         testAuthorDao.updateAuthor(author);
 
-        result = testAuthorDao.getAuthorById(0);
+        result = testAuthorDao.findAuthorById(0);
         assertEquals(author, result);
     }
     
@@ -115,12 +137,12 @@ public class AuthorDaoTest {
     public void deleteAuthorByIdShouldRemoveTheAuthorFromTheTable() {
         Author author = new Author(0, "FOO", "BAR");
         testAuthorDao.createAuthor(author);
-        Author result = testAuthorDao.getAuthorById(0);
+        Author result = testAuthorDao.findAuthorById(0);
         assertEquals(author, result);
 
         testAuthorDao.deleteAuthorById(0);
 
-        result = testAuthorDao.getAuthorById(0);
+        result = testAuthorDao.findAuthorById(0);
         assertNull(result);
     }
 }
