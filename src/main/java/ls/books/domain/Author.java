@@ -53,7 +53,7 @@ public class Author {
         boolean result = false;
         if (other instanceof Author) {
             Author that = (Author) other;
-            result = (id == that.getId() && lastName == that.getLastName() && firstName == that.getFirstName());
+            result = (id == that.getId() && lastName.equals(that.getLastName()) && firstName.equals(that.getFirstName()));
         }
         return result;
         

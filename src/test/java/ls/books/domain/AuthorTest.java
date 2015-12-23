@@ -14,7 +14,7 @@ public class AuthorTest {
 
     @Before
     public void setup() {
-        testAuthor = new Author(0, null, null);
+        testAuthor = new Author(0, "", "");
     }
 
     @Test
@@ -26,14 +26,14 @@ public class AuthorTest {
 
     @Test
     public void shuldBeAbleToSetAndGetLastName() {
-        assertNull(testAuthor.getLastName());
+        assertEquals("", testAuthor.getLastName());
         testAuthor.setLastName("FOO");
         assertEquals("FOO", testAuthor.getLastName());
     }
 
     @Test
     public void shuldBeAbleToSetAndGetFirstName() {
-        assertNull(testAuthor.getFirstName());
+        assertEquals("", testAuthor.getFirstName());
         testAuthor.setFirstName("FOO");
         assertEquals("FOO", testAuthor.getFirstName());
     }
@@ -79,6 +79,6 @@ public class AuthorTest {
 
     @Test
     public void equalsShouldReturnTrueIfAllAttributesAreTheSame() {
-        assertTrue(testAuthor.equals(new Author(0, null, null)));
+        assertTrue(testAuthor.equals(new Author(0, "", "")));
     }
 }
