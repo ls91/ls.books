@@ -6,9 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 
 import ls.books.TestDatabaseUtilities;
+import ls.books.WebServicesApplication;
 import ls.books.dao.AuthorDao;
 import ls.books.domain.Author;
-import ls.books.router.AuthorRouter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,15 +43,16 @@ public class AuthorResourceTest {
 
     @Test
     public void createAuthorShouldPersistAnAuthorAndReturnALinkToWhereItCanBeAccessed() throws Exception {
-        Component component = new Component();  
-        component.getServers().add(Protocol.HTTP, 8182); 
- 
-        component.getDefaultHost().attach(new AuthorRouter(testDatabaseUtilities.getDataSource()));
-        component.start();
+        Component comp = new Component();
+        comp.getServers().add(Protocol.HTTP, 8182);
+
+        WebServicesApplication application = new WebServicesApplication(comp.getContext(), testDatabaseUtilities.getDataSource());
+
+        comp.getDefaultHost().attach(application);
+        comp.start();
+
         
         ClientResource resource = new ClientResource("http://localhost:8182/author");
-        
-        
         Form form = new Form();
         form.add("id", "1234");
         form.add("lastName", "Foo");
@@ -64,6 +65,6 @@ public class AuthorResourceTest {
         Author author = testAuthorDao.findAuthorById(1234);
         assertEquals(new Author(1234, "Foo", "Bar"), author);
         
-        component.stop();
+        comp.stop();
     }
 }
