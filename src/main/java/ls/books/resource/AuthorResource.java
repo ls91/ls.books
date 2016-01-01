@@ -1,6 +1,7 @@
 package ls.books.resource;
 
 import javax.sql.DataSource;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,8 +14,6 @@ import ls.books.domain.Author;
 
 import org.restlet.Context;
 import org.restlet.data.Form;
-import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
 import org.skife.jdbi.v2.DBI;
 
 @Path("/author/")
@@ -31,7 +30,8 @@ public class AuthorResource {
 
     //Create
     @POST
-    public Representation createAuthor(Form form) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public String createAuthor(Form form) {
         init();
         int id = Integer.parseInt(form.getFirstValue("id"));
         String lastName = form.getFirstValue("lastName");
@@ -40,7 +40,7 @@ public class AuthorResource {
         Author author = new Author(id, lastName, firstName);
         dao.createAuthor(author);
 
-        return new StringRepresentation(("/author/" + author.getId()).toCharArray());
+        return "/author/" + author.getId();
     }
 
     //Read
@@ -63,4 +63,13 @@ public class AuthorResource {
     //Update
 
     //Delete
+    @DELETE
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deleteAuthor(@PathParam("id") String stringId) {
+        init();
+        int id = Integer.parseInt(stringId);
+        dao.deleteAuthorById(id);
+        return "Author " + id + " deleted";
+    }
 }
