@@ -4,9 +4,11 @@ import javax.sql.DataSource;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ls.books.dao.AuthorDao;
@@ -16,7 +18,7 @@ import org.restlet.Context;
 import org.restlet.data.Form;
 import org.skife.jdbi.v2.DBI;
 
-@Path("/author/")
+@Path("/author")
 public class AuthorResource {
 
     private AuthorDao dao = null;
@@ -52,23 +54,30 @@ public class AuthorResource {
     }
 
     @GET
-    @Path("{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAuthor(@PathParam("id") String stringId) {
+    public String getAuthor(@PathParam("id") int id) {
         init();
-        int id = Integer.parseInt(stringId);
         return dao.findAuthorById(id).toString();
     }
 
     //Update
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String updateAuthor(@PathParam("id") int id, @QueryParam("lastName") String lastName, @QueryParam("firstName") String firstName) {
+        init();
+        Author newAuthor = new Author(id, lastName, firstName);
+        dao.updateAuthor(newAuthor);
+        return "Author " + id + " updated";
+    }
 
     //Delete
     @DELETE
-    @Path("{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String deleteAuthor(@PathParam("id") String stringId) {
+    public String deleteAuthor(@PathParam("id") int id) {
         init();
-        int id = Integer.parseInt(stringId);
         dao.deleteAuthorById(id);
         return "Author " + id + " deleted";
     }

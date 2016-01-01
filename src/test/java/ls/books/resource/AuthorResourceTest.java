@@ -71,6 +71,22 @@ public class AuthorResourceTest {
     }
     
     @Test
+    public void putAuthorShouldUpdateAnExistingRecordWithTheNewValuesIgnoringTheId() throws ResourceException, IOException {
+        Author author = new Author(1, "lastName", "firstName");
+        testAuthorDao.createAuthor(author);
+        Author retrievedAuthor = testAuthorDao.findAuthorById(1);
+        assertEquals(author, retrievedAuthor);
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/author/1?lastName=updatedLastName&firstName=updatedFirstName");
+        resource.put(null).write(baos);
+        
+        assertEquals("Author 1 updated", baos.toString());
+        
+        retrievedAuthor = testAuthorDao.findAuthorById(1);
+        assertEquals(new Author(1, "updatedLastName", "updatedFirstName"), retrievedAuthor);
+    }
+    
+    @Test
     public void deleteAuthorShouldRemoveTheAuthorFromTheDatabase() throws ResourceException, IOException {
         Author author = new Author(1, "lastName", "firstName");
         
@@ -95,7 +111,7 @@ public class AuthorResourceTest {
         testAuthorDao.createAuthor(author2);
         testAuthorDao.createAuthor(author3);
         
-        ClientResource resource = new ClientResource("http://localhost:8182/author/");
+        ClientResource resource = new ClientResource("http://localhost:8182/author");
         resource.get().write(baos);
         
         assertEquals("[ID: 1\n"
@@ -109,7 +125,7 @@ public class AuthorResourceTest {
     
     @Test
     public void getAuthorWithNoQueryParameterAndNoEntriesInTheDbShouldReturnAnEmptyList() throws ResourceException, IOException {
-        ClientResource resource = new ClientResource("http://localhost:8182/author/");
+        ClientResource resource = new ClientResource("http://localhost:8182/author");
         resource.get().write(baos);
         
         assertEquals("[]", baos.toString());
