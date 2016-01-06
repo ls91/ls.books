@@ -14,7 +14,38 @@ dependencies {
     compile 'org.restlet.jse:org.restlet.ext.jaxrs:2.3.5'
     compile 'org.restlet.jse:org.restlet.ext.jackson:2.3.5'
     compile 'org.jdbi:jdbi:2.63.1'
-
+    compile 'com.h2database:h2:1.4.188'
+    
     testCompile 'junit:junit:4.12'
-    testCompile 'com.h2database:h2:1.4.188'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/web-app' 
+        }
+    }
+
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+        resources {
+            srcDir 'src/test/web-app' 
+        }
+    }
+}
+
+jar {
+    from {
+        (configurations.runtime).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+        attributes("Main-Class": "ls.books.Main" )
+    }
 }

@@ -57,7 +57,7 @@ public class AuthorResourceTest {
     public void postAuthorShouldPersistAnAuthorAndReturnALinkToWhereItCanBeAccessed() throws Exception {
         assertNull(testAuthorDao.findAuthorById(1234));
         
-        ClientResource resource = new ClientResource("http://localhost:8182/author");
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         Form form = new Form();
         form.add("id", "1234");
         form.add("lastName", "Foo");
@@ -77,7 +77,7 @@ public class AuthorResourceTest {
         Author retrievedAuthor = testAuthorDao.findAuthorById(1);
         assertEquals(author, retrievedAuthor);
         
-        ClientResource resource = new ClientResource("http://localhost:8182/author/1?lastName=updatedLastName&firstName=updatedFirstName");
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1?lastName=updatedLastName&firstName=updatedFirstName");
         resource.put(null).write(baos);
         
         assertEquals("Author 1 updated", baos.toString());
@@ -95,7 +95,7 @@ public class AuthorResourceTest {
         Author retrievedAuthor = testAuthorDao.findAuthorById(1);
         assertEquals(author, retrievedAuthor);
         
-        ClientResource resource = new ClientResource("http://localhost:8182/author/1");
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
         resource.delete().write(baos);
         
         assertNull(testAuthorDao.findAuthorById(1));
@@ -111,7 +111,7 @@ public class AuthorResourceTest {
         testAuthorDao.createAuthor(author2);
         testAuthorDao.createAuthor(author3);
         
-        ClientResource resource = new ClientResource("http://localhost:8182/author");
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.get().write(baos);
         
         assertEquals("[ID: 1\n"
@@ -125,7 +125,7 @@ public class AuthorResourceTest {
     
     @Test
     public void getAuthorWithNoQueryParameterAndNoEntriesInTheDbShouldReturnAnEmptyList() throws ResourceException, IOException {
-        ClientResource resource = new ClientResource("http://localhost:8182/author");
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.get().write(baos);
         
         assertEquals("[]", baos.toString());
@@ -141,7 +141,7 @@ public class AuthorResourceTest {
         testAuthorDao.createAuthor(author2);
         testAuthorDao.createAuthor(author3);
         
-        ClientResource resource = new ClientResource("http://localhost:8182/author/2");
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/2");
         resource.get().write(baos);
         
         assertEquals("ID: 2\n"

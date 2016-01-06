@@ -59,7 +59,7 @@ public class Main {
             
             
             Component comp = new Component();
-            Server server = comp.getServers().add(Protocol.HTTP, 8183);
+            Server server = comp.getServers().add(Protocol.HTTP, 8182);
 
             WebServicesApplication application = new WebServicesApplication(comp.getContext(), dataSource);
 

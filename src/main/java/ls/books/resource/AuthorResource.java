@@ -18,7 +18,7 @@ import org.restlet.Context;
 import org.restlet.data.Form;
 import org.skife.jdbi.v2.DBI;
 
-@Path("/author")
+@Path("/rest/author")
 public class AuthorResource {
 
     private AuthorDao dao = null;
