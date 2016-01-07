@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import ls.books.dao.AuthorDao;
 import ls.books.domain.Author;
@@ -17,6 +18,8 @@ import ls.books.domain.Author;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.skife.jdbi.v2.DBI;
+
+import com.google.gson.Gson;
 
 @Path("/rest/author")
 public class AuthorResource {
@@ -48,17 +51,23 @@ public class AuthorResource {
     //Read
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAuthors() {
+    public Response getAuthors() {
         init();
-        return dao.getAuthors().toString();
+        return Response.ok().entity(new Gson().toJson(dao.getAuthors())).build();
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAuthor(@PathParam("id") int id) {
+    public Response getAuthorById(@PathParam("id") int id) {
         init();
-        return dao.findAuthorById(id).toString();
+        Author result = dao.findAuthorById(id);
+        
+        if (result != null) {
+            return Response.ok().entity(new Gson().toJson(result)).build();
+        } else {
+            return Response.noContent().build();
+        }
     }
 
     //Update

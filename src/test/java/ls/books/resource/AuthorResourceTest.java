@@ -114,13 +114,7 @@ public class AuthorResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.get().write(baos);
         
-        assertEquals("[ID: 1\n"
-                + "Last Name: lastName\n"
-                + "First Name: firstName, ID: 2\n"
-                + "Last Name: lastName\n"
-                + "First Name: firstName, ID: 3\n"
-                + "Last Name: lastName\n"
-                + "First Name: firstName]", baos.toString());
+        assertEquals("[{\"id\":1,\"lastName\":\"lastName\",\"firstName\":\"firstName\"},{\"id\":2,\"lastName\":\"lastName\",\"firstName\":\"firstName\"},{\"id\":3,\"lastName\":\"lastName\",\"firstName\":\"firstName\"}]", baos.toString());
     }
     
     @Test
@@ -144,8 +138,6 @@ public class AuthorResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/2");
         resource.get().write(baos);
         
-        assertEquals("ID: 2\n"
-                + "Last Name: lastName2\n"
-                + "First Name: firstName2", baos.toString());
+        assertEquals("{\"id\":2,\"lastName\":\"lastName2\",\"firstName\":\"firstName2\"}", baos.toString());
     }
 }
