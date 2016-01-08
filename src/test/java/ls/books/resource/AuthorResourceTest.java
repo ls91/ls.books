@@ -2,6 +2,7 @@ package ls.books.resource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -139,5 +140,24 @@ public class AuthorResourceTest {
         resource.get().write(baos);
         
         assertEquals("{\"id\":2,\"lastName\":\"lastName2\",\"firstName\":\"firstName2\"}", baos.toString());
+    }
+    
+    @Test
+    public void getAuthorWithAqueryParameterWithAnIdForAnonExistantAuthorShouldReturnA404() throws ResourceException, IOException {
+        Author author1 = new Author(1, "lastName1", "firstName1");
+        Author author2 = new Author(2, "lastName2", "firstName2");
+        Author author3 = new Author(3, "lastName3", "firstName3");
+        
+        testAuthorDao.createAuthor(author1);
+        testAuthorDao.createAuthor(author2);
+        testAuthorDao.createAuthor(author3);
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/4");
+        try {
+            resource.get();
+            fail("A 404 should have been thrown as the author doesnt exist.");
+        } catch (ResourceException e) {
+            assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
+        }
     }
 }

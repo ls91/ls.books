@@ -66,7 +66,7 @@ public class AuthorResource {
         if (result != null) {
             return Response.ok().entity(new Gson().toJson(result)).build();
         } else {
-            return Response.noContent().build();
+            return Response.status(404).build();
         }
     }
 

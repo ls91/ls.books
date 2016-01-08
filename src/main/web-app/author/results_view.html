@@ -26,13 +26,17 @@
             function getAuthors() {
                 $.getJSON("/rest/author", function(data) {
                     for (var i = 0; i < data.length; i++) {
-                        var tr  = '<tr>';
-                        var td1 = "<td>" + data[i]["firstName"] + "</td>";
-                        var td2 = "<td>" + data[i]["lastName"] + "</td>";
-                        var td3 = '<td><button class="btn btn-default" type="button">View</button></td>';
-                        var td4 = '<td><button class="btn btn-default" type="button">Modify</button></td>';
-                        var td5 = '<td><button class="btn btn-default" type="button">Delete</button></td>';
-                        var tr2 = '</tr>';
+                        var id = data[i]["id"];
+                        var firstName = data[i]["firstName"];
+                        var lastName = data[i]["lastName"];
+                        
+                        var tr  = "<tr>";
+                        var td1 = "<td>" + firstName + "</td>";
+                        var td2 = "<td>" + lastName + "</td>";
+                        var td3 = '<td><a href="/author/single_view.html?id=' + id + '">View</a></td>';
+                        var td4 = '<td><a href="">Modify</a></td>';
+                        var td5 = '<td><a href="">Delete</a></td>';
+                        var tr2 = "</tr>";
                     
                         $("#resultsView").append(tr + td1 + td2 + td3 + td4 + td5 + tr2);
                     }
@@ -54,9 +58,7 @@
                     <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th>View</th>
-                        <th>Modify</th>
-                        <th>Delete</th>
+                        <th colspan="3">Action</th>
                     </tr>
                 </table>
             </div>
