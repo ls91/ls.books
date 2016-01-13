@@ -2,22 +2,24 @@ package ls.books.domain;
 
 public class Author {
 
-    private int id;
+    private int authorId;
     private String lastName;
     private String firstName;
 
-    public Author(final int id, final String lastName, final String firstName) {
-        this.id = id;
+    public Author() {}
+
+    public Author(final int authorId, final String lastName, final String firstName) {
+        this.authorId = authorId;
         this.lastName = lastName;
         this.firstName = firstName;
     }
 
-    public int getId() {
-        return id;
+    public int getAuthorId() {
+        return authorId;
     }
     
-    public void setId(int id) {
-        this.id = id;
+    public void setAuthorId(int id) {
+        this.authorId = id;
     }
 
     public String getFirstName() {
@@ -40,7 +42,7 @@ public class Author {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("ID: ");
-        builder.append(id);
+        builder.append(authorId);
         builder.append("\nLast Name: ");
         builder.append(lastName);
         builder.append("\nFirst Name: ");
@@ -53,7 +55,7 @@ public class Author {
         boolean result = false;
         if (other instanceof Author) {
             Author that = (Author) other;
-            result = (id == that.getId() && lastName.equals(that.getLastName()) && firstName.equals(that.getFirstName()));
+            result = (authorId == that.getAuthorId() && lastName.equals(that.getLastName()) && firstName.equals(that.getFirstName()));
         }
         return result;
         

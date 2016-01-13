@@ -18,9 +18,9 @@ public class AuthorTest {
 
     @Test
     public void shuldBeAbleToSetAndGetId() {
-        assertEquals(0, testAuthor.getId());
-        testAuthor.setId(5);
-        assertEquals(5, testAuthor.getId());
+        assertEquals(0, testAuthor.getAuthorId());
+        testAuthor.setAuthorId(5);
+        assertEquals(5, testAuthor.getAuthorId());
     }
 
     @Test
@@ -40,7 +40,7 @@ public class AuthorTest {
     @Test
     public void constructorShouldSetTheIdFirstAndLastName() {
         testAuthor = new Author(5, "FOO", "BAR");
-        assertEquals(5, testAuthor.getId());
+        assertEquals(5, testAuthor.getAuthorId());
         assertEquals("FOO", testAuthor.getLastName());
         assertEquals("BAR", testAuthor.getFirstName());
     }

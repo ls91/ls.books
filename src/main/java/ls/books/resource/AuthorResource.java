@@ -1,6 +1,10 @@
 package ls.books.resource;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.sql.DataSource;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -8,7 +12,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,7 +39,7 @@ public class AuthorResource {
     //Create
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public String createAuthor(Form form) {
+    public Response createAuthor(Form form) throws URISyntaxException {
         init();
         int id = Integer.parseInt(form.getFirstValue("id"));
         String lastName = form.getFirstValue("lastName");
@@ -45,7 +48,7 @@ public class AuthorResource {
         Author author = new Author(id, lastName, firstName);
         dao.createAuthor(author);
 
-        return "/author/" + author.getId();
+        return Response.created(new URI("/rest/author/" + author.getAuthorId())).build();
     }
 
     //Read
@@ -72,13 +75,19 @@ public class AuthorResource {
 
     //Update
     @PUT
-    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String updateAuthor(@PathParam("id") int id, @QueryParam("lastName") String lastName, @QueryParam("firstName") String firstName) {
+    public Response updateAuthor(Author author) {
         init();
-        Author newAuthor = new Author(id, lastName, firstName);
-        dao.updateAuthor(newAuthor);
-        return "Author " + id + " updated";
+
+        try {
+            dao.updateAuthor(author);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Response.status(400).build();
+        }
+
+        return Response.ok().entity(new Gson().toJson("Author " + author.getAuthorId() + " updated")).build();
     }
 
     //Delete

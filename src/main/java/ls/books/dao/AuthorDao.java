@@ -15,7 +15,7 @@ public interface AuthorDao {
 
     //Create
     @SqlUpdate("insert into authors (id, last_name, first_name)"
-            + " values (:author.id, :author.lastName, :author.firstName)")
+            + " values (:author.authorId, :author.lastName, :author.firstName)")
     void createAuthor(@BindBean("author") Author author);
 
     //Read
@@ -48,7 +48,7 @@ public interface AuthorDao {
     @SqlUpdate("update  authors"
             + " set     last_name   =   :author.lastName"
             + " ,       first_name  =   :author.firstName"
-            + " where   id          =   :author.id")
+            + " where   id          =   :author.authorId")
     void updateAuthor(@BindBean("author") Author author);
 
     //Delete
