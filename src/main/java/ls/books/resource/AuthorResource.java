@@ -38,14 +38,14 @@ public class AuthorResource {
 
     //Create
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAuthor(Form form) throws URISyntaxException {
+    public Response createAuthor(Author author) throws URISyntaxException {
         init();
-        int id = Integer.parseInt(form.getFirstValue("id"));
-        String lastName = form.getFirstValue("lastName");
-        String firstName = form.getFirstValue("firstName");
+        System.out.println(author.getAuthorId());
+        System.out.println(author.getFirstName());
+        System.out.println(author.getLastName());
 
-        Author author = new Author(id, lastName, firstName);
         dao.createAuthor(author);
 
         return Response.created(new URI("/rest/author/" + author.getAuthorId())).build();
@@ -94,9 +94,9 @@ public class AuthorResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String deleteAuthor(@PathParam("id") int id) {
+    public Response deleteAuthor(@PathParam("id") int id) {
         init();
         dao.deleteAuthorById(id);
-        return "Author " + id + " deleted";
+        return Response.ok(new Gson().toJson("Author " + id + " deleted")).build();
     }
 }

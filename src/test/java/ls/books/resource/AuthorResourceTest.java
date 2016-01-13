@@ -12,18 +12,16 @@ import ls.books.WebServicesApplication;
 import ls.books.dao.AuthorDao;
 import ls.books.domain.Author;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.restlet.Component;
-import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 import org.skife.jdbi.v2.DBI;
-
-import com.google.gson.Gson;
 
 public class AuthorResourceTest {
 
@@ -62,12 +60,12 @@ public class AuthorResourceTest {
         assertNull(testAuthorDao.findAuthorById(1234));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
-        Form form = new Form();
-        form.add("id", "1234");
-        form.add("lastName", "Foo");
-        form.add("firstName", "Bar");
+        JSONObject newAuthor = new JSONObject();
+        newAuthor.append("authorId", "1234");
+        newAuthor.append("lastName", "Foo");
+        newAuthor.append("firstName", "Bar");
         
-        Representation result = resource.post(form);
+        Representation result = resource.post(newAuthor.toString());
         
         result.write(baos);
         assertEquals("", baos.toString());
