@@ -19,7 +19,6 @@ import ls.books.dao.AuthorDao;
 import ls.books.domain.Author;
 
 import org.restlet.Context;
-import org.restlet.data.Form;
 import org.skife.jdbi.v2.DBI;
 
 import com.google.gson.Gson;

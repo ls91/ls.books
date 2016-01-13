@@ -104,6 +104,8 @@ public class AuthorResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
         resource.delete().write(baos);
         
+        assertEquals("\"Author 1 deleted\"", baos.toString());
+        
         assertNull(testAuthorDao.findAuthorById(1));
     }
     
