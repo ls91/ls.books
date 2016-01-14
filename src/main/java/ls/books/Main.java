@@ -2,11 +2,11 @@ package ls.books;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import org.h2.jdbcx.JdbcDataSource;
+import ls.books.db.SchemaBuilder;
+
 import org.restlet.Component;
 import org.restlet.Server;
 import org.restlet.data.Protocol;
@@ -14,23 +14,9 @@ import org.restlet.data.Protocol;
 public class Main {
         
         public static void main(String[] args) throws Exception {
-            DataSource dataSource = new JdbcDataSource();
-            ((JdbcDataSource) dataSource).setURL("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1");
-            ((JdbcDataSource) dataSource).setUser("books");
-            ((JdbcDataSource) dataSource).setPassword("books");
+            DataSource dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
             
             Connection connection = dataSource.getConnection();
-            Statement createTable = connection.createStatement();
-            createTable.execute(
-                    "CREATE TABLE AUTHORS ("
-                    + "ID NUMBER AUTO_INCREMENT,"
-                    + "LAST_NAME VARCHAR(500),"
-                    + "FIRST_NAME VARCHAR(500))");
-            createTable.close();
-            connection.close();
-            
-            
-            connection = dataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
             ps.setString(1, "SOUTH");
             ps.setString(2, "LUKE");
