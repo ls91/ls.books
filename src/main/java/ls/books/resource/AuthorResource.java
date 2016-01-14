@@ -83,7 +83,6 @@ public class AuthorResource {
         try {
             dao.updateAuthor(author);
         } catch (Exception e) {
-            e.printStackTrace();
             Response.status(400).build();
         }
 

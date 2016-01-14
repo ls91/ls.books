@@ -40,7 +40,7 @@ public class AuthorDaoTest {
 
         assertEquals(0, results.size());
 
-        Author author = new Author(0, "FOO", "BAR");
+        Author author = new Author(1, "FOO", "BAR");
         testAuthorDao.createAuthor(author);
         
         results = testAuthorDao.getAuthors();
@@ -57,8 +57,8 @@ public class AuthorDaoTest {
         assertEquals(0, results.size());
         
         Author author1 = new Author(1, "South", "Luke");
-        Author author2 = new Author(1, "South", "Jo");
-        Author author3 = new Author(1, "Cussler", "Clive");
+        Author author2 = new Author(2, "South", "Jo");
+        Author author3 = new Author(3, "Cussler", "Clive");
         testAuthorDao.createAuthor(author1);
         testAuthorDao.createAuthor(author2);
         testAuthorDao.createAuthor(author3);
@@ -119,30 +119,28 @@ public class AuthorDaoTest {
     //Update
     @Test
     public void updateAuthorShouldModifyTheExistingRecordWithAnyAttributeThatChanges() {
-        Author author = new Author(0, "FOO", "BAR");
+        Author author = new Author(1, "FOO", "BAR");
         testAuthorDao.createAuthor(author);
-        Author result = testAuthorDao.findAuthorById(0);
+        Author result = testAuthorDao.findAuthorById(1);
         assertEquals(author, result);
 
         author.setFirstName("FOO");
         author.setLastName("BAR");
         testAuthorDao.updateAuthor(author);
 
-        result = testAuthorDao.findAuthorById(0);
+        result = testAuthorDao.findAuthorById(1);
         assertEquals(author, result);
     }
     
     //Delete
     @Test
     public void deleteAuthorByIdShouldRemoveTheAuthorFromTheTable() {
-        Author author = new Author(0, "FOO", "BAR");
+        Author author = new Author(1, "FOO", "BAR");
         testAuthorDao.createAuthor(author);
-        Author result = testAuthorDao.findAuthorById(0);
-        assertEquals(author, result);
+        assertEquals(author, testAuthorDao.findAuthorById(1));
 
-        testAuthorDao.deleteAuthorById(0);
+        testAuthorDao.deleteAuthorById(1);
 
-        result = testAuthorDao.findAuthorById(0);
-        assertNull(result);
+        assertNull(testAuthorDao.findAuthorById(1));
     }
 }

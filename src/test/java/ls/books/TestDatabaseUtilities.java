@@ -44,7 +44,7 @@ public class TestDatabaseUtilities {
         Statement createTable = connection.createStatement();
         createTable.execute(
                 "CREATE TABLE AUTHORS ("
-                + "ID NUMBER,"
+                + "ID NUMBER AUTO_INCREMENT,"
                 + "LAST_NAME VARCHAR(500),"
                 + "FIRST_NAME VARCHAR(500))");
         createTable.close();

@@ -12,14 +12,16 @@ import ls.books.WebServicesApplication;
 import ls.books.dao.AuthorDao;
 import ls.books.domain.Author;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.restlet.Component;
 import org.restlet.data.MediaType;
+import org.restlet.data.Method;
 import org.restlet.data.Protocol;
-import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 import org.skife.jdbi.v2.DBI;
@@ -58,43 +60,47 @@ public class AuthorResourceTest {
 
     @Test
     public void postAuthorShouldPersistAnAuthorAndReturnALinkToWhereItCanBeAccessed() throws Exception {
-        assertNull(testAuthorDao.findAuthorById(1234));
+        assertNull(testAuthorDao.findAuthorById(1));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
-        resource.getRequest().getAttributes().put("Content-Type", "application/json");
+        
         JSONObject newAuthor = new JSONObject();
         newAuthor.put("authorId", "1234");
         newAuthor.put("lastName", "Foo");
         newAuthor.put("firstName", "Bar");
         
-        System.out.println(newAuthor);
+        StringRepresentation authorJson = new StringRepresentation(newAuthor.toString());
+        authorJson.setMediaType(MediaType.APPLICATION_JSON);
         
-        Representation result = resource.post(newAuthor, MediaType.APPLICATION_JSON);
+        resource.post(authorJson).write(baos);
         
-        result.write(baos);
-        assertEquals("", baos.toString());
+        assertEquals("1", baos.toString());
 
-        assertEquals("/rest/author/1234", result.getLocationRef());
-
-        Author author = testAuthorDao.findAuthorById(1234);
-        assertEquals(new Author(1234, "Foo", "Bar"), author);
+        assertEquals(new Author(1, "Foo", "Bar"), testAuthorDao.findAuthorById(1));
     }
     
-    /*@Test
-    public void putAuthorShouldUpdateAnExistingRecordWithTheNewValuesIgnoringTheId() throws ResourceException, IOException {
+    @Test
+    public void putAuthorShouldUpdateAnExistingRecordWithTheNewValuesIgnoringTheId() throws ResourceException, IOException, JSONException {
         Author author = new Author(1, "lastName", "firstName");
         testAuthorDao.createAuthor(author);
-        Author retrievedAuthor = testAuthorDao.findAuthorById(1);
-        assertEquals(author, retrievedAuthor);
+        assertEquals(author, testAuthorDao.findAuthorById(1));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
-        resource.put(author).write(baos);
+        resource.setMethod(Method.PUT);
         
-        assertEquals("Author 1 updated", baos.toString());
+        JSONObject updatedAuthor = new JSONObject();
+        updatedAuthor.put("authorId", "1");
+        updatedAuthor.put("lastName", "Foo Updated");
+        updatedAuthor.put("firstName", "Bar Updated");
         
-        retrievedAuthor = testAuthorDao.findAuthorById(1);
-        assertEquals(new Author(1, "updatedLastName", "updatedFirstName"), retrievedAuthor);
-    }*/
+        StringRepresentation authorJson = new StringRepresentation(updatedAuthor.toString());
+        authorJson.setMediaType(MediaType.APPLICATION_JSON);
+
+        resource.put(authorJson).write(baos);
+
+        assertEquals("\"Author 1 updated\"", baos.toString());
+        assertEquals(new Author(1, "Foo Updated", "Bar Updated"), testAuthorDao.findAuthorById(1));
+    }
     
     @Test
     public void deleteAuthorShouldRemoveTheAuthorFromTheDatabase() throws ResourceException, IOException {
