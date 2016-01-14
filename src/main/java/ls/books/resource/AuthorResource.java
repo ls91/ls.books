@@ -41,13 +41,14 @@ public class AuthorResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createAuthor(Author author) throws URISyntaxException {
         init();
-        System.out.println(author.getAuthorId());
-        System.out.println(author.getFirstName());
-        System.out.println(author.getLastName());
 
-        dao.createAuthor(author);
+        try {
+            author.setAuthorId(dao.createAuthor(author));
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
 
-        return Response.created(new URI("/rest/author/" + author.getAuthorId())).build();
+        return Response.created(new URI("/rest/author/" + author.getAuthorId())).entity(new Gson().toJson(author.getAuthorId())).build();
     }
 
     //Read

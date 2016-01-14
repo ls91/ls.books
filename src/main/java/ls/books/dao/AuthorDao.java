@@ -7,6 +7,7 @@ import ls.books.domain.Author;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
@@ -14,9 +15,10 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 public interface AuthorDao {
 
     //Create
-    @SqlUpdate("insert into authors (id, last_name, first_name)"
-            + " values (:author.authorId, :author.lastName, :author.firstName)")
-    void createAuthor(@BindBean("author") Author author);
+    @SqlUpdate("insert into authors (last_name, first_name)"
+            + " values (:author.lastName, :author.firstName)")
+    @GetGeneratedKeys
+    int createAuthor(@BindBean("author") Author author);
 
     //Read
     @SqlQuery("select  id, "

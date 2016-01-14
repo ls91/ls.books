@@ -23,7 +23,7 @@ public class Main {
             Statement createTable = connection.createStatement();
             createTable.execute(
                     "CREATE TABLE AUTHORS ("
-                    + "ID NUMBER,"
+                    + "ID NUMBER AUTO_INCREMENT,"
                     + "LAST_NAME VARCHAR(500),"
                     + "FIRST_NAME VARCHAR(500))");
             createTable.close();
@@ -31,28 +31,25 @@ public class Main {
             
             
             connection = dataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO AUTHORS VALUES (?, ?, ?)");
-            ps.setInt(1, 1);
-            ps.setString(2, "SOUTH");
-            ps.setString(3, "LUKE");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
+            ps.setString(1, "SOUTH");
+            ps.setString(2, "LUKE");
             ps.execute();
             ps.close();
             connection.close();
             
             connection = dataSource.getConnection();
-            ps = connection.prepareStatement("INSERT INTO AUTHORS VALUES (?, ?, ?)");
-            ps.setInt(1, 2);
-            ps.setString(2, "SOUTH");
-            ps.setString(3, "JO");
+            ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
+            ps.setString(1, "SOUTH");
+            ps.setString(2, "JO");
             ps.execute();
             ps.close();
             connection.close();
             
             connection = dataSource.getConnection();
-            ps = connection.prepareStatement("INSERT INTO AUTHORS VALUES (?, ?, ?)");
-            ps.setInt(1, 3);
-            ps.setString(2, "CUSSLER");
-            ps.setString(3, "CLIVE");
+            ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
+            ps.setString(1, "CUSSLER");
+            ps.setString(2, "CLIVE");
             ps.execute();
             ps.close();
             connection.close();

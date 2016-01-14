@@ -22,7 +22,14 @@
                 });
                 
                 var url = $.url();
-                getAuthor(url.param('authorId'));
+                
+                if (url.param('authorId') != undefined) {
+                    //We are loading
+                    getAuthor(url.param('authorId'));
+                } else {
+                    //We are creating
+                    $('#createButton').prop('disabled', false);
+                }
             });
             
             function getAuthor(id) {
@@ -33,12 +40,38 @@
                         $.each(data, function(key, value) {
                             $("#" + key).val(value);
                         });
+                        
+                        $('#updateButton').prop('disabled', false);
+                        $('#deleteButton').prop('disabled', false);
                     }).fail(function() {
                         $("#authorNotFoundModal").modal();
+                        $('#createButton').prop('disabled', false);
                     });
                 }
             }
-
+            
+            function createAuthor() {
+                $.ajax({
+                    url: '/rest/author',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    processData: false,
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        authorId: $("#authorId").val(),
+                        lastName: $("#lastName").val(),
+                        firstName: $("#firstName").val()
+                    }),
+                    success: function(data) {
+                        console.log(data);
+                        window.location.replace("/author/single_view.html?authorId=" + data);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+            
             function updateAuthor() {
                 $.ajax({
                     url: '/rest/author',
@@ -52,7 +85,7 @@
                         firstName: $("#firstName").val()
                     }),
                     success: function(data) {
-                    console.log(data);
+                        console.log(data);
                         $("#authorUpdatedModal").modal();
                     },
                     error: function(error) {
@@ -69,7 +102,7 @@
                     processData: false,
                     dataType: 'json',
                     success: function(data) {
-                    console.log(data);
+                        console.log(data);
                         $("#authorDeletedModal").modal();
                     },
                     error: function(error) {
@@ -109,8 +142,9 @@
                     </div>
                 </form>
 
-                <button type="submit" class="btn btn-default" onClick="updateAuthor();">Update</button>
-                <button type="submit" class="btn btn-default" onClick="deleteAuthor();">Delete</button>
+                <button id="createButton" type="submit" class="btn btn-default" onClick="createAuthor();" disabled>Create</button>
+                <button id="updateButton" type="submit" class="btn btn-default" onClick="updateAuthor();" disabled>Update</button>
+                <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteAuthor();" disabled>Delete</button>
 
             </div><!-- well -->
             

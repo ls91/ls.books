@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.restlet.Component;
+import org.restlet.data.MediaType;
 import org.restlet.data.Protocol;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -60,12 +61,15 @@ public class AuthorResourceTest {
         assertNull(testAuthorDao.findAuthorById(1234));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
+        resource.getRequest().getAttributes().put("Content-Type", "application/json");
         JSONObject newAuthor = new JSONObject();
-        newAuthor.append("authorId", "1234");
-        newAuthor.append("lastName", "Foo");
-        newAuthor.append("firstName", "Bar");
+        newAuthor.put("authorId", "1234");
+        newAuthor.put("lastName", "Foo");
+        newAuthor.put("firstName", "Bar");
         
-        Representation result = resource.post(newAuthor.toString());
+        System.out.println(newAuthor);
+        
+        Representation result = resource.post(newAuthor, MediaType.APPLICATION_JSON);
         
         result.write(baos);
         assertEquals("", baos.toString());
