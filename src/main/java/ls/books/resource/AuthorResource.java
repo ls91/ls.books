@@ -24,7 +24,7 @@ import org.skife.jdbi.v2.DBI;
 import com.google.gson.Gson;
 
 @Path("/rest/author")
-public class AuthorResource {
+public class AuthorResource extends BaseResource {
 
     private AuthorDao dao = null;
 
@@ -45,10 +45,10 @@ public class AuthorResource {
         try {
             author.setAuthorId(dao.createAuthor(author));
         } catch (Exception e) {
-            return Response.serverError().build();
+            return Response.serverError().cacheControl(getNoCacheController()).build();
         }
 
-        return Response.created(new URI("/rest/author/" + author.getAuthorId())).entity(new Gson().toJson(author.getAuthorId())).build();
+        return Response.created(new URI("/rest/author/" + author.getAuthorId())).cacheControl(getNoCacheController()).entity(new Gson().toJson(author.getAuthorId())).build();
     }
 
     //Read
@@ -56,7 +56,7 @@ public class AuthorResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthors() {
         init();
-        return Response.ok().entity(new Gson().toJson(dao.getAuthors())).build();
+        return Response.ok().cacheControl(getNoCacheController()).entity(new Gson().toJson(dao.getAuthors())).build();
     }
 
     @GET
@@ -67,9 +67,9 @@ public class AuthorResource {
         Author result = dao.findAuthorById(id);
         
         if (result != null) {
-            return Response.ok().entity(new Gson().toJson(result)).build();
+            return Response.ok().cacheControl(getNoCacheController()).entity(new Gson().toJson(result)).build();
         } else {
-            return Response.status(404).build();
+            return Response.status(404).cacheControl(getNoCacheController()).build();
         }
     }
 
@@ -83,10 +83,10 @@ public class AuthorResource {
         try {
             dao.updateAuthor(author);
         } catch (Exception e) {
-            Response.status(400).build();
+            Response.status(400).cacheControl(getNoCacheController()).build();
         }
 
-        return Response.ok().entity(new Gson().toJson("Author " + author.getAuthorId() + " updated")).build();
+        return Response.ok().cacheControl(getNoCacheController()).entity(new Gson().toJson("Author " + author.getAuthorId() + " updated")).build();
     }
 
     //Delete
@@ -96,6 +96,6 @@ public class AuthorResource {
     public Response deleteAuthor(@PathParam("id") int id) {
         init();
         dao.deleteAuthorById(id);
-        return Response.ok(new Gson().toJson("Author " + id + " deleted")).build();
+        return Response.ok(new Gson().toJson("Author " + id + " deleted")).cacheControl(getNoCacheController()).build();
     }
 }
