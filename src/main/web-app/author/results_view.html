@@ -28,19 +28,17 @@
             function getAuthors() {
                 $.getJSON("/rest/author", function(data) {
                     for (var i = 0; i < data.length; i++) {
-                        var id = data[i]["id"];
+                        var authorId = data[i]["authorId"];
                         var firstName = data[i]["firstName"];
                         var lastName = data[i]["lastName"];
                         
                         var tr  = "<tr>";
                         var td1 = "<td>" + firstName + "</td>";
                         var td2 = "<td>" + lastName + "</td>";
-                        var td3 = '<td><a href="/author/single_view.html?id=' + id + '">View</a></td>';
-                        var td4 = '<td><a href="">Modify</a></td>';
-                        var td5 = '<td><a href="">Delete</a></td>';
+                        var td3 = '<td><a href="/author/single_view.html?authorId=' + authorId + '">View</a></td>';
                         var tr2 = "</tr>";
                     
-                        $("#resultsView").append(tr + td1 + td2 + td3 + td4 + td5 + tr2);
+                        $("#resultsView").append(tr + td1 + td2 + td3 + tr2);
                     }
                 });
             }
@@ -60,7 +58,7 @@
                     <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th colspan="3">Action</th>
+                        <th>Action</th>
                     </tr>
                 </table>
             </div>
