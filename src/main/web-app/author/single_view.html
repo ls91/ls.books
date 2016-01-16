@@ -106,29 +106,31 @@
             }
             
             function deleteAuthor() {
-                if ($("#definitelyDelete").prop('checked')) {
-                    $.ajax({
-                        url: '/rest/author/' + $("#authorId").val(),
-                        method: 'DELETE',
-                        contentType: 'application/json',
-                        processData: false,
-                        dataType: 'json',
-                        success: function(data) {
-                            console.log(data);
-                            BootstrapDialog.show({
-                                title: 'Delete Successful'
+                BootstrapDialog.confirm({
+                    title: 'WARNING',
+                    message: 'Are you sure you want to delete this author?',
+                    type: BootstrapDialog.TYPE_WARNING,
+                    closable: true,
+                    btnOKClass: 'btn-warning',
+                    callback: function(result) {
+                        if (result) {
+                            $.ajax({
+                                url: '/rest/author/' + $("#authorId").val(),
+                                method: 'DELETE',
+                                contentType: 'application/json',
+                                processData: false,
+                                dataType: 'json',
+                                success: function(data) {
+                                    console.log(data);
+                                    window.location.replace('/author/results_view.html');
+                                },
+                                error: function(error) {
+                                    console.log(error);
+                                }
                             });
-                        },
-                        error: function(error) {
-                            console.log(error);
                         }
-                    });
-                } else {
-                    $("#definitelyDelete").focus();
-                    
-                }
-                
-                
+                    }
+                });
             }
         </script>
     </head>
@@ -154,30 +156,38 @@
                 <div class="row"> <!-- Form -->
                     <div class="col-md-12">
                         <form>
-                            <div class="form-group">
+                            <div class="form-group col-md-4">
                                 <label for="firstName">First Name</label>
                                 <input type="text" class="form-control" id="firstName" placeholder="First Name">
                             </div>
                             
-                            <div class="form-group">
-                                <label for="lastName">First Name</label>
+                            <div class="form-group  col-md-4">
+                                <label for="lastName">Last Name</label>
                                 <input type="text" class="form-control" id="lastName" placeholder="Last Name">
                             </div>
                             
                             <input type="hidden" id="authorId" />
-                            
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="definitelyDelete"> Delete
-                                </label>
-                            </div>
                         </form>
-        
-                        <button id="createButton" type="submit" class="btn btn-default" onClick="createAuthor();" disabled>Create</button>
-                        <button id="updateButton" type="submit" class="btn btn-default" onClick="updateAuthor();" disabled>Update</button>
-                        <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteAuthor();" disabled>Delete</button>
                     </div>
                 </div> <!-- Form -->
+                
+                <div class="row"> <!-- Buttons -->
+                    <div class="col-md-4">
+                        <button id="createButton" type="submit" class="btn btn-default" onClick="createAuthor();" disabled>Create</button>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <button id="updateButton" type="submit" class="btn btn-default" onClick="updateAuthor();" disabled>Update</button>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteAuthor();" disabled>Delete</button>
+                    </div>
+                </div> <!-- Buttons -->
+        
+                        
+                        
+                    
             
             </div> <!-- well -->
         
