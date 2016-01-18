@@ -3,10 +3,14 @@ package ls.books.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import ls.books.TestDatabaseUtilities;
+import javax.sql.DataSource;
+
+import ls.books.db.SchemaBuilder;
 import ls.books.domain.Author;
 
 import org.junit.After;
@@ -16,21 +20,25 @@ import org.skife.jdbi.v2.DBI;
 
 public class AuthorDaoTest {
 
-    TestDatabaseUtilities testDatabaseUtilities;
+    DataSource dataSource;
     AuthorDao testAuthorDao;
 
     @Before
     public void setup() throws ClassNotFoundException, SQLException {
-        testDatabaseUtilities = new TestDatabaseUtilities();
-        testDatabaseUtilities.createSchema();
+        dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
 
-        testAuthorDao = new DBI(testDatabaseUtilities.getDataSource()).open(AuthorDao.class);
+        testAuthorDao = new DBI(dataSource).open(AuthorDao.class);
     }
 
     @After
     public void teardown() throws ClassNotFoundException, SQLException {
         testAuthorDao.close();
-        testDatabaseUtilities.teardownSchema();
+        
+        Connection connection = dataSource.getConnection();
+        PreparedStatement wipeDatabase = connection.prepareStatement("DROP ALL OBJECTS");
+        wipeDatabase.execute();
+        wipeDatabase.close();
+        connection.close();
     }
 
     //Create
@@ -73,7 +81,7 @@ public class AuthorDaoTest {
     
     @Test
     public void findAuthorByIdShouldReturnTheAuthorAsSelectedById() throws SQLException {
-        Author result = testAuthorDao.findAuthorById(1);
+        Author result = testAuthorDao.findAuthorByAuthorId(1);
         
         assertNull(result);
         
@@ -84,13 +92,13 @@ public class AuthorDaoTest {
         testAuthorDao.createAuthor(author2);
         testAuthorDao.createAuthor(author3);
         
-        result = testAuthorDao.findAuthorById(1);
+        result = testAuthorDao.findAuthorByAuthorId(1);
         assertEquals(author1, result);
         
-        result = testAuthorDao.findAuthorById(2);
+        result = testAuthorDao.findAuthorByAuthorId(2);
         assertEquals(author2, result);
         
-        result = testAuthorDao.findAuthorById(3);
+        result = testAuthorDao.findAuthorByAuthorId(3);
         assertEquals(author3, result);
     }
 
@@ -121,14 +129,14 @@ public class AuthorDaoTest {
     public void updateAuthorShouldModifyTheExistingRecordWithAnyAttributeThatChanges() {
         Author author = new Author(1, "FOO", "BAR");
         testAuthorDao.createAuthor(author);
-        Author result = testAuthorDao.findAuthorById(1);
+        Author result = testAuthorDao.findAuthorByAuthorId(1);
         assertEquals(author, result);
 
         author.setFirstName("FOO");
         author.setLastName("BAR");
         testAuthorDao.updateAuthor(author);
 
-        result = testAuthorDao.findAuthorById(1);
+        result = testAuthorDao.findAuthorByAuthorId(1);
         assertEquals(author, result);
     }
     
@@ -137,10 +145,10 @@ public class AuthorDaoTest {
     public void deleteAuthorByIdShouldRemoveTheAuthorFromTheTable() {
         Author author = new Author(1, "FOO", "BAR");
         testAuthorDao.createAuthor(author);
-        assertEquals(author, testAuthorDao.findAuthorById(1));
+        assertEquals(author, testAuthorDao.findAuthorByAuthorId(1));
 
         testAuthorDao.deleteAuthorById(1);
 
-        assertNull(testAuthorDao.findAuthorById(1));
+        assertNull(testAuthorDao.findAuthorByAuthorId(1));
     }
 }

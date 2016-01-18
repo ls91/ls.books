@@ -17,21 +17,21 @@ public class AuthorTest {
     }
 
     @Test
-    public void shuldBeAbleToSetAndGetId() {
+    public void shouldBeAbleToSetAndGetId() {
         assertEquals(0, testAuthor.getAuthorId());
         testAuthor.setAuthorId(5);
         assertEquals(5, testAuthor.getAuthorId());
     }
 
     @Test
-    public void shuldBeAbleToSetAndGetLastName() {
+    public void shouldBeAbleToSetAndGetLastName() {
         assertEquals("", testAuthor.getLastName());
         testAuthor.setLastName("FOO");
         assertEquals("FOO", testAuthor.getLastName());
     }
 
     @Test
-    public void shuldBeAbleToSetAndGetFirstName() {
+    public void shouldBeAbleToSetAndGetFirstName() {
         assertEquals("", testAuthor.getFirstName());
         testAuthor.setFirstName("FOO");
         assertEquals("FOO", testAuthor.getFirstName());
@@ -48,7 +48,7 @@ public class AuthorTest {
     @Test
     public void toStringShouldReturnAformattedStringRepresentingTheAuthor() {
         testAuthor = new Author(5, "FOO", "BAR");
-        assertEquals("ID: 5\nLast Name: FOO\nFirst Name: BAR", testAuthor.toString());
+        assertEquals("Author ID: 5\nLast Name: FOO\nFirst Name: BAR", testAuthor.toString());
     }
 
     @Test

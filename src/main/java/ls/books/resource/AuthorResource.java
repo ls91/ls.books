@@ -21,8 +21,6 @@ import ls.books.domain.Author;
 import org.restlet.Context;
 import org.skife.jdbi.v2.DBI;
 
-import com.google.gson.Gson;
-
 @Path("/rest/author")
 public class AuthorResource extends BaseResource {
 
@@ -45,10 +43,10 @@ public class AuthorResource extends BaseResource {
         try {
             author.setAuthorId(dao.createAuthor(author));
         } catch (Exception e) {
-            return Response.serverError().cacheControl(getNoCacheController()).build();
+            return Response.serverError().cacheControl(cacheControl).build();
         }
 
-        return Response.created(new URI("/rest/author/" + author.getAuthorId())).cacheControl(getNoCacheController()).entity(new Gson().toJson(author.getAuthorId())).build();
+        return Response.created(new URI("/rest/author/" + author.getAuthorId())).cacheControl(cacheControl).entity(jsonBuilder.toJson(author.getAuthorId())).build();
     }
 
     //Read
@@ -56,7 +54,7 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthors() {
         init();
-        return Response.ok().cacheControl(getNoCacheController()).entity(new Gson().toJson(dao.getAuthors())).build();
+        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(dao.getAuthors())).build();
     }
 
     @GET
@@ -64,12 +62,12 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthorById(@PathParam("id") int id) {
         init();
-        Author result = dao.findAuthorById(id);
+        Author result = dao.findAuthorByAuthorId(id);
         
         if (result != null) {
-            return Response.ok().cacheControl(getNoCacheController()).entity(new Gson().toJson(result)).build();
+            return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(result)).build();
         } else {
-            return Response.status(404).cacheControl(getNoCacheController()).build();
+            return Response.status(404).cacheControl(cacheControl).build();
         }
     }
 
@@ -83,10 +81,10 @@ public class AuthorResource extends BaseResource {
         try {
             dao.updateAuthor(author);
         } catch (Exception e) {
-            Response.status(400).cacheControl(getNoCacheController()).build();
+            Response.status(400).cacheControl(cacheControl).build();
         }
 
-        return Response.ok().cacheControl(getNoCacheController()).entity(new Gson().toJson("Author " + author.getAuthorId() + " updated")).build();
+        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson("Author " + author.getAuthorId() + " updated")).build();
     }
 
     //Delete
@@ -96,6 +94,6 @@ public class AuthorResource extends BaseResource {
     public Response deleteAuthor(@PathParam("id") int id) {
         init();
         dao.deleteAuthorById(id);
-        return Response.ok(new Gson().toJson("Author " + id + " deleted")).cacheControl(getNoCacheController()).build();
+        return Response.ok(jsonBuilder.toJson("Author " + id + " deleted")).cacheControl(cacheControl).build();
     }
 }

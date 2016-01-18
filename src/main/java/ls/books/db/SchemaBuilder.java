@@ -27,6 +27,7 @@ public class SchemaBuilder {
 
         //BUILD TABLES
         dao.createAuthorsTable();
+        dao.createSeriesTable();
 
         //CLEANUP
         dao.close();

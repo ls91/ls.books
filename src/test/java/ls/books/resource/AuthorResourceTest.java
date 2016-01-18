@@ -6,10 +6,14 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
-import ls.books.TestDatabaseUtilities;
+import javax.sql.DataSource;
+
 import ls.books.WebServicesApplication;
 import ls.books.dao.AuthorDao;
+import ls.books.db.SchemaBuilder;
 import ls.books.domain.Author;
 
 import org.json.JSONException;
@@ -28,24 +32,23 @@ import org.skife.jdbi.v2.DBI;
 
 public class AuthorResourceTest {
 
-    TestDatabaseUtilities testDatabaseUtilities;
+    DataSource dataSource;
     AuthorDao testAuthorDao;
     ByteArrayOutputStream baos;
     Component comp;
 
     @Before
     public void setup() throws Exception {
-        testDatabaseUtilities = new TestDatabaseUtilities();
-        testDatabaseUtilities.createSchema();
+        dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
 
-        testAuthorDao = new DBI(testDatabaseUtilities.getDataSource()).open(AuthorDao.class);
+        testAuthorDao = new DBI(dataSource).open(AuthorDao.class);
 
         baos = new ByteArrayOutputStream();
         
         comp = new Component();
         comp.getServers().add(Protocol.HTTP, 8182);
 
-        WebServicesApplication application = new WebServicesApplication(comp.getContext(), testDatabaseUtilities.getDataSource());
+        WebServicesApplication application = new WebServicesApplication(comp.getContext(), dataSource);
 
         comp.getDefaultHost().attach(application);
         comp.start();
@@ -54,13 +57,19 @@ public class AuthorResourceTest {
     @After
     public void teardown() throws Exception {
         testAuthorDao.close();
-        testDatabaseUtilities.teardownSchema();
+        
+        Connection connection = dataSource.getConnection();
+        PreparedStatement wipeDatabase = connection.prepareStatement("DROP ALL OBJECTS");
+        wipeDatabase.execute();
+        wipeDatabase.close();
+        connection.close();
+        
         comp.stop();
     }
 
     @Test
     public void postAuthorShouldPersistAnAuthorAndReturnALinkToWhereItCanBeAccessed() throws Exception {
-        assertNull(testAuthorDao.findAuthorById(1));
+        assertNull(testAuthorDao.findAuthorByAuthorId(1));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         
@@ -76,14 +85,14 @@ public class AuthorResourceTest {
         
         assertEquals("1", baos.toString());
 
-        assertEquals(new Author(1, "Foo", "Bar"), testAuthorDao.findAuthorById(1));
+        assertEquals(new Author(1, "Foo", "Bar"), testAuthorDao.findAuthorByAuthorId(1));
     }
     
     @Test
     public void putAuthorShouldUpdateAnExistingRecordWithTheNewValuesIgnoringTheId() throws ResourceException, IOException, JSONException {
         Author author = new Author(1, "lastName", "firstName");
         testAuthorDao.createAuthor(author);
-        assertEquals(author, testAuthorDao.findAuthorById(1));
+        assertEquals(author, testAuthorDao.findAuthorByAuthorId(1));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.setMethod(Method.PUT);
@@ -99,7 +108,7 @@ public class AuthorResourceTest {
         resource.put(authorJson).write(baos);
 
         assertEquals("\"Author 1 updated\"", baos.toString());
-        assertEquals(new Author(1, "Foo Updated", "Bar Updated"), testAuthorDao.findAuthorById(1));
+        assertEquals(new Author(1, "Foo Updated", "Bar Updated"), testAuthorDao.findAuthorByAuthorId(1));
     }
     
     @Test
@@ -108,7 +117,7 @@ public class AuthorResourceTest {
         
         testAuthorDao.createAuthor(author);
         
-        Author retrievedAuthor = testAuthorDao.findAuthorById(1);
+        Author retrievedAuthor = testAuthorDao.findAuthorByAuthorId(1);
         assertEquals(author, retrievedAuthor);
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
@@ -116,7 +125,7 @@ public class AuthorResourceTest {
         
         assertEquals("\"Author 1 deleted\"", baos.toString());
         
-        assertNull(testAuthorDao.findAuthorById(1));
+        assertNull(testAuthorDao.findAuthorByAuthorId(1));
     }
     
     @Test

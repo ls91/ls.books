@@ -18,8 +18,8 @@ public class Author {
         return authorId;
     }
     
-    public void setAuthorId(int id) {
-        this.authorId = id;
+    public void setAuthorId(final int authorId) {
+        this.authorId = authorId;
     }
 
     public String getFirstName() {
@@ -41,7 +41,7 @@ public class Author {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ID: ");
+        builder.append("Author ID: ");
         builder.append(authorId);
         builder.append("\nLast Name: ");
         builder.append(lastName);
@@ -58,6 +58,5 @@ public class Author {
             result = (authorId == that.getAuthorId() && lastName.equals(that.getLastName()) && firstName.equals(that.getFirstName()));
         }
         return result;
-        
     }
 }

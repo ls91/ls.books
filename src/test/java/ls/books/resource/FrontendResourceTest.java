@@ -4,9 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
-import ls.books.TestDatabaseUtilities;
+import javax.sql.DataSource;
+
 import ls.books.WebServicesApplication;
+import ls.books.db.SchemaBuilder;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,20 +22,20 @@ import org.restlet.resource.ResourceException;
 
 public class FrontendResourceTest {
 
-    TestDatabaseUtilities testDatabaseUtilities;
+    DataSource dataSource;
     ByteArrayOutputStream baos;
     Component comp;
 
     @Before
     public void setup() throws Exception {
-        testDatabaseUtilities = new TestDatabaseUtilities();
+        dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
 
         baos = new ByteArrayOutputStream();
 
         comp = new Component();
         comp.getServers().add(Protocol.HTTP, 8182);
 
-        WebServicesApplication application = new WebServicesApplication(comp.getContext(), testDatabaseUtilities.getDataSource());
+        WebServicesApplication application = new WebServicesApplication(comp.getContext(), dataSource);
 
         comp.getDefaultHost().attach(application);
         comp.start();
@@ -39,6 +43,12 @@ public class FrontendResourceTest {
 
     @After
     public void teardown() throws Exception {
+        Connection connection = dataSource.getConnection();
+        PreparedStatement wipeDatabase = connection.prepareStatement("DROP ALL OBJECTS");
+        wipeDatabase.execute();
+        wipeDatabase.close();
+        connection.close();
+        
         comp.stop();
     }
 

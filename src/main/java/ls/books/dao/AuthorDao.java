@@ -14,6 +14,12 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 public interface AuthorDao {
 
+    public enum ColumnName {
+        AUTHOR_ID,
+        LAST_NAME,
+        FIRST_NAME
+    }
+
     //Create
     @SqlUpdate("insert into authors (last_name, first_name)"
             + " values (:author.lastName, :author.firstName)")
@@ -21,23 +27,23 @@ public interface AuthorDao {
     int createAuthor(@BindBean("author") Author author);
 
     //Read
-    @SqlQuery("select  id, "
-            + "        first_name, "
-            + "        last_name "
-            + "from    authors "
+    @SqlQuery("select   author_id, "
+            + "         first_name, "
+            + "         last_name "
+            + "from     authors "
             + "order by last_name, first_name")
     @Mapper(AuthorMapper.class)
     List<Author> getAuthors();
 
-    @SqlQuery("select  id, "
-            + "        first_name, "
-            + "        last_name "
-            + "from    authors "
-            + "where   id = :id")
+    @SqlQuery("select   author_id, "
+            + "         first_name, "
+            + "         last_name "
+            + "from     authors "
+            + "where    author_id = :authorId")
     @Mapper(AuthorMapper.class)
-    Author findAuthorById(@Bind("id") int id);
+    Author findAuthorByAuthorId(@Bind("authorId") int authorId);
 
-    @SqlQuery("select   id, "
+    @SqlQuery("select   author_id, "
             + "         first_name, "
             + "         last_name "
             + "from     authors "
@@ -50,13 +56,13 @@ public interface AuthorDao {
     @SqlUpdate("update  authors"
             + " set     last_name   =   :author.lastName"
             + " ,       first_name  =   :author.firstName"
-            + " where   id          =   :author.authorId")
+            + " where   author_id   =   :author.authorId")
     void updateAuthor(@BindBean("author") Author author);
 
     //Delete
     @SqlUpdate("delete from authors"
-            + " where id = :id")
-    void deleteAuthorById(@Bind("id") int id);
+            + " where author_id = :authorId")
+    void deleteAuthorById(@Bind("authorId") int authorId);
 
     void close();
 }

@@ -2,14 +2,17 @@ package ls.books.resource;
 
 import javax.ws.rs.core.CacheControl;
 
+import com.google.gson.Gson;
+
 public class BaseResource {
-
-    protected CacheControl getNoCacheController() {
-        CacheControl cc = new CacheControl();
-        cc.setNoCache(true);
-        cc.setMaxAge(-1);
-        cc.setMustRevalidate(true);
-
-        return cc;
+    
+    protected static CacheControl cacheControl;
+    protected Gson jsonBuilder = new Gson();
+    
+    static {
+        cacheControl = new CacheControl();
+        cacheControl.setNoCache(true);
+        cacheControl.setMaxAge(-1);
+        cacheControl.setMustRevalidate(true);
     }
 }
