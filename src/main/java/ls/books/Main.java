@@ -18,24 +18,52 @@ public class Main {
             
             Connection connection = dataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
-            ps.setString(1, "SOUTH");
-            ps.setString(2, "LUKE");
+            ps.setString(1, "South");
+            ps.setString(2, "Luke");
             ps.execute();
             ps.close();
             connection.close();
             
             connection = dataSource.getConnection();
             ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
-            ps.setString(1, "SOUTH");
-            ps.setString(2, "JO");
+            ps.setString(1, "South");
+            ps.setString(2, "Jo");
             ps.execute();
             ps.close();
             connection.close();
             
             connection = dataSource.getConnection();
             ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
-            ps.setString(1, "CUSSLER");
-            ps.setString(2, "CLIVE");
+            ps.setString(1, "Cussler");
+            ps.setString(2, "Clive");
+            ps.execute();
+            ps.close();
+            connection.close();
+            
+            //Series
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO SERIES (AUTHOR_ID, SERIES_NAME, DESCRIPTION) VALUES (?, ?, ?)");
+            ps.setInt(1, 3);
+            ps.setString(2, "Dirk Pitt");
+            ps.setString(3, "A bunch of novels");
+            ps.execute();
+            ps.close();
+            connection.close();
+            
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO SERIES (AUTHOR_ID, SERIES_NAME, DESCRIPTION) VALUES (?, ?, ?)");
+            ps.setInt(1, 3);
+            ps.setString(2, "Isaac Bell");
+            ps.setString(3, "A few more novels");
+            ps.execute();
+            ps.close();
+            connection.close();
+            
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO SERIES (AUTHOR_ID, SERIES_NAME, DESCRIPTION) VALUES (?, ?, ?)");
+            ps.setInt(1, 1);
+            ps.setString(2, "Luke's Books");
+            ps.setString(3, "");
             ps.execute();
             ps.close();
             connection.close();

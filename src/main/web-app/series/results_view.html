@@ -22,23 +22,28 @@
                     $("#nav-bar-container-div").replaceWith(data);
                 });
                 
-                getAuthors();
+                getSeries();
             });
             
-            function getAuthors() {
-                $.getJSON("/rest/author", function(data) {
+            function getSeries() {
+                $.getJSON("/rest/series", function(data) {
                     for (var i = 0; i < data.length; i++) {
+                        var seriesId = data[i].seriesId;
                         var authorId = data[i].authorId;
-                        var firstName = data[i].firstName;
-                        var lastName = data[i].lastName;
+                        var seriesName = data[i].seriesName;
+                        var description = data[i].description;
                         
-                        var tr  = "<tr>";
-                        var td1 = "<td>" + firstName + "</td>";
-                        var td2 = "<td>" + lastName + "</td>";
-                        var td3 = '<td><a href="/author/single_view.html?authorId=' + authorId + '">View</a></td>';
-                        var tr2 = "</tr>";
+                        var tr  = '<tr>';
+                        var td1 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '">' + seriesName + '</a></td>';
+                        var td2 = '<td><a href="/author/single_view.html?authorId=' + authorId + '"><div id="authorString' + authorId + '" /></div></a></td>';
+                        var td3 = '<td>' + description + '</td>';
+                        var tr2 = '</tr>';
                     
                         $("#resultsView").append(tr + td1 + td2 + td3 + tr2);
+
+                        $.getJSON("/rest/author/" + authorId, function(authorData) {
+                            $("#authorString" + authorData.authorId).replaceWith(authorData.lastName + ', ' + authorData.firstName)
+                        })
                     }
                 });
             }
@@ -55,7 +60,7 @@
                 <div class="row"> <!-- Header -->
                     <div class="col-md-12">
                         <div class="page-header">
-                            <h1>Author's</h1>
+                            <h1>Series</h1>
                         </div>
                     </div>
                 </div> <!-- Header -->
@@ -67,9 +72,9 @@
                     <div class="col-md-12">
                         <table class="table table-hover" id="resultsView">
                             <tr>
-                                <th class="col-md-5">First Name</th>
-                                <th class="col-md-5">Last Name</th>
-                                <th class="col-md-2">Action</th>
+                                <th class="col-md-3">Series Name</th>
+                                <th class="col-md-3">Author</th>
+                                <th class="col-md-6">Description</th>
                             </tr>
                         </table>
                     </div>

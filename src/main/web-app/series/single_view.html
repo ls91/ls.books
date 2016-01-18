@@ -23,50 +23,65 @@
                     $("#nav-bar-container-div").replaceWith(data);
                 });
                 
+                populateAuthorsDropDown();
+                
                 var url = $.url();
                 
-                if (url.param('authorId') == undefined) {
+                if (url.param('seriesId') == undefined) {
                     //We are creating
                     $('#createButton').prop('disabled', false);
                 } else {
                     //We are loading
-                    getAuthor(url.param('authorId'));
+                    getSeries(url.param('seriesId'));
                 }
             });
             
-            function getAuthor(id) {
-                $.getJSON("/rest/author/" + id, function(data) {
+            function populateAuthorsDropDown() {
+                $.getJSON("/rest/author", function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#authorId')
+                            .append($("<option></option>")
+                            .attr("value", data[i].authorId)
+                            .text(data[i].lastName + ', ' + data[i].firstName));
+                    }
+                });
+            }
+            
+            function getSeries(id) {
+                $.getJSON("/rest/series/" + id, function(data) {
+                    $("#seriesId").val(data.seriesId);
                     $("#authorId").val(data.authorId);
-                    $("#lastName").val(data.lastName);
-                    $("#firstName").val(data.firstName);
+                    $("#seriesName").val(data.seriesName);
+                    $("#description").val(data.description);
                     
                     $('#updateButton').prop('disabled', false);
                     $('#deleteButton').prop('disabled', false);
                 }).fail(function() {
                     BootstrapDialog.show({
-                        title: 'Author Not Found',
-                        message: 'The Author you were looking for could not be found, please try a different one.'
+                        title: 'Series Not Found',
+                        message: 'The Series you were looking for could not be found, please try a different one.'
                     });
                     
                     $('#createButton').prop('disabled', false);
                 });
             }
             
-            function createAuthor() {
+            function createSeries() {
                 $.ajax({
-                    url: '/rest/author',
+                    url: '/rest/series',
                     method: 'POST',
                     contentType: 'application/json',
                     processData: false,
                     dataType: 'json',
                     data: JSON.stringify({
+                        seriesId: $("#seriesId").val(),
                         authorId: $("#authorId").val(),
-                        lastName: $("#lastName").val(),
-                        firstName: $("#firstName").val()
+                        seriesName: $("#seriesName").val(),
+                        description: $("#description").val()
                     }),
                     success: function(data) {
                         console.log(data);
-                        window.location.replace("/author/single_view.html?authorId=" + data);
+                        window.location.replace("/series/single_view.html?seriesId=" + data);
                     },
                     error: function(error) {
                         console.log(error);
@@ -74,17 +89,18 @@
                 });
             }
             
-            function updateAuthor() {
+            function updateSeries() {
                 $.ajax({
-                    url: '/rest/author',
+                    url: '/rest/series',
                     method: 'PUT',
                     contentType: 'application/json',
                     processData: false,
                     dataType: 'json',
                     data: JSON.stringify({
+                        seriesId: $("#seriesId").val(),
                         authorId: $("#authorId").val(),
-                        lastName: $("#lastName").val(),
-                        firstName: $("#firstName").val()
+                        seriesName: $("#seriesName").val(),
+                        description: $("#description").val()
                     }),
                     success: function(data) {
                         console.log(data);
@@ -98,24 +114,24 @@
                 });
             }
             
-            function deleteAuthor() {
+            function deleteSeries() {
                 BootstrapDialog.confirm({
                     title: 'WARNING',
-                    message: 'Are you sure you want to delete this author?',
+                    message: 'Are you sure you want to delete this series?',
                     type: BootstrapDialog.TYPE_WARNING,
                     closable: true,
                     btnOKClass: 'btn-warning',
                     callback: function(result) {
                         if (result) {
                             $.ajax({
-                                url: '/rest/author/' + $("#authorId").val(),
+                                url: '/rest/series/' + $("#seriesId").val(),
                                 method: 'DELETE',
                                 contentType: 'application/json',
                                 processData: false,
                                 dataType: 'json',
                                 success: function(data) {
                                     console.log(data);
-                                    window.location.replace('/author/results_view.html');
+                                    window.location.replace('/series/results_view.html');
                                 },
                                 error: function(error) {
                                     console.log(error);
@@ -150,31 +166,37 @@
                     <div class="col-md-12">
                         <form>
                             <div class="form-group col-md-4">
-                                <label for="firstName">First Name</label>
-                                <input type="text" class="form-control" id="firstName" placeholder="First Name">
+                                <label for="seriesName">Series Name</label>
+                                <input type="text" class="form-control" id="seriesName" placeholder="Series Name">
                             </div>
                             
                             <div class="form-group  col-md-4">
-                                <label for="lastName">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="Last Name">
+                                <label for="description">Description</label>
+                                <input type="text" class="form-control" id="description" placeholder="Description...">
                             </div>
                             
-                            <input type="hidden" id="authorId" />
+                            <div class="form-group  col-md-4">
+                                <label for="authorId">Description</label>
+                                <select class="form-control" id="authorId">
+                                </select>
+                            </div>
+                            
+                            <input type="hidden" id="seriesId" />
                         </form>
                     </div>
                 </div> <!-- Form -->
                 
                 <div class="row"> <!-- Buttons -->
                     <div class="col-md-4">
-                        <button id="createButton" type="submit" class="btn btn-default" onClick="createAuthor();" disabled>Create</button>
+                        <button id="createButton" type="submit" class="btn btn-default" onClick="createSeries();" disabled>Create</button>
                     </div>
                     
                     <div class="col-md-4">
-                        <button id="updateButton" type="submit" class="btn btn-default" onClick="updateAuthor();" disabled>Update</button>
+                        <button id="updateButton" type="submit" class="btn btn-default" onClick="updateSeries();" disabled>Update</button>
                     </div>
                     
                     <div class="col-md-4">
-                        <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteAuthor();" disabled>Delete</button>
+                        <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteSeries();" disabled>Delete</button>
                     </div>
                 </div> <!-- Buttons -->
         
