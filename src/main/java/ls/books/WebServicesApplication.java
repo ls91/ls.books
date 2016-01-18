@@ -8,6 +8,7 @@ import javax.ws.rs.core.Application;
 
 import ls.books.resource.AuthorResource;
 import ls.books.resource.FrontendResource;
+import ls.books.resource.SeriesResource;
 
 import org.restlet.Context;
 import org.restlet.ext.jaxrs.JaxRsApplication;
@@ -26,6 +27,7 @@ public class WebServicesApplication extends JaxRsApplication {
             Set<Class<?>> resourceClasses = new HashSet<Class<?>>();
             resourceClasses.add(FrontendResource.class);
             resourceClasses.add(AuthorResource.class);
+            resourceClasses.add(SeriesResource.class);
 
             return resourceClasses;
         }

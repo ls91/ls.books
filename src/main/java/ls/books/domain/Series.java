@@ -7,6 +7,8 @@ public class Series {
     private String seriesName;
     private String description;
 
+    public Series() {}
+
     public Series(final int seriesId, final int authorId, final String seriesName, final String description) {
         this.seriesId = seriesId;
         this.authorId = authorId;

@@ -71,8 +71,6 @@ public class AuthorResourceTest {
     public void postAuthorShouldPersistAnAuthorAndReturnALinkToWhereItCanBeAccessed() throws Exception {
         assertNull(testAuthorDao.findAuthorByAuthorId(1));
         
-        ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
-        
         JSONObject newAuthor = new JSONObject();
         newAuthor.put("authorId", "1234");
         newAuthor.put("lastName", "Foo");
@@ -81,6 +79,7 @@ public class AuthorResourceTest {
         StringRepresentation authorJson = new StringRepresentation(newAuthor.toString());
         authorJson.setMediaType(MediaType.APPLICATION_JSON);
         
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.post(authorJson).write(baos);
         
         assertEquals("1", baos.toString());
@@ -94,9 +93,6 @@ public class AuthorResourceTest {
         testAuthorDao.createAuthor(author);
         assertEquals(author, testAuthorDao.findAuthorByAuthorId(1));
         
-        ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
-        resource.setMethod(Method.PUT);
-        
         JSONObject updatedAuthor = new JSONObject();
         updatedAuthor.put("authorId", "1");
         updatedAuthor.put("lastName", "Foo Updated");
@@ -105,6 +101,8 @@ public class AuthorResourceTest {
         StringRepresentation authorJson = new StringRepresentation(updatedAuthor.toString());
         authorJson.setMediaType(MediaType.APPLICATION_JSON);
 
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
+        resource.setMethod(Method.PUT);
         resource.put(authorJson).write(baos);
 
         assertEquals("\"Author 1 updated\"", baos.toString());
