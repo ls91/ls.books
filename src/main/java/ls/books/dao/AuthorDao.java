@@ -21,7 +21,7 @@ public interface AuthorDao {
     }
 
     //Create
-    @SqlUpdate("insert into authors (last_name, first_name)"
+    @SqlUpdate("insert into author (last_name, first_name)"
             + " values (:author.lastName, :author.firstName)")
     @GetGeneratedKeys
     int createAuthor(@BindBean("author") Author author);
@@ -30,7 +30,7 @@ public interface AuthorDao {
     @SqlQuery("select   author_id, "
             + "         first_name, "
             + "         last_name "
-            + "from     authors "
+            + "from     author "
             + "order by last_name, first_name")
     @Mapper(AuthorMapper.class)
     List<Author> getAuthors();
@@ -38,7 +38,7 @@ public interface AuthorDao {
     @SqlQuery("select   author_id, "
             + "         first_name, "
             + "         last_name "
-            + "from     authors "
+            + "from     author "
             + "where    author_id = :authorId")
     @Mapper(AuthorMapper.class)
     Author findAuthorByAuthorId(@Bind("authorId") int authorId);
@@ -46,21 +46,21 @@ public interface AuthorDao {
     @SqlQuery("select   author_id, "
             + "         first_name, "
             + "         last_name "
-            + "from     authors "
+            + "from     author "
             + "where    lower(first_name)   like    concat('%', lower(:query), '%') "
             + "or       lower(last_name)    like    concat('%', lower(:query), '%') ")
     @Mapper(AuthorMapper.class)
     List<Author> findAuthorsByNameLike(@Bind("query") String query);
 
     //Update
-    @SqlUpdate("update  authors"
+    @SqlUpdate("update  author"
             + " set     last_name   =   :author.lastName"
             + " ,       first_name  =   :author.firstName"
             + " where   author_id   =   :author.authorId")
     void updateAuthor(@BindBean("author") Author author);
 
     //Delete
-    @SqlUpdate("delete from authors"
+    @SqlUpdate("delete from author"
             + " where author_id = :authorId")
     void deleteAuthorById(@Bind("authorId") int authorId);
 

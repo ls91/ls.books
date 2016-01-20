@@ -26,9 +26,10 @@ public class SchemaBuilder {
         SchemaBuilderDao dao = new DBI(dataSource).open(SchemaBuilderDao.class);
 
         //BUILD TABLES
-        dao.createAuthorsTable();
+        dao.createFormatTable();
+        dao.createAuthorTable();
         dao.createSeriesTable();
-
+        
         //CLEANUP
         dao.close();
 

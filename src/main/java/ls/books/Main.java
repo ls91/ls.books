@@ -17,7 +17,7 @@ public class Main {
             DataSource dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
             
             Connection connection = dataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO AUTHOR (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
             ps.setString(1, "South");
             ps.setString(2, "Luke");
             ps.execute();
@@ -25,7 +25,7 @@ public class Main {
             connection.close();
             
             connection = dataSource.getConnection();
-            ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
+            ps = connection.prepareStatement("INSERT INTO AUTHOR (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
             ps.setString(1, "South");
             ps.setString(2, "Jo");
             ps.execute();
@@ -33,7 +33,7 @@ public class Main {
             connection.close();
             
             connection = dataSource.getConnection();
-            ps = connection.prepareStatement("INSERT INTO AUTHORS (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
+            ps = connection.prepareStatement("INSERT INTO AUTHOR (LAST_NAME, FIRST_NAME) VALUES (?, ?)");
             ps.setString(1, "Cussler");
             ps.setString(2, "Clive");
             ps.execute();
