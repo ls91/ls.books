@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ls.books.dao.AuthorDao;
+import ls.books.dao.SeriesDao;
 import ls.books.domain.Author;
 
 import org.restlet.Context;
@@ -24,12 +25,14 @@ import org.skife.jdbi.v2.DBI;
 @Path("/rest/author")
 public class AuthorResource extends BaseResource {
 
-    private AuthorDao dao = null;
+    private AuthorDao authorDao = null;
+    private SeriesDao seriesDao = null;
 
     protected void init() {
-        if (dao == null) {
+        if (authorDao == null) {
             DataSource dataSource = (DataSource) Context.getCurrent().getAttributes().get("DATA_SOURCE");
-            dao = new DBI(dataSource).open(AuthorDao.class);
+            authorDao = new DBI(dataSource).open(AuthorDao.class);
+            seriesDao = new DBI(dataSource).open(SeriesDao.class);
         }
     }
 
@@ -41,7 +44,7 @@ public class AuthorResource extends BaseResource {
         init();
 
         try {
-            author.setAuthorId(dao.createAuthor(author));
+            author.setAuthorId(authorDao.createAuthor(author));
         } catch (Exception e) {
             return Response.serverError().cacheControl(cacheControl).build();
         }
@@ -54,7 +57,7 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthors() {
         init();
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(dao.getAuthors())).build();
+        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(authorDao.getAuthors())).build();
     }
 
     @GET
@@ -62,13 +65,21 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthorById(@PathParam("id") int id) {
         init();
-        Author result = dao.findAuthorByAuthorId(id);
+        Author result = authorDao.findAuthorByAuthorId(id);
         
         if (result != null) {
             return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(result)).build();
         } else {
             return Response.status(404).cacheControl(cacheControl).build();
         }
+    }
+    
+    @GET
+    @Path("/{id}/series")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAuthorSeriesById(@PathParam("id") int id) {
+        init();
+        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(seriesDao.findSeriesByAuthorId(id))).build();
     }
 
     //Update
@@ -79,7 +90,7 @@ public class AuthorResource extends BaseResource {
         init();
 
         try {
-            dao.updateAuthor(author);
+            authorDao.updateAuthor(author);
         } catch (Exception e) {
             Response.status(400).cacheControl(cacheControl).build();
         }
@@ -93,7 +104,7 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteAuthor(@PathParam("id") int id) {
         init();
-        dao.deleteAuthorById(id);
+        authorDao.deleteAuthorById(id);
         return Response.ok(jsonBuilder.toJson("Author " + id + " deleted")).cacheControl(cacheControl).build();
     }
 }

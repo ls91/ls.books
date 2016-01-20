@@ -13,8 +13,10 @@ import javax.sql.DataSource;
 
 import ls.books.WebServicesApplication;
 import ls.books.dao.AuthorDao;
+import ls.books.dao.SeriesDao;
 import ls.books.db.SchemaBuilder;
 import ls.books.domain.Author;
+import ls.books.domain.Series;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +36,7 @@ public class AuthorResourceTest {
 
     DataSource dataSource;
     AuthorDao testAuthorDao;
+    SeriesDao testSeriesDao;
     ByteArrayOutputStream baos;
     Component comp;
 
@@ -42,6 +45,7 @@ public class AuthorResourceTest {
         dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
 
         testAuthorDao = new DBI(dataSource).open(AuthorDao.class);
+        testSeriesDao = new DBI(dataSource).open(SeriesDao.class);
 
         baos = new ByteArrayOutputStream();
         
@@ -148,6 +152,30 @@ public class AuthorResourceTest {
         resource.get().write(baos);
         
         assertEquals("[]", baos.toString());
+    }
+    
+    @Test
+    public void getAuthorSeriesWhenNoSeriesExistShouldReturnAnEmptyList() throws ResourceException, IOException {
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/series");
+        resource.get().write(baos);
+        
+        assertEquals("[]", baos.toString());
+    }
+    
+    @Test
+    public void getAuthorSeriesWhenSeriesExistShouldReturnThoseSeriesAsaList() throws ResourceException, IOException {
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
+        testSeriesDao.createSeries(new Series(1, 1, "seriesName2", "description"));
+        testSeriesDao.createSeries(new Series(1, 2, "seriesName3", "description"));
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/series");
+        resource.get().write(baos);
+        
+        assertEquals("[{\"seriesId\":1,\"authorId\":1,\"seriesName\":\"seriesName1\",\"description\":\"description\"},{\"seriesId\":2,\"authorId\":1,\"seriesName\":\"seriesName2\",\"description\":\"description\"}]", baos.toString());
     }
     
     @Test

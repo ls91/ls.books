@@ -28,9 +28,11 @@
                 if (url.param('authorId') == undefined) {
                     //We are creating
                     $('#createButton').prop('disabled', false);
+                    $('#bibliography').hide();
                 } else {
                     //We are loading
                     getAuthor(url.param('authorId'));
+                    getBibliography(url.param('authorId'));
                 }
             });
             
@@ -125,6 +127,26 @@
                     }
                 });
             }
+            
+            function getBibliography(id) {
+                //Get Series written by Author
+                $.getJSON("/rest/author/" + id + "/series", function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var seriesId = data[i].seriesId;
+                        var authorId = data[i].authorId;
+                        var seriesName = data[i].seriesName;
+                        var description = data[i].description;
+                        
+                        var tr  = '<tr>';
+                        var td1 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '">' + seriesName + '</a></td>';
+                        var td2 = '<td>' + description + '</td>';
+                        var td3 = '<td>0</td>';
+                        var tr2 = '</tr>';
+                    
+                        $("#seriesView").append(tr + td1 + td2 + td3 + tr2);
+                    }
+                });
+            }
         </script>
     </head>
     <body role="document">
@@ -174,7 +196,43 @@
                         <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteAuthor();" disabled>Delete</button>
                     </div>
                 </div> <!-- Buttons -->
-            
+                
+                <div class="row" id="bibliography"> <!-- Tabs -->
+                    <div class="col-md-12">
+                        <h2>Bibliography</h2>
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#books">Books</a></li>
+                            <li><a data-toggle="tab" href="#series">Series</a></li>
+                        </ul>
+                        
+                        <div class="tab-content">
+                            <div id="books" class="tab-pane fade in active">
+                                <table class="table table-hover" id="booksView">
+                                    <tr>
+                                        <th class="col-md-3">Title</th>
+                                        <th class="col-md-3">Series</th>
+                                        <th class="col-md-2">No. In Series</th>
+                                        <th class="col-md-2">Description</th>
+                                        <th class="col-md-1">Format</th>
+                                        <th class="col-md-1">No. Pages</th>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="series" class="tab-pane fade">
+                                <table class="table table-hover" id="seriesView">
+                                    <tr>
+                                        <th class="col-md-4">Name</th>
+                                        <th class="col-md-6">Description</th>
+                                        <th class="col-md-2">No. In Series</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div> <!-- Tab Content -->
+                        
+                    </div>
+                    
+                </div> <!-- Tabs -->
+                
             </div> <!-- well -->
         
         </div> <!-- container -->
