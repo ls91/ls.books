@@ -76,9 +76,9 @@ public class SeriesResourceTest {
     @Test
     public void postSeriesShouldPersistAseriesAndReturnAlinkToWhereItCanBeAccessed() throws Exception {
         testAuthorDao.createAuthor(new Author(1, "FOO", "BAR"));
-        assertNotNull(testAuthorDao.findAuthorByAuthorId(1));
+        assertNotNull(testAuthorDao.findAuthorById(1));
         
-        assertNull(testSeriesDao.findSeriesBySeriesId(1));
+        assertNull(testSeriesDao.findSeriesById(1));
         
         JSONObject newSeries = new JSONObject();
         newSeries.put("seriesId", "1");
@@ -94,7 +94,7 @@ public class SeriesResourceTest {
         
         assertEquals("1", baos.toString());
 
-        assertEquals(new Series(1, 1, "name", ""), testSeriesDao.findSeriesBySeriesId(1));
+        assertEquals(new Series(1, 1, "name", ""), testSeriesDao.findSeriesById(1));
     }
     
     @Test
@@ -105,7 +105,7 @@ public class SeriesResourceTest {
         Series series1 = new Series(1, 1, "seriesName1", "description");
         testSeriesDao.createSeries(series1);
         
-        assertEquals(series1, testSeriesDao.findSeriesBySeriesId(1));
+        assertEquals(series1, testSeriesDao.findSeriesById(1));
         
         JSONObject updatedSeries = new JSONObject();
         updatedSeries.put("seriesId", "1");
@@ -121,7 +121,7 @@ public class SeriesResourceTest {
         resource.put(seriesJson).write(baos);
 
         assertEquals("\"Series 1 updated\"", baos.toString());
-        assertEquals(new Series(1, 2, "name", ""), testSeriesDao.findSeriesBySeriesId(1));
+        assertEquals(new Series(1, 2, "name", ""), testSeriesDao.findSeriesById(1));
     }
     
     @Test
@@ -132,14 +132,14 @@ public class SeriesResourceTest {
         Series series1 = new Series(1, 1, "seriesName1", "description");
         testSeriesDao.createSeries(series1);
         
-        assertEquals(series1, testSeriesDao.findSeriesBySeriesId(1));
+        assertEquals(series1, testSeriesDao.findSeriesById(1));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series/1");
         resource.delete().write(baos);
         
         assertEquals("\"Series 1 deleted\"", baos.toString());
         
-        assertNull(testSeriesDao.findSeriesBySeriesId(1));
+        assertNull(testSeriesDao.findSeriesById(1));
     }
     
     @Test

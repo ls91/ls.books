@@ -14,21 +14,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import ls.books.dao.SeriesDao;
-import ls.books.domain.Series;
+import ls.books.dao.FormatDao;
+import ls.books.domain.Format;
 
 import org.restlet.Context;
 import org.skife.jdbi.v2.DBI;
 
-@Path("/rest/series")
-public class SeriesResource extends BaseResource {
+@Path("/rest/format")
+public class FormatResource extends BaseResource {
 
-    private SeriesDao dao = null;
+    private FormatDao formatDao = null;
 
     protected void init() {
-        if (dao == null) {
+        if (formatDao == null) {
             DataSource dataSource = (DataSource) Context.getCurrent().getAttributes().get("DATA_SOURCE");
-            dao = new DBI(dataSource).open(SeriesDao.class);
+            formatDao = new DBI(dataSource).open(FormatDao.class);
         }
     }
 
@@ -36,32 +36,32 @@ public class SeriesResource extends BaseResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createSeries(Series series) throws URISyntaxException {
+    public Response createFormat(Format format) throws URISyntaxException {
         init();
 
         try {
-            series.setSeriesId(dao.createSeries(series));
+            format.setFormatId(formatDao.createFormat(format));
         } catch (Exception e) {
             return Response.serverError().cacheControl(cacheControl).build();
         }
 
-        return buildCreatedOkResponse(series.getSeriesId(), "/rest/series/");
+        return buildCreatedOkResponse(format.getFormatId(), "/rest/format/");
     }
 
     //Read
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSeries() {
+    public Response getFormats() {
         init();
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(dao.getSeries())).build();
+        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(formatDao.getFormats())).build();
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSeriesById(@PathParam("id") int id) {
+    public Response getFormatById(@PathParam("id") int id) {
         init();
-        Series result = dao.findSeriesById(id);
+        Format result = formatDao.findFormatById(id);
         
         if (result != null) {
             return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(result)).build();
@@ -74,25 +74,25 @@ public class SeriesResource extends BaseResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateSeries(Series series) {
+    public Response updateFormat(Format format) {
         init();
 
         try {
-            dao.updateSeries(series);
+            formatDao.updateFormat(format);
         } catch (Exception e) {
             Response.status(400).cacheControl(cacheControl).build();
         }
 
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson("Series " + series.getSeriesId() + " updated")).build();
+        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson("Format " + format.getFormatId() + " updated")).build();
     }
 
     //Delete
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteSeries(@PathParam("id") int id) {
+    public Response deleteFormat(@PathParam("id") int id) {
         init();
-        dao.deleteSeriesById(id);
-        return Response.ok(jsonBuilder.toJson("Series " + id + " deleted")).cacheControl(cacheControl).build();
+        formatDao.deleteFormatById(id);
+        return Response.ok(jsonBuilder.toJson("Format " + id + " deleted")).cacheControl(cacheControl).build();
     }
 }

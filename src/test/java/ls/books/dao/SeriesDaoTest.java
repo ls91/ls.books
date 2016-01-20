@@ -86,7 +86,7 @@ public class SeriesDaoTest {
     
     @Test
     public void findSeriesBySeriesIdShouldReturnTheSeriesAsSelectedById() throws SQLException {
-        assertNull(testSeriesDao.findSeriesBySeriesId(1));
+        assertNull(testSeriesDao.findSeriesById(1));
         
         Series series1 = new Series(1, 1, "seriesName1", "description");
         testSeriesDao.createSeries(series1);
@@ -97,14 +97,14 @@ public class SeriesDaoTest {
         Series series3 = new Series(3, 1, "seriesName3", "description");
         testSeriesDao.createSeries(series3);
         
-        assertEquals(series1, testSeriesDao.findSeriesBySeriesId(1));
-        assertEquals(series2, testSeriesDao.findSeriesBySeriesId(2));
-        assertEquals(series3, testSeriesDao.findSeriesBySeriesId(3));
+        assertEquals(series1, testSeriesDao.findSeriesById(1));
+        assertEquals(series2, testSeriesDao.findSeriesById(2));
+        assertEquals(series3, testSeriesDao.findSeriesById(3));
     }
     
     @Test
     public void findSeriesByAuthorIdShouldReturnTheSeriesWithThatAuthorId() throws SQLException {
-        assertNull(testSeriesDao.findSeriesBySeriesId(1));
+        assertNull(testSeriesDao.findSeriesById(1));
         
         Series series1 = new Series(1, 1, "Second", "description");
         testSeriesDao.createSeries(series1);
@@ -154,14 +154,14 @@ public class SeriesDaoTest {
         Series series = new Series(1, 1, "seriesName", "description");
         testSeriesDao.createSeries(series);
         
-        assertEquals(series, testSeriesDao.findSeriesBySeriesId(1));
+        assertEquals(series, testSeriesDao.findSeriesById(1));
 
         series.setAuthorId(2);
         series.setSeriesName("seriesName2");
         series.setDescription("description2");
         testSeriesDao.updateSeries(series);
 
-        assertEquals(series, testSeriesDao.findSeriesBySeriesId(1));
+        assertEquals(series, testSeriesDao.findSeriesById(1));
     }
     
     //Delete
@@ -170,10 +170,10 @@ public class SeriesDaoTest {
         Series series = new Series(1, 1, "seriesName", "description");
         testSeriesDao.createSeries(series);
         
-        assertEquals(series, testSeriesDao.findSeriesBySeriesId(1));
+        assertEquals(series, testSeriesDao.findSeriesById(1));
 
         testSeriesDao.deleteSeriesById(1);
 
-        assertNull(testSeriesDao.findSeriesBySeriesId(1));
+        assertNull(testSeriesDao.findSeriesById(1));
     }
 }

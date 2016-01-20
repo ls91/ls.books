@@ -1,6 +1,5 @@
 package ls.books.resource;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.sql.DataSource;
@@ -29,7 +28,7 @@ public class AuthorResource extends BaseResource {
     private SeriesDao seriesDao = null;
 
     protected void init() {
-        if (authorDao == null) {
+        if (authorDao == null || seriesDao == null) {
             DataSource dataSource = (DataSource) Context.getCurrent().getAttributes().get("DATA_SOURCE");
             authorDao = new DBI(dataSource).open(AuthorDao.class);
             seriesDao = new DBI(dataSource).open(SeriesDao.class);
@@ -49,7 +48,7 @@ public class AuthorResource extends BaseResource {
             return Response.serverError().cacheControl(cacheControl).build();
         }
 
-        return Response.created(new URI("/rest/author/" + author.getAuthorId())).cacheControl(cacheControl).entity(jsonBuilder.toJson(author.getAuthorId())).build();
+        return buildCreatedOkResponse(author.getAuthorId(), "/rest/author/");
     }
 
     //Read
@@ -65,7 +64,7 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthorById(@PathParam("id") int id) {
         init();
-        Author result = authorDao.findAuthorByAuthorId(id);
+        Author result = authorDao.findAuthorById(id);
         
         if (result != null) {
             return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(result)).build();

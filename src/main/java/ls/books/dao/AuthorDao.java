@@ -41,7 +41,7 @@ public interface AuthorDao {
             + "from     author "
             + "where    author_id = :authorId")
     @Mapper(AuthorMapper.class)
-    Author findAuthorByAuthorId(@Bind("authorId") int authorId);
+    Author findAuthorById(@Bind("authorId") int authorId);
 
     @SqlQuery("select   author_id, "
             + "         first_name, "

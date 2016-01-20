@@ -44,7 +44,7 @@ public interface SeriesDao {
             + "from     series "
             + "where    series_id = :seriesId")
     @Mapper(SeriesMapper.class)
-    Series findSeriesBySeriesId(@Bind("seriesId") int seriesId);
+    Series findSeriesById(@Bind("seriesId") int seriesId);
 
     @SqlQuery("select   series_id, "
             + "         author_id, "
