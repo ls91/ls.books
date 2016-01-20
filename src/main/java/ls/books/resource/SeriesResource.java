@@ -23,12 +23,12 @@ import org.skife.jdbi.v2.DBI;
 @Path("/rest/series")
 public class SeriesResource extends BaseResource {
 
-    private SeriesDao dao = null;
+    private SeriesDao seriesDao = null;
 
     protected void init() {
-        if (dao == null) {
+        if (seriesDao == null) {
             DataSource dataSource = (DataSource) Context.getCurrent().getAttributes().get("DATA_SOURCE");
-            dao = new DBI(dataSource).open(SeriesDao.class);
+            seriesDao = new DBI(dataSource).open(SeriesDao.class);
         }
     }
 
@@ -40,7 +40,7 @@ public class SeriesResource extends BaseResource {
         init();
 
         try {
-            series.setSeriesId(dao.createSeries(series));
+            series.setSeriesId(seriesDao.createSeries(series));
         } catch (Exception e) {
             return Response.serverError().cacheControl(cacheControl).build();
         }
@@ -53,7 +53,7 @@ public class SeriesResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeries() {
         init();
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(dao.getSeries())).build();
+        return buildOkResponse(seriesDao.getSeries());
     }
 
     @GET
@@ -61,10 +61,10 @@ public class SeriesResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesById(@PathParam("id") int id) {
         init();
-        Series result = dao.findSeriesById(id);
+        Series result = seriesDao.findSeriesById(id);
         
         if (result != null) {
-            return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(result)).build();
+            return buildOkResponse(result);
         } else {
             return Response.status(404).cacheControl(cacheControl).build();
         }
@@ -78,7 +78,7 @@ public class SeriesResource extends BaseResource {
         init();
 
         try {
-            dao.updateSeries(series);
+            seriesDao.updateSeries(series);
         } catch (Exception e) {
             Response.status(400).cacheControl(cacheControl).build();
         }
@@ -92,7 +92,7 @@ public class SeriesResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteSeries(@PathParam("id") int id) {
         init();
-        dao.deleteSeriesById(id);
-        return Response.ok(jsonBuilder.toJson("Series " + id + " deleted")).cacheControl(cacheControl).build();
+        seriesDao.deleteSeriesById(id);
+        return buildOkResponse("Series " + id + " deleted");
     }
 }

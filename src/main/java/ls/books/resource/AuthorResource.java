@@ -56,7 +56,7 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthors() {
         init();
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(authorDao.getAuthors())).build();
+        return buildOkResponse(authorDao.getAuthors());
     }
 
     @GET
@@ -67,7 +67,7 @@ public class AuthorResource extends BaseResource {
         Author result = authorDao.findAuthorById(id);
         
         if (result != null) {
-            return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(result)).build();
+            return buildOkResponse(result);
         } else {
             return Response.status(404).cacheControl(cacheControl).build();
         }
@@ -104,6 +104,6 @@ public class AuthorResource extends BaseResource {
     public Response deleteAuthor(@PathParam("id") int id) {
         init();
         authorDao.deleteAuthorById(id);
-        return Response.ok(jsonBuilder.toJson("Author " + id + " deleted")).cacheControl(cacheControl).build();
+        return buildOkResponse("Author " + id + " deleted");
     }
 }

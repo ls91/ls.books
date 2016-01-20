@@ -53,7 +53,7 @@ public class FormatResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFormats() {
         init();
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(formatDao.getFormats())).build();
+        return buildOkResponse(formatDao.getFormats());
     }
 
     @GET
@@ -64,7 +64,7 @@ public class FormatResource extends BaseResource {
         Format result = formatDao.findFormatById(id);
         
         if (result != null) {
-            return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(result)).build();
+            return buildOkResponse(result);
         } else {
             return Response.status(404).cacheControl(cacheControl).build();
         }
@@ -93,6 +93,6 @@ public class FormatResource extends BaseResource {
     public Response deleteFormat(@PathParam("id") int id) {
         init();
         formatDao.deleteFormatById(id);
-        return Response.ok(jsonBuilder.toJson("Format " + id + " deleted")).cacheControl(cacheControl).build();
+        return buildOkResponse("Format " + id + " deleted");
     }
 }
