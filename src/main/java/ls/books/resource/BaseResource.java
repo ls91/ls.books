@@ -30,11 +30,15 @@ public class BaseResource {
     }
 
     protected Response buildEntityUpdatedResponse(final Entity entity, final int id) {
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(String.format(ENTITY_UPDATED, entity.name(), id))).build();
+        return buildEntityResponse(ENTITY_UPDATED, entity, id);
     }
 
     protected Response buildEntityDeletedResponse(final Entity entity, final int id) {
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(String.format(ENTITY_DELETED, entity.name(), id))).build();
+        return buildEntityResponse(ENTITY_DELETED, entity, id);
+    }
+    
+    protected Response buildEntityResponse(final String message, final Entity entity, final int id) {
+        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(String.format(message, entity.name(), id))).build();
     }
 
     protected Response buildOkResponse(final Object object) {

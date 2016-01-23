@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 
 import javax.ws.rs.core.Response;
 
+import ls.books.domain.Entity;
 import ls.books.domain.Format;
 
 import org.junit.Test;
@@ -29,11 +30,25 @@ public class BaseResourceTest {
     }
     
     @Test
-    public void buildCreatedOkResponseShouldReturnTheresponseContainingTheIdPassedIn() throws URISyntaxException {
+    public void buildCreatedOkResponseShouldReturnTheResponseContainingTheIdPassedIn() throws URISyntaxException {
         Response result = new BaseResource().buildEntityCreatedResponse(5, "rest/api/%d");
         
         assertEquals(new URI("rest/api/5"), result.getHeaders().get("Location").get(0));
         assertEquals("5", result.getEntity());
+    }
+    
+    @Test
+    public void buildEntityUpdatedResponseShouldReturnTheResponseContainingTheExpectedString() throws URISyntaxException {
+        Response result = new BaseResource().buildEntityUpdatedResponse(Entity.Author, 5);
+        
+        assertEquals("\"Author 5 successfully updated\"", result.getEntity());
+    }
+    
+    @Test
+    public void buildEntityDeletedResponseShouldReturnTheResponseContainingTheExpectedString() throws URISyntaxException {
+        Response result = new BaseResource().buildEntityDeletedResponse(Entity.Author, 5);
+        
+        assertEquals("\"Author 5 deleted\"", result.getEntity());
     }
     
     @Test
