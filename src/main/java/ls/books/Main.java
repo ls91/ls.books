@@ -68,6 +68,21 @@ public class Main {
             ps.close();
             connection.close();
             
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO FORMAT (FORMAT_ID, NAME) VALUES (?, ?)");
+            ps.setInt(1, 1);
+            ps.setString(2, "Paperback");
+            ps.execute();
+            ps.close();
+            connection.close();
+            
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO FORMAT (FORMAT_ID, NAME) VALUES (?, ?)");
+            ps.setInt(1, 2);
+            ps.setString(2, "Hardback");
+            ps.execute();
+            ps.close();
+            connection.close();
             
             Component comp = new Component();
             Server server = comp.getServers().add(Protocol.HTTP, 8182);

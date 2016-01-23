@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <title>ls.books - Series</title>
+        <title>ls.books - Format</title>
 
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -22,28 +22,20 @@
                     $("#nav-bar-container-div").replaceWith(data);
                 });
                 
-                getSeries();
+                getFormats();
             });
             
-            function getSeries() {
-                $.getJSON("/rest/series", function(data) {
+            function getFormats() {
+                $.getJSON("/rest/format", function(data) {
                     for (var i = 0; i < data.length; i++) {
-                        var seriesId = data[i].seriesId;
-                        var authorId = data[i].authorId;
-                        var seriesName = data[i].seriesName;
-                        var description = data[i].description;
+                        var formatId = data[i].formatId;
+                        var name = data[i].name;
                         
-                        var tr  = '<tr>';
-                        var td1 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '">' + seriesName + '</a></td>';
-                        var td2 = '<td><a href="/author/single_view.html?authorId=' + authorId + '"><div id="authorString' + authorId + '" /></div></a></td>';
-                        var td3 = '<td>' + description + '</td>';
-                        var tr2 = '</tr>';
+                        var tr  = "<tr>";
+                        var td1 = '<td><a href="/format/single_view.html?formatId=' + formatId + '">' + name + '</a></td>';
+                        var tr2 = "</tr>";
                     
-                        $("#resultsView").append(tr + td1 + td2 + td3 + tr2);
-
-                        $.getJSON("/rest/author/" + authorId, function(authorData) {
-                            $("#authorString" + authorData.authorId).replaceWith(authorData.lastName + ', ' + authorData.firstName)
-                        })
+                        $("#resultsView").append(tr + td1 + tr2);
                     }
                 });
             }
@@ -60,18 +52,16 @@
                 <div class="row"> <!-- Header -->
                     <div class="col-md-12">
                         <div class="page-header">
-                            <h1>Series</h1>
+                            <h1>Format's</h1>
                         </div>
                     </div>
                 </div> <!-- Header -->
                 
                 <div class="row"> <!-- Results Grid -->
-                    <div class="col-md-12">
+                    <div class="col-md-3">
                         <table class="table table-hover" id="resultsView">
                             <tr>
-                                <th class="col-md-3">Series Name</th>
-                                <th class="col-md-3">Author</th>
-                                <th class="col-md-6">Description</th>
+                                <th>Name</th>
                             </tr>
                         </table>
                     </div>
