@@ -132,6 +132,22 @@ public class AuthorResourceTest {
     }
     
     @Test
+    public void deleteAuthorShouldReturnAnErrorIfTheAuthorHasExistingSeries() throws ResourceException, IOException, JSONException {
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        testSeriesDao.createSeries(new Series(1, 1, "seriesName", "description"));
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
+        try {
+            resource.delete().write(baos);
+            fail("A 404 should have been raised.");
+        } catch (ResourceException e) {
+            assertEquals("\"Delete Failed, Author has existing series.\"", resource.getResponseEntity().getText());
+        }
+        
+        assertEquals(new Author(1, "lastName", "firstName"), testAuthorDao.findAuthorById(1));
+    }
+    
+    @Test
     public void getAuthorWithNoQueryParametersShouldReturnAllAuthorsInTheDatabase() throws ResourceException, IOException {
         Author author1 = new Author(1, "lastName", "firstName");
         Author author2 = new Author(2, "lastName", "firstName");

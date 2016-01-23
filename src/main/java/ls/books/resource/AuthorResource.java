@@ -20,6 +20,7 @@ import ls.books.domain.Author;
 
 import org.restlet.Context;
 import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.exceptions.UnableToExecuteStatementException;
 
 @Path("/rest/author")
 public class AuthorResource extends BaseResource {
@@ -103,7 +104,14 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteAuthor(@PathParam("id") int id) {
         init();
-        authorDao.deleteAuthorById(id);
+
+        try {
+            authorDao.deleteAuthorById(id);
+        } catch (UnableToExecuteStatementException e) {
+            if (e.getMessage().contains("PUBLIC.SERIES FOREIGN KEY(AUTHOR_ID) REFERENCES PUBLIC.AUTHOR(AUTHOR_ID)")) {
+                return Response.status(404).cacheControl(cacheControl).entity(jsonBuilder.toJson("Delete Failed, Author has existing series.")).build();
+            }
+        }
         return buildOkResponse("Author " + id + " deleted");
     }
 }
