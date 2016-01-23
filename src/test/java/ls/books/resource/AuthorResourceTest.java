@@ -73,6 +73,11 @@ public class AuthorResourceTest {
     }
 
     @Test
+    public void staticConstantsShouldEqual() {
+        assertEquals("/rest/author/%d", AuthorResource.AUTHOR_URL);
+    }
+    
+    @Test
     public void postAuthorShouldPersistAnAuthorAndReturnALinkToWhereItCanBeAccessed() throws Exception {
         assertNull(testAuthorDao.findAuthorById(1));
         
@@ -110,7 +115,7 @@ public class AuthorResourceTest {
         resource.setMethod(Method.PUT);
         resource.put(authorJson).write(baos);
 
-        assertEquals("\"Author 1 updated\"", baos.toString());
+        assertEquals("\"Author 1 successfully updated\"", baos.toString());
         assertEquals(new Author(1, "Foo Updated", "Bar Updated"), testAuthorDao.findAuthorById(1));
     }
     

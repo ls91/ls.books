@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ls.books.dao.FormatDao;
+import ls.books.domain.Entity;
 import ls.books.domain.Format;
 
 import org.restlet.Context;
@@ -22,6 +23,8 @@ import org.skife.jdbi.v2.DBI;
 
 @Path("/rest/format")
 public class FormatResource extends BaseResource {
+
+    protected static final String FORMAT_URL = "/rest/format/%d";
 
     private FormatDao formatDao = null;
 
@@ -41,11 +44,10 @@ public class FormatResource extends BaseResource {
 
         try {
             format.setFormatId(formatDao.createFormat(format));
+            return buildEntityCreatedResponse(format.getFormatId(), FORMAT_URL);
         } catch (Exception e) {
-            return Response.serverError().cacheControl(cacheControl).build();
+            return build404Response();
         }
-
-        return buildCreatedOkResponse(format.getFormatId(), "/rest/format/");
     }
 
     //Read
@@ -66,7 +68,7 @@ public class FormatResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return Response.status(404).cacheControl(cacheControl).build();
+            return build404Response();
         }
     }
 
@@ -79,11 +81,10 @@ public class FormatResource extends BaseResource {
 
         try {
             formatDao.updateFormat(format);
+            return buildEntityUpdatedResponse(Entity.Format, format.getFormatId());
         } catch (Exception e) {
-            Response.status(400).cacheControl(cacheControl).build();
+            return build404Response();
         }
-
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson("Format " + format.getFormatId() + " updated")).build();
     }
 
     //Delete
@@ -93,6 +94,6 @@ public class FormatResource extends BaseResource {
     public Response deleteFormat(@PathParam("id") int id) {
         init();
         formatDao.deleteFormatById(id);
-        return buildOkResponse("Format " + id + " deleted");
+        return buildEntityDeletedResponse(Entity.Format, id);
     }
 }

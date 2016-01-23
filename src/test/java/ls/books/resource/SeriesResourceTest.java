@@ -74,6 +74,11 @@ public class SeriesResourceTest {
     }
 
     @Test
+    public void staticConstantsShouldEqual() {
+        assertEquals("/rest/series/%d", SeriesResource.SERIES_URL);
+    }
+
+    @Test
     public void postSeriesShouldPersistAseriesAndReturnAlinkToWhereItCanBeAccessed() throws Exception {
         testAuthorDao.createAuthor(new Author(1, "FOO", "BAR"));
         assertNotNull(testAuthorDao.findAuthorById(1));
@@ -120,7 +125,7 @@ public class SeriesResourceTest {
         resource.setMethod(Method.PUT);
         resource.put(seriesJson).write(baos);
 
-        assertEquals("\"Series 1 updated\"", baos.toString());
+        assertEquals("\"Series 1 successfully updated\"", baos.toString());
         assertEquals(new Series(1, 2, "name", ""), testSeriesDao.findSeriesById(1));
     }
     

@@ -1,6 +1,7 @@
 package ls.books.resource;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
@@ -22,8 +23,14 @@ public class BaseResourceTest {
     }
     
     @Test
+    public void staticConstantsShouldEqual() {
+        assertEquals("%s %d deleted", BaseResource.ENTITY_DELETED);
+        assertEquals("%s %d successfully updated", BaseResource.ENTITY_UPDATED);
+    }
+    
+    @Test
     public void buildCreatedOkResponseShouldReturnTheresponseContainingTheIdPassedIn() throws URISyntaxException {
-        Response result = new BaseResource().buildCreatedOkResponse(5, "rest/api/");
+        Response result = new BaseResource().buildEntityCreatedResponse(5, "rest/api/%d");
         
         assertEquals(new URI("rest/api/5"), result.getHeaders().get("Location").get(0));
         assertEquals("5", result.getEntity());
@@ -32,5 +39,15 @@ public class BaseResourceTest {
     @Test
     public void buildOkResponseShouldReturnThePassedInObjectAsJsonInTheBody() {
         assertEquals("{\"formatId\":1,\"name\":\"FORMAT\"}", new BaseResource().buildOkResponse(new Format(1, "FORMAT")).getEntity());
+    }
+    
+    @Test
+    public void buildResponseShouldHaveAnEmptyBodyIfTheNoArgVersionIsCalled() {
+        assertNull(new BaseResource().build404Response().getEntity());
+    }
+    
+    @Test
+    public void buildResponseShouldHaveTheBodySetToThatWhatWasPassedInIfTheArgVersionIsCalled() {
+        assertEquals("\"FORMAT\"", new BaseResource().build404Response("FORMAT").getEntity());
     }
 }

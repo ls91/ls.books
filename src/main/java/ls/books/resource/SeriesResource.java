@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ls.books.dao.SeriesDao;
+import ls.books.domain.Entity;
 import ls.books.domain.Series;
 
 import org.restlet.Context;
@@ -22,6 +23,8 @@ import org.skife.jdbi.v2.DBI;
 
 @Path("/rest/series")
 public class SeriesResource extends BaseResource {
+
+    protected static final String SERIES_URL = "/rest/series/%d";
 
     private SeriesDao seriesDao = null;
 
@@ -41,11 +44,10 @@ public class SeriesResource extends BaseResource {
 
         try {
             series.setSeriesId(seriesDao.createSeries(series));
+            return buildEntityCreatedResponse(series.getSeriesId(), SERIES_URL);
         } catch (Exception e) {
-            return Response.serverError().cacheControl(cacheControl).build();
+            return build404Response();
         }
-
-        return buildCreatedOkResponse(series.getSeriesId(), "/rest/series/");
     }
 
     //Read
@@ -66,7 +68,7 @@ public class SeriesResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return Response.status(404).cacheControl(cacheControl).build();
+            return build404Response();
         }
     }
 
@@ -79,11 +81,10 @@ public class SeriesResource extends BaseResource {
 
         try {
             seriesDao.updateSeries(series);
+            return buildEntityUpdatedResponse(Entity.Series, series.getSeriesId());
         } catch (Exception e) {
-            Response.status(400).cacheControl(cacheControl).build();
+            return build404Response();
         }
-
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson("Series " + series.getSeriesId() + " updated")).build();
     }
 
     //Delete
@@ -93,6 +94,6 @@ public class SeriesResource extends BaseResource {
     public Response deleteSeries(@PathParam("id") int id) {
         init();
         seriesDao.deleteSeriesById(id);
-        return buildOkResponse("Series " + id + " deleted");
+        return buildEntityDeletedResponse(Entity.Series, id);
     }
 }

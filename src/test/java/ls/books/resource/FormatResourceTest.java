@@ -68,6 +68,11 @@ public class FormatResourceTest {
     }
 
     @Test
+    public void staticConstantsShouldEqual() {
+        assertEquals("/rest/format/%d", FormatResource.FORMAT_URL);
+    }
+
+    @Test
     public void postFormatShouldPersistAformatAndReturnALinkToWhereItCanBeAccessed() throws Exception {
         assertNull(testFormatDao.findFormatById(1));
         
@@ -103,7 +108,7 @@ public class FormatResourceTest {
         resource.setMethod(Method.PUT);
         resource.put(formatJson).write(baos);
 
-        assertEquals("\"Format 1 updated\"", baos.toString());
+        assertEquals("\"Format 1 successfully updated\"", baos.toString());
         assertEquals(new Format(1, "Foo Updated"), testFormatDao.findFormatById(1));
     }
     

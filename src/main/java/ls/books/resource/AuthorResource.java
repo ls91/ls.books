@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import ls.books.dao.AuthorDao;
 import ls.books.dao.SeriesDao;
 import ls.books.domain.Author;
+import ls.books.domain.Entity;
 
 import org.restlet.Context;
 import org.skife.jdbi.v2.DBI;
@@ -24,6 +25,8 @@ import org.skife.jdbi.v2.exceptions.UnableToExecuteStatementException;
 
 @Path("/rest/author")
 public class AuthorResource extends BaseResource {
+
+    protected static final String AUTHOR_URL = "/rest/author/%d";
 
     private AuthorDao authorDao = null;
     private SeriesDao seriesDao = null;
@@ -45,11 +48,10 @@ public class AuthorResource extends BaseResource {
 
         try {
             author.setAuthorId(authorDao.createAuthor(author));
+            return buildEntityCreatedResponse(author.getAuthorId(), AUTHOR_URL);
         } catch (Exception e) {
-            return Response.serverError().cacheControl(cacheControl).build();
+            return build404Response();
         }
-
-        return buildCreatedOkResponse(author.getAuthorId(), "/rest/author/");
     }
 
     //Read
@@ -70,7 +72,7 @@ public class AuthorResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return Response.status(404).cacheControl(cacheControl).build();
+            return build404Response();
         }
     }
     
@@ -79,7 +81,7 @@ public class AuthorResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthorSeriesById(@PathParam("id") int id) {
         init();
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(seriesDao.findSeriesByAuthorId(id))).build();
+        return buildOkResponse(seriesDao.findSeriesByAuthorId(id));
     }
 
     //Update
@@ -91,11 +93,10 @@ public class AuthorResource extends BaseResource {
 
         try {
             authorDao.updateAuthor(author);
+            return buildEntityUpdatedResponse(Entity.Author, author.getAuthorId());
         } catch (Exception e) {
-            Response.status(400).cacheControl(cacheControl).build();
+            return build404Response();
         }
-
-        return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson("Author " + author.getAuthorId() + " updated")).build();
     }
 
     //Delete
@@ -107,11 +108,13 @@ public class AuthorResource extends BaseResource {
 
         try {
             authorDao.deleteAuthorById(id);
+            return buildEntityDeletedResponse(Entity.Author, id);
         } catch (UnableToExecuteStatementException e) {
             if (e.getMessage().contains("PUBLIC.SERIES FOREIGN KEY(AUTHOR_ID) REFERENCES PUBLIC.AUTHOR(AUTHOR_ID)")) {
-                return Response.status(404).cacheControl(cacheControl).entity(jsonBuilder.toJson("Delete Failed, Author has existing series.")).build();
+                return build404Response("Delete Failed, Author has existing series.");
+            } else {
+                return build404Response();
             }
         }
-        return buildOkResponse("Author " + id + " deleted");
     }
 }
