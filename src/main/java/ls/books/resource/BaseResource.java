@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 public class BaseResource {
 
     protected static CacheControl cacheControl;
-    protected Gson jsonBuilder = new Gson();
+    private Gson jsonBuilder = new Gson();
 
     protected static final String ENTITY_UPDATED = "%s %d successfully updated";
     protected static final String ENTITY_DELETED = "%s %d deleted";
