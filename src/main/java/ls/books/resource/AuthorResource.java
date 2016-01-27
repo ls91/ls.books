@@ -18,6 +18,7 @@ import ls.books.dao.AuthorDao;
 import ls.books.dao.SeriesDao;
 import ls.books.domain.Author;
 import ls.books.domain.Entity;
+import ls.books.domain.Series;
 
 import org.restlet.Context;
 import org.skife.jdbi.v2.DBI;
@@ -48,6 +49,7 @@ public class AuthorResource extends BaseResource {
 
         try {
             author.setAuthorId(authorDao.createAuthor(author));
+            seriesDao.createSeries(new Series(0, author.getAuthorId(), "", ""));
             return buildEntityCreatedResponse(author.getAuthorId(), AUTHOR_URL);
         } catch (Exception e) {
             return build404Response();

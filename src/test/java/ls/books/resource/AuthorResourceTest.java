@@ -78,7 +78,8 @@ public class AuthorResourceTest {
     }
     
     @Test
-    public void postAuthorShouldPersistAnAuthorAndReturnALinkToWhereItCanBeAccessed() throws Exception {
+    public void postAuthorShouldPersistAnAuthorAndCreateASeriesAndReturnALinkToWhereItCanBeAccessed() throws Exception {
+        assertEquals(0, testSeriesDao.findSeriesByAuthorId(1).size());
         assertNull(testAuthorDao.findAuthorById(1));
         
         JSONObject newAuthor = new JSONObject();
@@ -94,7 +95,9 @@ public class AuthorResourceTest {
         
         assertEquals("1", baos.toString());
 
+        assertEquals(1, testSeriesDao.findSeriesByAuthorId(1).size());
         assertEquals(new Author(1, "Foo", "Bar"), testAuthorDao.findAuthorById(1));
+        assertEquals(new Series(1, 1, "", ""), testSeriesDao.findSeriesByAuthorId(1).get(0));
     }
     
     @Test
