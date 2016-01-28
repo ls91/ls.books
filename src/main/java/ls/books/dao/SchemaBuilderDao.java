@@ -35,7 +35,7 @@ public interface SchemaBuilderDao {
             + ",NO_PAGES    NUMBER          NOT NULL"
             + ",NOTES       VARCHAR2(1500)"
             + ",FOREIGN KEY (SERIES_ID) REFERENCES SERIES(SERIES_ID)"
-            + ",FOREIGN KEY (FORMAT_ID) REFERENCES AUTHOR(FORMAT_ID)"
+            + ",FOREIGN KEY (FORMAT_ID) REFERENCES FORMAT(FORMAT_ID)"
             + ")")
     void createBookTable();
 
