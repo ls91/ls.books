@@ -64,10 +64,10 @@ public class BookDaoTest {
     public void createBookShouldAddAnewRecordToTheBookTable() {
         assertEquals(0, testBookDao.getBooks().size());
 
-        testBookDao.createBook(new Book(0, "title", 1, 0, 1, 1, "notes"));
+        testBookDao.createBook(new Book(0, 0, "title", 1, 0, 1, 1, "notes"));
         
         assertEquals(1, testBookDao.getBooks().size());
-        assertEquals(new Book(1, "title", 1, 0, 1, 1, "notes"), testBookDao.getBooks().get(0));
+        assertEquals(new Book(1, 0, "title", 1, 0, 1, 1, "notes"), testBookDao.getBooks().get(0));
     }
 
     //Read
@@ -76,15 +76,15 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
         assertEquals(3, testSeriesDao.getSeries().size());
         
-        Book book1 = new Book(1, "TITLE1", 1, 1, 1, 100, "NOTE");
-        Book book2 = new Book(2, "TITLE2", 2, 1, 1, 100, "NOTE");
-        Book book3 = new Book(3, "TITLE3", 3, 1, 1, 100, "NOTE");
-        Book book4 = new Book(4, "TITLE4", 3, 2, 1, 100, "NOTE");
-        Book book5 = new Book(5, "TITLE5", 2, 2, 1, 100, "NOTE");
-        Book book6 = new Book(6, "TITLE6", 2, 2, 1, 100, "NOTE");
-        Book book7 = new Book(7, "TITLE7", 1, 1, 1, 100, "NOTE");
-        Book book8 = new Book(8, "TITLE8", 2, 2, 1, 100, "NOTE");
-        Book book9 = new Book(9, "TITLE9", 1, 1, 1, 100, "NOTE");
+        Book book1 = new Book(1, 324, "TITLE1", 1, 1, 1, 100, "NOTE");
+        Book book2 = new Book(2, 322, "TITLE2", 2, 1, 1, 100, "NOTE");
+        Book book3 = new Book(3, 45, "TITLE3", 3, 1, 1, 100, "NOTE");
+        Book book4 = new Book(4, 435, "TITLE4", 3, 2, 1, 100, "NOTE");
+        Book book5 = new Book(5, 757, "TITLE5", 2, 2, 1, 100, "NOTE");
+        Book book6 = new Book(6, 5456, "TITLE6", 2, 2, 1, 100, "NOTE");
+        Book book7 = new Book(7, 678, "TITLE7", 1, 1, 1, 100, "NOTE");
+        Book book8 = new Book(8, 23, "TITLE8", 2, 2, 1, 100, "NOTE");
+        Book book9 = new Book(9, 435, "TITLE9", 1, 1, 1, 100, "NOTE");
         
         testBookDao.createBook(book1);
         testBookDao.createBook(book2);
@@ -114,8 +114,8 @@ public class BookDaoTest {
     public void findBookByIdShouldReturnTheBookAsSelectedById() throws SQLException {
         assertEquals(0, testBookDao.getBooks().size());
         
-        Book book1 = new Book(1, "TITLE1", 1, 1, 1, 100, "NOTE");
-        Book book2 = new Book(2, "TITLE2", 2, 1, 1, 100, "NOTE");
+        Book book1 = new Book(1, 55, "TITLE1", 1, 1, 1, 100, "NOTE");
+        Book book2 = new Book(2, 3434, "TITLE2", 2, 1, 1, 100, "NOTE");
         testBookDao.createBook(book1);
         testBookDao.createBook(book2);
         
@@ -127,11 +127,12 @@ public class BookDaoTest {
     //Update
     @Test
     public void updateBookShouldModifyTheExistingRecordWithAnyAttributeThatChanges() {
-        Book book = new Book(1, "TITLE1", 1, 1, 1, 100, "NOTE");
+        Book book = new Book(1, 3434, "TITLE1", 1, 1, 1, 100, "NOTE");
         testBookDao.createBook(book);
         Book result = testBookDao.findBookById(1);
         assertEquals(book, result);
 
+        book.setIsbn(244444);
         book.setFormatId(2);
         book.setNoPages(5);
         book.setNoSeries(8);
@@ -147,7 +148,7 @@ public class BookDaoTest {
     //Delete
     @Test
     public void deleteAuthorByIdShouldRemoveTheAuthorFromTheTable() {
-        Book book = new Book(1, "TITLE1", 1, 1, 1, 100, "NOTE");
+        Book book = new Book(1, 2, "TITLE1", 1, 1, 1, 100, "NOTE");
         testBookDao.createBook(book);
         assertEquals(book, testBookDao.findBookById(1));
 

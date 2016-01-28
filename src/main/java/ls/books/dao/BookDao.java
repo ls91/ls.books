@@ -15,6 +15,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 public interface BookDao {
 
     public enum ColumnName {
+        ISBN,
         BOOK_ID,
         TITLE,
         SERIES_ID,
@@ -25,14 +26,16 @@ public interface BookDao {
     }
 
     //Create
-    @SqlUpdate("insert into book(title"
+    @SqlUpdate("insert into book(isbn"
+            + "                 ,title"
             + "                 ,series_id"
             + "                 ,no_series"
             + "                 ,format_id"
             + "                 ,no_pages"
             + "                 ,notes"
             + "                 )"
-            + "           values(:book.title"
+            + "           values(:book.isbn"
+            + "                 ,:book.title"
             + "                 ,:book.seriesId"
             + "                 ,:book.noSeries"
             + "                 ,:book.formatId"
@@ -43,6 +46,7 @@ public interface BookDao {
 
     //Read
     @SqlQuery("select   b.book_id, "
+            + "         b.isbn, "
             + "         b.title, "
             + "         b.series_id, "
             + "         b.no_series, "
@@ -63,6 +67,7 @@ public interface BookDao {
     List<Book> getBooks();
 
     @SqlQuery("select   book_id, "
+            + "         isbn, "
             + "         title, "
             + "         series_id, "
             + "         no_series, "
@@ -76,7 +81,8 @@ public interface BookDao {
 
     //Update
     @SqlUpdate("update  book"
-            + " set     title       =   :book.title"
+            + " set     isbn        =   :book.isbn"
+            + " ,       title       =   :book.title"
             + " ,       series_id   =   :book.seriesId"
             + " ,       no_series   =   :book.noSeries"
             + " ,       format_id   =   :book.formatId"

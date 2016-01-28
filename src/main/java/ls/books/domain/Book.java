@@ -3,6 +3,7 @@ package ls.books.domain;
 public class Book {
 
     private int bookId;
+    private int isbn;
     private String title;
     private int seriesId;
     private int noSeries;
@@ -12,8 +13,9 @@ public class Book {
 
     public Book() {}
     
-    public Book(final int bookId, final String title, final int seriesId, final int noSeries, final int formatId, final int noPages, final String notes) {
+    public Book(final int bookId, final int isbn, final String title, final int seriesId, final int noSeries, final int formatId, final int noPages, final String notes) {
         this.bookId = bookId;
+        this.isbn = isbn;
         this.title = title;
         this.seriesId = seriesId;
         this.noSeries = noSeries;
@@ -28,6 +30,14 @@ public class Book {
 
     public void setBookId(final int bookId) {
         this.bookId = bookId;
+    }
+
+    public int getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(final int isbn) {
+        this.isbn = isbn;
     }
 
     public String getTitle() {
@@ -83,6 +93,8 @@ public class Book {
         StringBuilder builder = new StringBuilder();
         builder.append("Book ID: ");
         builder.append(bookId);
+        builder.append("\nISBN: ");
+        builder.append(isbn);
         builder.append("\nTitle: ");
         builder.append(title);
         builder.append("\nSeries ID: ");
@@ -103,7 +115,7 @@ public class Book {
         boolean result = false;
         if (other instanceof Book) {
             Book that = (Book) other;
-            result = (bookId == that.getBookId() && title.equals(that.getTitle()) && seriesId == that.getSeriesId() && formatId == that.getFormatId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
+            result = (bookId == that.getBookId() && isbn == that.getIsbn() && title.equals(that.getTitle()) && seriesId == that.getSeriesId() && noSeries == that.getNoSeries() && formatId == that.getFormatId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
         }
         return result;
     }
