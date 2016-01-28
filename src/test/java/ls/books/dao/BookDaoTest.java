@@ -2,6 +2,8 @@ package ls.books.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,6 +71,53 @@ public class BookDaoTest {
         assertEquals(1, testBookDao.getBooks().size());
         assertEquals(new Book(1, 0, "title", 1, 0, 1, 1, "notes"), testBookDao.getBooks().get(0));
     }
+    
+    @Test
+    public void createBookShouldFailIfTheIsbnIsNotUnique() {
+        assertEquals(0, testBookDao.getBooks().size());
+
+        try {
+            testBookDao.createBook(new Book(0, 0, "title", 1, 0, 1, 1, "notes"));
+            testBookDao.createBook(new Book(0, 0, "title", 1, 0, 1, 1, "notes"));
+            fail("Second insert shouldn't succeed as the ISBN's are the same");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Unique index or primary key violation:"));
+            assertTrue(e.getMessage().contains("ON PUBLIC.BOOK(ISBN)"));
+        }
+        
+        assertEquals(1, testBookDao.getBooks().size());
+        assertEquals(new Book(1, 0, "title", 1, 0, 1, 1, "notes"), testBookDao.getBooks().get(0));
+    }
+    
+    @Test
+    public void createBookShouldFailIfSeriesDoesntExist() {
+        assertEquals(0, testBookDao.getBooks().size());
+
+        try {
+            testBookDao.createBook(new Book(0, 0, "title", 100, 0, 1, 1, "notes"));
+            fail("Second insert shouldn't succeed as the series doesnt exist");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Referential integrity constraint violation:"));
+            assertTrue(e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)"));
+        }
+        
+        assertEquals(0, testBookDao.getBooks().size());
+    }
+    
+    @Test
+    public void createBookShouldFailIfFormatDoesntExist() {
+        assertEquals(0, testBookDao.getBooks().size());
+
+        try {
+            testBookDao.createBook(new Book(0, 0, "title", 1, 0, 100, 1, "notes"));
+            fail("Second insert shouldn't succeed as the series doesnt exist");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Referential integrity constraint violation:"));
+            assertTrue(e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(FORMAT_ID) REFERENCES PUBLIC.FORMAT(FORMAT_ID)"));
+        }
+        
+        assertEquals(0, testBookDao.getBooks().size());
+    }
 
     //Read
     @Test
@@ -84,7 +133,7 @@ public class BookDaoTest {
         Book book6 = new Book(6, 5456, "TITLE6", 2, 2, 1, 100, "NOTE");
         Book book7 = new Book(7, 678, "TITLE7", 1, 1, 1, 100, "NOTE");
         Book book8 = new Book(8, 23, "TITLE8", 2, 2, 1, 100, "NOTE");
-        Book book9 = new Book(9, 435, "TITLE9", 1, 1, 1, 100, "NOTE");
+        Book book9 = new Book(9, 436, "TITLE9", 1, 1, 1, 100, "NOTE");
         
         testBookDao.createBook(book1);
         testBookDao.createBook(book2);
