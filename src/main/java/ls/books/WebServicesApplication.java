@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import javax.ws.rs.core.Application;
 
 import ls.books.resource.AuthorResource;
+import ls.books.resource.BookResource;
 import ls.books.resource.FormatResource;
 import ls.books.resource.FrontendResource;
 import ls.books.resource.SeriesResource;
@@ -30,6 +31,7 @@ public class WebServicesApplication extends JaxRsApplication {
             resourceClasses.add(AuthorResource.class);
             resourceClasses.add(SeriesResource.class);
             resourceClasses.add(FormatResource.class);
+            resourceClasses.add(BookResource.class);
 
             return resourceClasses;
         }
