@@ -2,8 +2,7 @@ package ls.books.domain;
 
 public class Book {
 
-    private int bookId;
-    private int isbn;
+    private String isbn;
     private String title;
     private int seriesId;
     private int noSeries;
@@ -13,8 +12,7 @@ public class Book {
 
     public Book() {}
     
-    public Book(final int bookId, final int isbn, final String title, final int seriesId, final int noSeries, final int formatId, final int noPages, final String notes) {
-        this.bookId = bookId;
+    public Book(final String isbn, final String title, final int seriesId, final int noSeries, final int formatId, final int noPages, final String notes) {
         this.isbn = isbn;
         this.title = title;
         this.seriesId = seriesId;
@@ -24,19 +22,11 @@ public class Book {
         this.notes = notes;
     }
 
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(final int bookId) {
-        this.bookId = bookId;
-    }
-
-    public int getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(final int isbn) {
+    public void setIsbn(final String isbn) {
         this.isbn = isbn;
     }
 
@@ -91,9 +81,7 @@ public class Book {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Book ID: ");
-        builder.append(bookId);
-        builder.append("\nISBN: ");
+        builder.append("ISBN: ");
         builder.append(isbn);
         builder.append("\nTitle: ");
         builder.append(title);
@@ -115,7 +103,7 @@ public class Book {
         boolean result = false;
         if (other instanceof Book) {
             Book that = (Book) other;
-            result = (bookId == that.getBookId() && isbn == that.getIsbn() && title.equals(that.getTitle()) && seriesId == that.getSeriesId() && noSeries == that.getNoSeries() && formatId == that.getFormatId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
+            result = (isbn == that.getIsbn() && title.equals(that.getTitle()) && seriesId == that.getSeriesId() && noSeries == that.getNoSeries() && formatId == that.getFormatId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
         }
         return result;
     }

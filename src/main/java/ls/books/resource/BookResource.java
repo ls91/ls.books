@@ -24,7 +24,7 @@ import org.skife.jdbi.v2.DBI;
 @Path("/rest/book")
 public class BookResource extends BaseResource {
 
-    protected static final String BOOK_URL = "/rest/book/%d";
+    protected static final String BOOK_URL = "/rest/book/%s";
 
     private BookDao bookDao = null;
 
@@ -43,8 +43,8 @@ public class BookResource extends BaseResource {
         init();
 
         try {
-            book.setBookId(bookDao.createBook(book));
-            return buildEntityCreatedResponse(book.getBookId(), BOOK_URL);
+            bookDao.createBook(book);
+            return buildEntityCreatedResponse(book.getIsbn(), BOOK_URL);
         } catch (Exception e) {
             return build404Response();
         }
@@ -61,9 +61,9 @@ public class BookResource extends BaseResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBookByBookId(@PathParam("id") int id) {
+    public Response getBookByBookId(@PathParam("id") String id) {
         init();
-        Book result = bookDao.findBookById(id);
+        Book result = bookDao.findBookByIsbn(id);
 
         if (result != null) {
             return buildOkResponse(result);
@@ -81,7 +81,7 @@ public class BookResource extends BaseResource {
 
         try {
             bookDao.updateBook(book);
-            return buildEntityUpdatedResponse(Entity.Book, book.getBookId());
+            return buildEntityUpdatedResponse(Entity.Book, book.getIsbn());
         } catch (Exception e) {
             return build404Response();
         }
@@ -91,7 +91,7 @@ public class BookResource extends BaseResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteBook(@PathParam("id") int id) {
+    public Response deleteBook(@PathParam("id") String id) {
         init();
 
         bookDao.deleteBookById(id);

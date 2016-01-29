@@ -13,21 +13,14 @@ public class BookTest {
 
     @Before
     public void setup() {
-        testBook = new Book(0, 0, "", 0, 0, 0, 0, "");
+        testBook = new Book("0",  "", 0, 0, 0, 0, "");
     }
 
     @Test
-    public void shouldBeAbleToSetAndGetBookId() {
-        assertEquals(0, testBook.getBookId());
-        testBook.setBookId(5);
-        assertEquals(5, testBook.getBookId());
-    }
-    
-    @Test
     public void shouldBeAbleToSetAndGetIsbn() {
-        assertEquals(0, testBook.getIsbn());
-        testBook.setIsbn(5);
-        assertEquals(5, testBook.getIsbn());
+        assertEquals("0", testBook.getIsbn());
+        testBook.setIsbn("5");
+        assertEquals("5", testBook.getIsbn());
     }
     
     @Test
@@ -74,8 +67,8 @@ public class BookTest {
 
     @Test
     public void toStringShouldReturnAformattedStringRepresentingTheAuthor() {
-        testBook = new Book(5, 567834, "FOO", 6, 7, 8, 9, "BAR");
-        assertEquals("Book ID: 5\nISBN: 567834\nTitle: FOO\nSeries ID: 6\nNo. series: 7\nFormat ID: 8\nNo. pages: 9\nNotes: BAR", testBook.toString());
+        testBook = new Book("567834", "FOO", 6, 7, 8, 9, "BAR");
+        assertEquals("ISBN: 567834\nTitle: FOO\nSeries ID: 6\nNo. series: 7\nFormat ID: 8\nNo. pages: 9\nNotes: BAR", testBook.toString());
     }
 
     @Test
@@ -89,47 +82,42 @@ public class BookTest {
     }
 
     @Test
-    public void equalsShouldReturnFalseIfTheBookIdsAreDifferent() {
-        assertFalse(testBook.equals(new Book(5, 0, "", 0, 0, 0, 0, "")));
-    }
-    
-    @Test
     public void equalsShouldReturnFalseIfTheIsbnsAreDifferent() {
-        assertFalse(testBook.equals(new Book(0, 5, "", 0, 0, 0, 0, "")));
+        assertFalse(testBook.equals(new Book("5", "", 0, 0, 0, 0, "")));
     }
     
     @Test
     public void equalsShouldReturnFalseIfTheBookTitlesAreDifferent() {
-        assertFalse(testBook.equals(new Book(0, 0, "FOO", 0, 0, 0, 0, "")));
+        assertFalse(testBook.equals(new Book("0",  "FOO", 0, 0, 0, 0, "")));
     }
     
     @Test
     public void equalsShouldReturnFalseIfTheSeriesIdsAreDifferent() {
-        assertFalse(testBook.equals(new Book(0, 0, "", 1, 0, 0, 0, "")));
+        assertFalse(testBook.equals(new Book("0",  "", 1, 0, 0, 0, "")));
     }
     
     @Test
     public void equalsShouldReturnFalseIfTheNoSeriesAreDifferent() {
-        assertFalse(testBook.equals(new Book(0, 0, "", 0, 1, 0, 0, "")));
+        assertFalse(testBook.equals(new Book("0",  "", 0, 1, 0, 0, "")));
     }
     
     @Test
     public void equalsShouldReturnFalseIfTheFormatIdsAreDifferent() {
-        assertFalse(testBook.equals(new Book(0, 0, "", 0, 0, 1, 0, "")));
+        assertFalse(testBook.equals(new Book("0",  "", 0, 0, 1, 0, "")));
     }
     
     @Test
     public void equalsShouldReturnFalseIfTheNoPagesAreDifferent() {
-        assertFalse(testBook.equals(new Book(0, 0, "", 0, 0, 0, 1, "")));
+        assertFalse(testBook.equals(new Book("0",  "", 0, 0, 0, 1, "")));
     }
     
     @Test
     public void equalsShouldReturnFalseIfTheBookNotesAreDifferent() {
-        assertFalse(testBook.equals(new Book(0, 0, "", 0, 0, 0, 0, "NOTE")));
+        assertFalse(testBook.equals(new Book("0",  "", 0, 0, 0, 0, "NOTE")));
     }
 
     @Test
     public void equalsShouldReturnTrueIfAllAttributesAreTheSame() {
-        assertTrue(testBook.equals(new Book(0, 0, "", 0, 0, 0, 0, "")));
+        assertTrue(testBook.equals(new Book("0",  "", 0, 0, 0, 0, "")));
     }
 }

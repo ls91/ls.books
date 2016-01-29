@@ -28,7 +28,6 @@
             function getBooks() {
                 $.getJSON("/rest/book", function(data) {
                     for (var i = 0; i < data.length; i++) {
-                        var bookId = data[i].bookId;
                         var isbn = data[i].isbn;
                         var title = data[i].title;
                         var seriesId = data[i].seriesId;
@@ -37,7 +36,7 @@
                         
                         
                         var tr  = "<tr>";
-                        var td1 = '<td><a href="/book/single_view.html?bookId=' + bookId + '">' + isbn + '</a></td>';
+                        var td1 = '<td><a href="/book/single_view.html?isbn=' + isbn + '">' + isbn + '</a></td>';
                         var td2 = "<td>" + title + "</td>";
                         var td3 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '"><div id="seriesString' + seriesId + '" /></div></a></td>';
                         var td4 = "<td>" + noSeries + "</td>";

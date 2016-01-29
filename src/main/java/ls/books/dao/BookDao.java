@@ -7,7 +7,6 @@ import ls.books.domain.Book;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
-import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
@@ -16,7 +15,6 @@ public interface BookDao {
 
     public enum ColumnName {
         ISBN,
-        BOOK_ID,
         TITLE,
         SERIES_ID,
         NO_SERIES,
@@ -41,12 +39,10 @@ public interface BookDao {
             + "                 ,:book.formatId"
             + "                 ,:book.noPages"
             + "                 ,:book.notes)")
-    @GetGeneratedKeys
-    int createBook(@BindBean("book") Book book);
+    void createBook(@BindBean("book") Book book);
 
     //Read
-    @SqlQuery("select   b.book_id, "
-            + "         b.isbn, "
+    @SqlQuery("select   b.isbn, "
             + "         b.title, "
             + "         b.series_id, "
             + "         b.no_series, "
@@ -66,8 +62,7 @@ public interface BookDao {
     @Mapper(BookMapper.class)
     List<Book> getBooks();
 
-    @SqlQuery("select   book_id, "
-            + "         isbn, "
+    @SqlQuery("select   isbn, "
             + "         title, "
             + "         series_id, "
             + "         no_series, "
@@ -75,26 +70,25 @@ public interface BookDao {
             + "         no_pages, "
             + "         notes "
             + "from     book "
-            + "where    book_id = :bookId")
+            + "where    isbn        =   :isbn")
     @Mapper(BookMapper.class)
-    Book findBookById(@Bind("bookId") int bookId);
+    Book findBookByIsbn(@Bind("isbn") String isbn);
 
     //Update
     @SqlUpdate("update  book"
-            + " set     isbn        =   :book.isbn"
-            + " ,       title       =   :book.title"
+            + " set     title       =   :book.title"
             + " ,       series_id   =   :book.seriesId"
             + " ,       no_series   =   :book.noSeries"
             + " ,       format_id   =   :book.formatId"
             + " ,       no_pages    =   :book.noPages"
             + " ,       notes       =   :book.notes"
-            + " where   book_id     =   :book.bookId")
+            + " where   isbn        =   :book.isbn")
     void updateBook(@BindBean("book") Book book);
 
     //Delete
     @SqlUpdate("delete from book"
-            + " where book_id = :bookId")
-    void deleteBookById(@Bind("bookId") int bookId);
+            + " where isbn = :isbn")
+    void deleteBookById(@Bind("isbn") String isbn);
 
     void close();
 }

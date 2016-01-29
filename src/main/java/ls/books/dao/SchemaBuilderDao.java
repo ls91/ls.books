@@ -27,8 +27,7 @@ public interface SchemaBuilderDao {
     void createFormatTable();
 
     @SqlUpdate("CREATE TABLE BOOK ("
-            + " BOOK_ID     NUMBER          PRIMARY KEY AUTO_INCREMENT"
-            + ",ISBN        NUMBER          NOT NULL"
+            + " ISBN        VARCHAR2(17)    PRIMARY KEY"
             + ",TITLE       VARCHAR2(100)   NOT NULL"
             + ",SERIES_ID   NUMBER          NOT NULL"
             + ",NO_SERIES   NUMBER          NOT NULL"
@@ -37,7 +36,6 @@ public interface SchemaBuilderDao {
             + ",NOTES       VARCHAR2(1500)"
             + ",FOREIGN KEY (SERIES_ID) REFERENCES SERIES(SERIES_ID)"
             + ",FOREIGN KEY (FORMAT_ID) REFERENCES FORMAT(FORMAT_ID)"
-            + ",UNIQUE KEY ISBN(ISBN)"
             + ")")
     void createBookTable();
 
