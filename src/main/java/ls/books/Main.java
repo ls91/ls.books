@@ -84,6 +84,49 @@ public class Main {
             ps.close();
             connection.close();
             
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO BOOK (ISBN, TITLE, SERIES_ID, NO_SERIES, FORMAT_ID, NO_PAGES, NOTES) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+            ps.setInt(1, 14353452);
+            ps.setString(2, "Havana Storm");
+            ps.setInt(3, 1);
+            ps.setInt(4, 23);
+            ps.setInt(5, 2);
+            ps.setInt(6, 125);
+            ps.setString(7, "hiijisadasd");
+            ps.execute();
+            ps.close();
+            connection.close();
+            
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO BOOK (ISBN, TITLE, SERIES_ID, NO_SERIES, FORMAT_ID, NO_PAGES, NOTES) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+            ps.setInt(1, 87879234);
+            ps.setString(2, "Arctic Drift");
+            ps.setInt(3, 1);
+            ps.setInt(4, 22);
+            ps.setInt(5, 1);
+            ps.setInt(6, 300);
+            ps.setString(7, "hiijisadasd");
+            ps.execute();
+            ps.close();
+            connection.close();
+            
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement("INSERT INTO BOOK (ISBN, TITLE, SERIES_ID, NO_SERIES, FORMAT_ID, NO_PAGES, NOTES) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+            ps.setInt(1, 234324);
+            ps.setString(2, "Bioshock: Rapture");
+            ps.setInt(3, 2);
+            ps.setInt(4, 0);
+            ps.setInt(5, 1);
+            ps.setInt(6, 125);
+            ps.setString(7, "hiijisadasd");
+            ps.execute();
+            ps.close();
+            connection.close();
+            
+            
             Component comp = new Component();
             Server server = comp.getServers().add(Protocol.HTTP, 8182);
 

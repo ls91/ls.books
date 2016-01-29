@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <title>ls.books - Series</title>
+        <title>ls.books - Book</title>
 
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -22,27 +22,32 @@
                     $("#nav-bar-container-div").replaceWith(data);
                 });
                 
-                getSeries();
+                getBooks();
             });
             
-            function getSeries() {
-                $.getJSON("/rest/series", function(data) {
+            function getBooks() {
+                $.getJSON("/rest/book", function(data) {
                     for (var i = 0; i < data.length; i++) {
+                        var bookId = data[i].bookId;
+                        var isbn = data[i].isbn;
+                        var title = data[i].title;
                         var seriesId = data[i].seriesId;
-                        var authorId = data[i].authorId;
-                        var seriesName = data[i].seriesName;
-                        var description = data[i].description;
+                        var noSeries = data[i].noSeries;
+                        var formatId = data[i].formatId;
                         
-                        var tr  = '<tr>';
-                        var td1 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '">' + seriesName + '</a></td>';
-                        var td2 = '<td><a href="/author/single_view.html?authorId=' + authorId + '"><div id="authorString' + authorId + '" /></div></a></td>';
-                        var td3 = '<td>' + description + '</td>';
-                        var tr2 = '</tr>';
-                    
-                        $("#resultsView").append(tr + td1 + td2 + td3 + tr2);
-
-                        $.getJSON("/rest/author/" + authorId, function(authorData) {
-                            $("#authorString" + authorData.authorId).replaceWith(authorData.lastName + ', ' + authorData.firstName)
+                        
+                        var tr  = "<tr>";
+                        var td1 = '<td><a href="/book/single_view.html?bookId=' + bookId + '">' + isbn + '</a></td>';
+                        var td2 = "<td>" + title + "</td>";
+                        var td3 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '"><div id="seriesString' + seriesId + '" /></div></a></td>';
+                        var td4 = "<td>" + noSeries + "</td>";
+                        var td5 = "<td>" + formatId + "</td>";
+                        var tr2 = "</tr>";
+                        
+                        $("#resultsView").append(tr + td1 + td2 + td3 + td4 + td5 + tr2);
+                        
+                        $.getJSON("/rest/series/" + seriesId, function(seriesData) {
+                            $("#seriesString" + seriesData.seriesId).replaceWith(seriesData.seriesName)
                         });
                     }
                 });
@@ -60,14 +65,14 @@
                 <div class="row"> <!-- Header -->
                     <div class="col-md-12">
                         <div class="page-header">
-                            <h1>Series</h1>
+                            <h1>Book's</h1>
                         </div>
                     </div>
                 </div> <!-- Header -->
                 
                 <div class="row">
                     <div class="col-md-12">
-                        <button id="addNewButton" type="submit" class="btn btn-default" onClick="window.location.href='/series/single_view.html'">Add New</button>
+                        <button id="addNewButton" type="submit" class="btn btn-default" onClick="window.location.href='/book/single_view.html'">Add New</button>
                     </div>
                 </div>
                 
@@ -75,9 +80,11 @@
                     <div class="col-md-12">
                         <table class="table table-hover" id="resultsView">
                             <tr>
-                                <th class="col-md-3">Series Name</th>
-                                <th class="col-md-3">Author</th>
-                                <th class="col-md-6">Description</th>
+                                <th class="col-md-3">ISBN</th>
+                                <th class="col-md-3">Title</th>
+                                <th class="col-md-3">Series</th>
+                                <th class="col-md-1">No. Series</th>
+                                <th class="col-md-2">Format</th>
                             </tr>
                         </table>
                     </div>
