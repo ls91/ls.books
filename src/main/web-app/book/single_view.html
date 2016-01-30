@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>ls.books - Book</title>
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.9/css/bootstrap-dialog.min.css">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.9/js/bootstrap-dialog.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/purl/2.3.1/purl.min.js"></script>
+        
+        <script language="javascript" type="text/javascript">
+            $(function() {
+                $.get("/../nav.html #nav-bar-container-div", function(data) {
+                    $("#nav-bar-container-div").replaceWith(data);
+                });
+                
+                populateSeriesDropDown();
+                populateFormatDropDown();
+                
+                var url = $.url();
+                
+                if (url.param('isbn') == undefined) {
+                    //We are creating
+                    $('#createButton').prop('disabled', false);
+                    $('#isbn').prop('disabled', false);
+                } else {
+                    //We are loading
+                    getBook(url.param('isbn'));
+                }
+            });
+            
+            function getBook(id) {
+                $.getJSON("/rest/book/" + id, function(data) {
+                    $("#isbn").val(data.isbn);
+                    $("#title").val(data.title);
+                    $("#seriesId").val(data.seriesId);
+                    $("#noSeries").val(data.noSeries);
+                    $("#formatId").val(data.formatId);
+                    $("#noPages").val(data.noPages);
+                    $("#notes").val(data.notes);
+                    
+                    $('#updateButton').prop('disabled', false);
+                    $('#deleteButton').prop('disabled', false);
+                }).fail(function() {
+                    BootstrapDialog.show({
+                        title: 'Book Not Found',
+                        message: 'The Book you were looking for could not be found, please try a different one.'
+                    });
+                    
+                    $('#createButton').prop('disabled', false);
+                });
+            }
+            
+            function createBook() {
+                $.ajax({
+                    url: '/rest/book',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    processData: false,
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        isbn: $("#isbn").val(),
+                        title: $("#title").val(),
+                        seriesId: $("#seriesId").val(),
+                        noSeries: $("#noSeries").val(),
+                        formatId: $("#formatId").val(),
+                        noPages: $("#noPages").val(),
+                        notes: $("#notes").val()
+                    }),
+                    success: function(data) {
+                        console.log(data);
+                        window.location.replace("/book/single_view.html?isbn=" + data);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+            
+            function updateBook() {
+                $.ajax({
+                    url: '/rest/book',
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    processData: false,
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        isbn: $("#isbn").val(),
+                        title: $("#title").val(),
+                        seriesId: $("#seriesId").val(),
+                        noSeries: $("#noSeries").val(),
+                        formatId: $("#formatId").val(),
+                        noPages: $("#noPages").val(),
+                        notes: $("#notes").val()
+                    }),
+                    success: function(data) {
+                        console.log(data);
+                        BootstrapDialog.show({
+                            title: 'Update Successful'
+                        });
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+            
+            function deleteBook() {
+                BootstrapDialog.confirm({
+                    title: 'WARNING',
+                    message: 'Are you sure you want to delete this book?',
+                    type: BootstrapDialog.TYPE_WARNING,
+                    closable: true,
+                    btnOKClass: 'btn-warning',
+                    callback: function(result) {
+                        if (result) {
+                            $.ajax({
+                                url: '/rest/book/' + $("#isbn").val(),
+                                method: 'DELETE',
+                                contentType: 'application/json',
+                                processData: false,
+                                dataType: 'json',
+                                success: function(data) {
+                                    console.log(data);
+                                    window.location.replace('/book/results_view.html');
+                                },
+                                error: function(error) {
+                                    BootstrapDialog.show({
+                                        title: 'Delete Failed',
+                                        message: error.responseText
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            
+            function populateSeriesDropDown() {
+                $.getJSON("/rest/series", function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#seriesId')
+                            .append($("<option></option>")
+                            .attr("value", data[i].seriesId)
+                            .text(data[i].seriesName));
+                    }
+                });
+            }
+            
+            function populateFormatDropDown() {
+                $.getJSON("/rest/format", function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#formatId')
+                            .append($("<option></option>")
+                            .attr("value", data[i].formatId)
+                            .text(data[i].name));
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body role="document">
+        <div id="nav-bar-container-div">
+        </div>
+        
+        <div class="container" role="main">
+            
+            <div class="well">
+                        
+                <div class="row"> <!-- Header -->
+                    <div class="col-md-12">
+                        <div class="page-header">
+                            <h1>Book</h1>
+                        </div>
+                    </div>
+                </div> <!-- Header -->
+                
+                <form>
+                    <div class="row"> <!-- Row 1 -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-4">
+                                <label for="isbn">ISBN</label>
+                                <input type="text" class="form-control" id="isbn" placeholder="ISBN" disabled>
+                            </div>
+                            
+                            <div class="form-group  col-md-8">
+                                <label for="title">Title</label>
+                                <input type="text" class="form-control" id="title" placeholder="Title">
+                            </div>
+                        </div>
+                    </div> <!-- Row 1 -->
+                    
+                    <div class="row"> <!-- Row 2 -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-4">
+                                <label for="seriesId">Series</label>
+                                <select class="form-control" id="seriesId">
+                                </select>
+                            </div>
+                            
+                            <div class="form-group  col-md-2">
+                                <label for="noSeries">No. Series</label>
+                                <input type="text" class="form-control" id="noSeries" placeholder="No. Series">
+                            </div>
+                            
+                            <div class="form-group  col-md-4">
+                                <label for="formatId">Format</label>
+                                <select class="form-control" id="formatId">
+                                </select>
+                            </div>
+                            
+                            <div class="form-group  col-md-2">
+                                <label for="noPages">No. Pages</label>
+                                <input type="text" class="form-control" id="noPages" placeholder="No. Pages">
+                            </div>
+                        </div>
+                    </div> <!-- Row 2 -->
+                    
+                    <div class="row"> <!-- Row 3 -->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-12">
+                                <label for="notes">Notes</label>
+                                <textarea class="form-control" cols="40" id="description" name="notes" rows="10"></textarea>
+                            </div>
+                        </div>
+                    </div> <!-- Row 3 -->
+                </form>
+                
+                <div class="row"> <!-- Buttons -->
+                    <div class="col-md-4">
+                        <button id="createButton" type="submit" class="btn btn-default" onClick="createBook();" disabled>Create</button>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <button id="updateButton" type="submit" class="btn btn-default" onClick="updateBook();" disabled>Update</button>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteBook();" disabled>Delete</button>
+                    </div>
+                </div> <!-- Buttons -->
+                
+            </div> <!-- well -->
+        
+        </div> <!-- container -->
+    
+    </body>
+</html>
