@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ls.books.dao.AuthorDao;
+import ls.books.dao.BookDao;
 import ls.books.dao.SeriesDao;
 import ls.books.domain.Author;
 import ls.books.domain.Entity;
@@ -31,12 +32,14 @@ public class AuthorResource extends BaseResource {
 
     private AuthorDao authorDao = null;
     private SeriesDao seriesDao = null;
+    private BookDao bookDao = null;
 
     protected void init() {
-        if (authorDao == null || seriesDao == null) {
+        if (authorDao == null || seriesDao == null || bookDao == null) {
             DataSource dataSource = (DataSource) Context.getCurrent().getAttributes().get("DATA_SOURCE");
             authorDao = new DBI(dataSource).open(AuthorDao.class);
             seriesDao = new DBI(dataSource).open(SeriesDao.class);
+            bookDao = new DBI(dataSource).open(BookDao.class);
         }
     }
 
@@ -84,6 +87,14 @@ public class AuthorResource extends BaseResource {
     public Response getAuthorSeriesById(@PathParam("id") int id) {
         init();
         return buildOkResponse(seriesDao.findSeriesByAuthorId(id));
+    }
+
+    @GET
+    @Path("/{id}/books")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAuthorBooksById(@PathParam("id") int id) {
+        init();
+        return buildOkResponse(bookDao.findBooksByAuthorId(id));
     }
 
     //Update

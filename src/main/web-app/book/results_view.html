@@ -40,13 +40,17 @@
                         var td2 = "<td>" + title + "</td>";
                         var td3 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '"><div id="seriesString' + seriesId + '" /></div></a></td>';
                         var td4 = "<td>" + noSeries + "</td>";
-                        var td5 = "<td>" + formatId + "</td>";
+                        var td5 = '<td><div id="formatString' + formatId + '" /></div></td>';
                         var tr2 = "</tr>";
                         
                         $("#resultsView").append(tr + td1 + td2 + td3 + td4 + td5 + tr2);
                         
                         $.getJSON("/rest/series/" + seriesId, function(seriesData) {
                             $("#seriesString" + seriesData.seriesId).replaceWith(seriesData.seriesName)
+                        });
+                        
+                        $.getJSON("/rest/format/" + formatId, function(formatData) {
+                            $("#formatString" + formatData.formatId).replaceWith(formatData.name)
                         });
                     }
                 });

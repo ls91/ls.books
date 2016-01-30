@@ -160,6 +160,39 @@ public class BookDaoTest {
     }
     
     @Test
+    public void getBooksByAuthorIdShouldReturnAllBooksOrderedByAuthorSeriesSeriesNumberTitleThatWereByTheSpecifiedAuthor() throws SQLException {
+        assertEquals(0, testBookDao.getBooks().size());
+        assertEquals(3, testSeriesDao.getSeries().size());
+        
+        Book book1 = new Book("324", "TITLE1", 1, 1, 1, 100, "NOTE");
+        Book book2 = new Book("322", "TITLE2", 2, 1, 1, 100, "NOTE");
+        Book book3 = new Book("45", "TITLE3", 3, 1, 1, 100, "NOTE");
+        Book book4 = new Book("435", "TITLE4", 3, 2, 1, 100, "NOTE");
+        Book book5 = new Book("757", "TITLE5", 2, 2, 1, 100, "NOTE");
+        Book book6 = new Book("5456", "TITLE6", 2, 2, 1, 100, "NOTE");
+        Book book7 = new Book("678", "TITLE7", 1, 1, 1, 100, "NOTE");
+        Book book8 = new Book("23", "TITLE8", 2, 2, 1, 100, "NOTE");
+        Book book9 = new Book("436", "TITLE9", 1, 1, 1, 100, "NOTE");
+        
+        testBookDao.createBook(book1);
+        testBookDao.createBook(book2);
+        testBookDao.createBook(book3);
+        testBookDao.createBook(book4);
+        testBookDao.createBook(book5);
+        testBookDao.createBook(book6);
+        testBookDao.createBook(book7);
+        testBookDao.createBook(book8);
+        testBookDao.createBook(book9);
+        
+        List<Book> results = testBookDao.findBooksByAuthorId(1);
+        
+        assertEquals(3, results.size());
+        assertEquals(book1, results.get(0));
+        assertEquals(book7, results.get(1));
+        assertEquals(book9, results.get(2));
+    }
+    
+    @Test
     public void findBookByIdShouldReturnTheBookAsSelectedById() throws SQLException {
         assertEquals(0, testBookDao.getBooks().size());
         
