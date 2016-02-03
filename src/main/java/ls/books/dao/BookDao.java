@@ -95,6 +95,27 @@ public interface BookDao {
     @Mapper(BookMapper.class)
     List<Book> findBooksByAuthorId(@Bind("id") int id);
 
+    @SqlQuery("select   b.isbn, "
+            + "         b.title, "
+            + "         b.series_id, "
+            + "         b.no_series, "
+            + "         b.format_id, "
+            + "         b.no_pages, "
+            + "         b.notes "
+            + "from     book b "
+            + "join     series s "
+            + "     on  b.series_id = s.series_id "
+            + "join     author a "
+            + "     on  s.author_id = a.author_id "
+            + "where    s.series_id = :id "
+            + "order by a.last_name, "
+            + "         a.first_name, "
+            + "         s.series_name, "
+            + "         b.no_series, "
+            + "         b.title")
+    @Mapper(BookMapper.class)
+    List<Book> findBooksBySeriesId(@Bind("id") int id);
+
     //Update
     @SqlUpdate("update  book"
             + " set     title       =   :book.title"

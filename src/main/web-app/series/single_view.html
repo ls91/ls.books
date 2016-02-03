@@ -33,6 +33,7 @@
                 } else {
                     //We are loading
                     getSeries(url.param('seriesId'));
+                    getBibliography(url.param('seriesId'));
                 }
             });
             
@@ -141,6 +142,40 @@
                     }
                 });
             }
+            
+            function getBibliography(id) {
+                //Get Books in series
+                $.getJSON("/rest/series/" + id + "/books", function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var isbn = data[i].isbn;
+                        var title = data[i].title;
+                        var seriesId = data[i].seriesId;
+                        var noSeries = data[i].noSeries;
+                        var formatId = data[i].formatId;
+                        var noPages = data[i].noPages;
+                        var notes = data[i].notes;
+                        
+                        var tr  = '<tr>';
+                        var td1 = '<td><a href="/book/single_view.html?isbn=' + isbn + '">' + title + '</a></td>';
+                        var td2 = '<td><div id="seriesString' + seriesId + '" /></div></td>';
+                        var td3 = '<td>' + noSeries + '</td>';
+                        var td4 = '<td>' + notes + '</td>';
+                        var td5 = '<td><div id="formatString' + formatId + '" /></div></td>';
+                        var td6 = '<td>' + noPages + '</td>';
+                        var tr2 = '</tr>';
+                        
+                        $("#booksView").append(tr + td1 + td2 + td3 + td4 + td5 + td6 + tr2);
+                        
+                        $.getJSON("/rest/series/" + seriesId, function(seriesData) {
+                            $("#seriesString" + seriesData.seriesId).replaceWith(seriesData.seriesName)
+                        });
+                        
+                        $.getJSON("/rest/format/" + formatId, function(formatData) {
+                            $("#formatString" + formatData.formatId).replaceWith(formatData.name)
+                        });
+                    }
+                });
+            }
         </script>
     </head>
     <body role="document">
@@ -184,6 +219,32 @@
                     
                     <input type="hidden" id="seriesId" />
                 </div> <!-- Row 2 -->
+                
+                 <div class="row" id="bibliography"> <!-- Tabs -->
+                    <div class="col-md-12">
+                        <h2>Bibliography</h2>
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#books">Books</a></li>
+                        </ul>
+                        
+                        <div class="tab-content">
+                            <div id="books" class="tab-pane fade in active">
+                                <table class="table table-hover" id="booksView">
+                                    <tr>
+                                        <th class="col-md-3">Title</th>
+                                        <th class="col-md-3">Series</th>
+                                        <th class="col-md-2">No. In Series</th>
+                                        <th class="col-md-2">Description</th>
+                                        <th class="col-md-1">Format</th>
+                                        <th class="col-md-1">No. Pages</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div> <!-- Tab Content -->
+                        
+                    </div>
+                    
+                </div> <!-- Tabs -->
                 
                 <div class="row"> <!-- Buttons -->
                     <div class="col-md-4">

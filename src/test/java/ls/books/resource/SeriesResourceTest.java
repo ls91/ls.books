@@ -14,9 +14,13 @@ import javax.sql.DataSource;
 
 import ls.books.WebServicesApplication;
 import ls.books.dao.AuthorDao;
+import ls.books.dao.BookDao;
+import ls.books.dao.FormatDao;
 import ls.books.dao.SeriesDao;
 import ls.books.db.SchemaBuilder;
 import ls.books.domain.Author;
+import ls.books.domain.Book;
+import ls.books.domain.Format;
 import ls.books.domain.Series;
 
 import org.json.JSONException;
@@ -38,6 +42,8 @@ public class SeriesResourceTest {
     DataSource dataSource;
     AuthorDao testAuthorDao;
     SeriesDao testSeriesDao;
+    BookDao testBookDao;
+    FormatDao testFormatDao;
     ByteArrayOutputStream baos;
     Component comp;
 
@@ -47,6 +53,8 @@ public class SeriesResourceTest {
 
         testAuthorDao = new DBI(dataSource).open(AuthorDao.class);
         testSeriesDao = new DBI(dataSource).open(SeriesDao.class);
+        testBookDao = new DBI(dataSource).open(BookDao.class);
+        testFormatDao = new DBI(dataSource).open(FormatDao.class);
 
         baos = new ByteArrayOutputStream();
         
@@ -63,6 +71,8 @@ public class SeriesResourceTest {
     public void teardown() throws Exception {
         testAuthorDao.close();
         testSeriesDao.close();
+        testBookDao.close();
+        testFormatDao.close();
         
         Connection connection = dataSource.getConnection();
         PreparedStatement wipeDatabase = connection.prepareStatement("DROP ALL OBJECTS");
@@ -193,6 +203,31 @@ public class SeriesResourceTest {
         resource.get().write(baos);
         
         assertEquals("{\"seriesId\":2,\"authorId\":1,\"seriesName\":\"seriesName2\",\"description\":\"description\"}", baos.toString());
+    }
+    
+    @Test
+    public void getBooksInSeriesWithAqueryParameterShouldReturnAllBooksInThatSeriesFromTheDatabase() throws ResourceException, IOException {
+        Author author1 = new Author(1, "lastName", "firstName");
+        testAuthorDao.createAuthor(author1);
+        
+        testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
+        testSeriesDao.createSeries(new Series(2, 1, "seriesName2", "description"));
+        
+        testFormatDao.createFormat(new Format(1, "name"));
+        
+        testBookDao.createBook(new Book("1", "title", 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book("2", "title2", 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book("3", "title3", 2, 1, 1, 1, "notes"));
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/series/2/books");
+        resource.get().write(baos);
+        
+        assertEquals("[{\"isbn\":\"3\",\"title\":\"title3\",\"seriesId\":2,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
+        
+        resource = new ClientResource("http://localhost:8182/rest/series/1/books");
+        resource.get().write(baos);
+        
+        assertEquals("[{\"isbn\":\"3\",\"title\":\"title3\",\"seriesId\":2,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"}][{\"isbn\":\"1\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"isbn\":\"2\",\"title\":\"title2\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
     }
     
     @Test

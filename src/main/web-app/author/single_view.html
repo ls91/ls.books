@@ -143,10 +143,9 @@
                         var tr  = '<tr>';
                         var td1 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '">' + seriesName + '</a></td>';
                         var td2 = '<td>' + description + '</td>';
-                        var td3 = '<td>0</td>';
                         var tr2 = '</tr>';
                     
-                        $("#seriesView").append(tr + td1 + td2 + td3 + tr2);
+                        $("#seriesView").append(tr + td1 + td2 + tr2);
                     }
                 });
                 
@@ -256,9 +255,8 @@
                             <div id="series" class="tab-pane fade">
                                 <table class="table table-hover" id="seriesView">
                                     <tr>
-                                        <th class="col-md-4">Name</th>
-                                        <th class="col-md-6">Description</th>
-                                        <th class="col-md-2">No. In Series</th>
+                                        <th class="col-md-5">Name</th>
+                                        <th class="col-md-7">Description</th>
                                     </tr>
                                 </table>
                             </div>
