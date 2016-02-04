@@ -16,8 +16,8 @@ public class Status {
         return statusId;
     }
 
-    public void setStatusId(final int formatId) {
-        this.statusId = formatId;
+    public void setStatusId(final int statusId) {
+        this.statusId = statusId;
     }
 
     public String getName() {

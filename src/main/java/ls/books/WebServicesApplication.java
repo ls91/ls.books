@@ -11,6 +11,7 @@ import ls.books.resource.BookResource;
 import ls.books.resource.FormatResource;
 import ls.books.resource.FrontendResource;
 import ls.books.resource.SeriesResource;
+import ls.books.resource.StatusResource;
 
 import org.restlet.Context;
 import org.restlet.ext.jaxrs.JaxRsApplication;
@@ -31,6 +32,7 @@ public class WebServicesApplication extends JaxRsApplication {
             resourceClasses.add(AuthorResource.class);
             resourceClasses.add(SeriesResource.class);
             resourceClasses.add(FormatResource.class);
+            resourceClasses.add(StatusResource.class);
             resourceClasses.add(BookResource.class);
 
             return resourceClasses;
