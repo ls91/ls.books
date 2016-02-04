@@ -1,5 +1,6 @@
 package ls.books.db;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -8,10 +9,15 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.h2.jdbcx.JdbcDataSource;
+import ls.books.dao.AuthorDao;
+import ls.books.dao.BookDao;
+import ls.books.dao.FormatDao;
+import ls.books.dao.SeriesDao;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.skife.jdbi.v2.DBI;
 
 public class SchemaBuilderTest {
 
@@ -21,13 +27,7 @@ public class SchemaBuilderTest {
     
     @Before
     public void setup() throws ClassNotFoundException, SQLException {
-        SchemaBuilder.buildSchema("jdbc:h2:~/testDatabaseName", "password");
-        
-        
-        dataSource = new JdbcDataSource();
-        ((JdbcDataSource) dataSource).setURL("jdbc:h2:~/testDatabaseName");
-        ((JdbcDataSource) dataSource).setUser("ls.books");
-        ((JdbcDataSource) dataSource).setPassword("password");
+        dataSource = SchemaBuilder.buildSchema("jdbc:h2:~/testDatabaseName", "password");
     }
     
     @After
@@ -59,6 +59,39 @@ public class SchemaBuilderTest {
         SchemaBuilder.buildSchema("jdbc:h2:~/testDbName", "password");
         
         assertTrue(databaseFile.exists());
+        
+        databaseFile.delete();
+        databaseTraceFile.delete();
+    }
+    
+    @Test
+    public void populateWithSampleDataShouldAddFormatsSeriesAuthorsAndBooks() throws ClassNotFoundException, SQLException {
+        DataSource dataSource = SchemaBuilder.buildSchema("jdbc:h2:~/testDbName2", "password");
+        
+        File databaseFile = new File(System.getProperty("user.home") + "/testDbName2.mv.db");
+        File databaseTraceFile = new File(System.getProperty("user.home") + "/testDbName2.trace.db");
+        
+        FormatDao formatDao = new DBI(dataSource).open(FormatDao.class);
+        AuthorDao authorDao = new DBI(dataSource).open(AuthorDao.class);
+        SeriesDao seriesDao = new DBI(dataSource).open(SeriesDao.class);
+        BookDao bookDao = new DBI(dataSource).open(BookDao.class);
+
+        assertEquals(0, formatDao.getFormats().size());
+        assertEquals(0, authorDao.getAuthors().size());
+        assertEquals(0, seriesDao.getSeries().size());
+        assertEquals(0, bookDao.getBooks().size());
+        
+        SchemaBuilder.populateWithSampleData(dataSource);
+        
+        assertEquals(2, formatDao.getFormats().size());
+        assertEquals(3, authorDao.getAuthors().size());
+        assertEquals(9, seriesDao.getSeries().size());
+        assertEquals(3, bookDao.getBooks().size());
+        
+        formatDao.close();
+        authorDao.close();
+        seriesDao.close();
+        bookDao.close();
         
         databaseFile.delete();
         databaseTraceFile.delete();
