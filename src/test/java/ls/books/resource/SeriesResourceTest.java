@@ -17,11 +17,13 @@ import ls.books.dao.AuthorDao;
 import ls.books.dao.BookDao;
 import ls.books.dao.FormatDao;
 import ls.books.dao.SeriesDao;
+import ls.books.dao.StatusDao;
 import ls.books.db.SchemaBuilder;
 import ls.books.domain.Author;
 import ls.books.domain.Book;
 import ls.books.domain.Format;
 import ls.books.domain.Series;
+import ls.books.domain.Status;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ public class SeriesResourceTest {
     SeriesDao testSeriesDao;
     BookDao testBookDao;
     FormatDao testFormatDao;
+    StatusDao testStatusDao;
     ByteArrayOutputStream baos;
     Component comp;
 
@@ -55,6 +58,7 @@ public class SeriesResourceTest {
         testSeriesDao = new DBI(dataSource).open(SeriesDao.class);
         testBookDao = new DBI(dataSource).open(BookDao.class);
         testFormatDao = new DBI(dataSource).open(FormatDao.class);
+        testStatusDao = new DBI(dataSource).open(StatusDao.class);
 
         baos = new ByteArrayOutputStream();
         
@@ -73,6 +77,7 @@ public class SeriesResourceTest {
         testSeriesDao.close();
         testBookDao.close();
         testFormatDao.close();
+        testStatusDao.close();
         
         Connection connection = dataSource.getConnection();
         PreparedStatement wipeDatabase = connection.prepareStatement("DROP ALL OBJECTS");
@@ -85,7 +90,7 @@ public class SeriesResourceTest {
 
     @Test
     public void staticConstantsShouldEqual() {
-        assertEquals("/rest/series/%d", SeriesResource.SERIES_URL);
+        assertEquals("/rest/series/%s", SeriesResource.SERIES_URL);
     }
 
     @Test
@@ -107,7 +112,7 @@ public class SeriesResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series");
         resource.post(seriesJson).write(baos);
         
-        assertEquals("1", baos.toString());
+        assertEquals("\"1\"", baos.toString());
 
         assertEquals(new Series(1, 1, "name", ""), testSeriesDao.findSeriesById(1));
     }
@@ -212,22 +217,22 @@ public class SeriesResourceTest {
         
         testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
         testSeriesDao.createSeries(new Series(2, 1, "seriesName2", "description"));
-        
+        testStatusDao.createStatus(new Status(1, "name"));
         testFormatDao.createFormat(new Format(1, "name"));
         
-        testBookDao.createBook(new Book("1", "title", 1, 1, 1, 1, "notes"));
-        testBookDao.createBook(new Book("2", "title2", 1, 1, 1, 1, "notes"));
-        testBookDao.createBook(new Book("3", "title3", 2, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book("1", "title", 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book("2", "title2", 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book("3", "title3", 2, 1, 1, 1, 1, "notes"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series/2/books");
         resource.get().write(baos);
         
-        assertEquals("[{\"isbn\":\"3\",\"title\":\"title3\",\"seriesId\":2,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
+        assertEquals("[{\"isbn\":\"3\",\"title\":\"title3\",\"seriesId\":2,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
         
         resource = new ClientResource("http://localhost:8182/rest/series/1/books");
         resource.get().write(baos);
         
-        assertEquals("[{\"isbn\":\"3\",\"title\":\"title3\",\"seriesId\":2,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"}][{\"isbn\":\"1\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"isbn\":\"2\",\"title\":\"title2\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
+        assertEquals("[{\"isbn\":\"3\",\"title\":\"title3\",\"seriesId\":2,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}][{\"isbn\":\"1\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"isbn\":\"2\",\"title\":\"title2\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
     }
     
     @Test

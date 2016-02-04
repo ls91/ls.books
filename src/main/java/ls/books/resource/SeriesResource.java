@@ -25,7 +25,7 @@ import org.skife.jdbi.v2.DBI;
 @Path("/rest/series")
 public class SeriesResource extends BaseResource {
 
-    protected static final String SERIES_URL = "/rest/series/%d";
+    protected static final String SERIES_URL = "/rest/series/%s";
 
     private SeriesDao seriesDao = null;
     private BookDao bookDao = null;

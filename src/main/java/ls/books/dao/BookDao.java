@@ -19,6 +19,7 @@ public interface BookDao {
         SERIES_ID,
         NO_SERIES,
         FORMAT_ID,
+        STATUS_ID,
         NO_PAGES,
         NOTES
     }
@@ -29,6 +30,7 @@ public interface BookDao {
             + "                 ,series_id"
             + "                 ,no_series"
             + "                 ,format_id"
+            + "                 ,status_id"
             + "                 ,no_pages"
             + "                 ,notes"
             + "                 )"
@@ -37,6 +39,7 @@ public interface BookDao {
             + "                 ,:book.seriesId"
             + "                 ,:book.noSeries"
             + "                 ,:book.formatId"
+            + "                 ,:book.statusId"
             + "                 ,:book.noPages"
             + "                 ,:book.notes)")
     void createBook(@BindBean("book") Book book);
@@ -47,6 +50,7 @@ public interface BookDao {
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
+            + "         b.status_id, "
             + "         b.no_pages, "
             + "         b.notes "
             + "from     book b "
@@ -67,6 +71,7 @@ public interface BookDao {
             + "         series_id, "
             + "         no_series, "
             + "         format_id, "
+            + "         status_id, "
             + "         no_pages, "
             + "         notes "
             + "from     book "
@@ -79,6 +84,7 @@ public interface BookDao {
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
+            + "         b.status_id, "
             + "         b.no_pages, "
             + "         b.notes "
             + "from     book b "
@@ -100,6 +106,7 @@ public interface BookDao {
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
+            + "         b.status_id, "
             + "         b.no_pages, "
             + "         b.notes "
             + "from     book b "
@@ -122,6 +129,7 @@ public interface BookDao {
             + " ,       series_id   =   :book.seriesId"
             + " ,       no_series   =   :book.noSeries"
             + " ,       format_id   =   :book.formatId"
+            + " ,       status_id   =   :book.statusId"
             + " ,       no_pages    =   :book.noPages"
             + " ,       notes       =   :book.notes"
             + " where   isbn        =   :book.isbn")

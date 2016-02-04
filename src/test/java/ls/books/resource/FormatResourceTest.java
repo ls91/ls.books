@@ -69,7 +69,7 @@ public class FormatResourceTest {
 
     @Test
     public void staticConstantsShouldEqual() {
-        assertEquals("/rest/format/%d", FormatResource.FORMAT_URL);
+        assertEquals("/rest/format/%s", FormatResource.FORMAT_URL);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class FormatResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/format");
         resource.post(formatJson).write(baos);
         
-        assertEquals("1", baos.toString());
+        assertEquals("\"1\"", baos.toString());
 
         assertEquals(new Format(1, "Foo"), testFormatDao.findFormatById(1));
     }

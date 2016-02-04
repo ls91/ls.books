@@ -83,7 +83,16 @@ public class BookResource extends BaseResource {
             bookDao.updateBook(book);
             return buildEntityUpdatedResponse(Entity.Book, book.getIsbn());
         } catch (Exception e) {
-            return build404Response();
+            e.printStackTrace();
+            if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(STATUS_ID) REFERENCES PUBLIC.STATUS(STATUS_ID)")) {
+                return build404Response("Update Failed, Status doesn't exists.");
+            } if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(FORMAT_ID) REFERENCES PUBLIC.FORMAT(FORMAT_ID)")) {
+                return build404Response("Update Failed, Format doesn't exists.");
+            } if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
+                return build404Response("Update Failed, Series doesn't exists.");
+            } else {
+                return build404Response();
+            }
         }
     }
 

@@ -24,7 +24,7 @@ import org.skife.jdbi.v2.DBI;
 @Path("/rest/format")
 public class FormatResource extends BaseResource {
 
-    protected static final String FORMAT_URL = "/rest/format/%d";
+    protected static final String FORMAT_URL = "/rest/format/%s";
 
     private FormatDao formatDao = null;
 

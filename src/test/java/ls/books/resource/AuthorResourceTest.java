@@ -16,11 +16,13 @@ import ls.books.dao.AuthorDao;
 import ls.books.dao.BookDao;
 import ls.books.dao.FormatDao;
 import ls.books.dao.SeriesDao;
+import ls.books.dao.StatusDao;
 import ls.books.db.SchemaBuilder;
 import ls.books.domain.Author;
 import ls.books.domain.Book;
 import ls.books.domain.Format;
 import ls.books.domain.Series;
+import ls.books.domain.Status;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +43,7 @@ public class AuthorResourceTest {
     DataSource dataSource;
     AuthorDao testAuthorDao;
     SeriesDao testSeriesDao;
+    StatusDao testStatusDao;
     BookDao testBookDao;
     FormatDao testFormatDao;
     ByteArrayOutputStream baos;
@@ -53,6 +56,7 @@ public class AuthorResourceTest {
         testAuthorDao = new DBI(dataSource).open(AuthorDao.class);
         testSeriesDao = new DBI(dataSource).open(SeriesDao.class);
         testFormatDao = new DBI(dataSource).open(FormatDao.class);
+        testStatusDao = new DBI(dataSource).open(StatusDao.class);
         testBookDao = new DBI(dataSource).open(BookDao.class);
 
         baos = new ByteArrayOutputStream();
@@ -72,6 +76,7 @@ public class AuthorResourceTest {
         testSeriesDao.close();
         testFormatDao.close();
         testBookDao.close();
+        testStatusDao.close();
         
         Connection connection = dataSource.getConnection();
         PreparedStatement wipeDatabase = connection.prepareStatement("DROP ALL OBJECTS");
@@ -230,13 +235,14 @@ public class AuthorResourceTest {
         testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
         testSeriesDao.createSeries(new Series(1, 1, "seriesName2", "description"));
         testFormatDao.createFormat(new Format(1, "name"));
-        testBookDao.createBook(new Book("isbn", "title", 1, 0, 1, 5, "notes"));
-        testBookDao.createBook(new Book("isbn2", "title", 1, 0, 1, 5, "notes"));
+        testStatusDao.createStatus(new Status(1, "status"));
+        testBookDao.createBook(new Book("isbn", "title", 1, 0, 1, 1, 5, "notes"));
+        testBookDao.createBook(new Book("isbn2", "title", 1, 0, 1, 1, 5, "notes"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/books");
         resource.get().write(baos);
         
-        assertEquals("[{\"isbn\":\"isbn\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"noPages\":5,\"notes\":\"notes\"},{\"isbn\":\"isbn2\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"noPages\":5,\"notes\":\"notes\"}]", baos.toString());
+        assertEquals("[{\"isbn\":\"isbn\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"},{\"isbn\":\"isbn2\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"}]", baos.toString());
     }
     
     @Test

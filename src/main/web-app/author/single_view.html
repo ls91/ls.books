@@ -157,6 +157,7 @@
                         var seriesId = data[i].seriesId;
                         var noSeries = data[i].noSeries;
                         var formatId = data[i].formatId;
+                        var statusId = data[i].statusId;
                         var noPages = data[i].noPages;
                         var notes = data[i].notes;
                         
@@ -164,8 +165,8 @@
                         var td1 = '<td><a href="/book/single_view.html?isbn=' + isbn + '">' + title + '</a></td>';
                         var td2 = '<td><div id="seriesString' + seriesId + '" /></div></td>';
                         var td3 = '<td>' + noSeries + '</td>';
-                        var td4 = '<td>' + notes + '</td>';
-                        var td5 = '<td><div id="formatString' + formatId + '" /></div></td>';
+                        var td4 = '<td><div id="formatString' + formatId + '" /></div></td>';
+                        var td5 = '<td><div id="statusString' + statusId + '" /></div></td>';
                         var td6 = '<td>' + noPages + '</td>';
                         var tr2 = '</tr>';
                         
@@ -177,6 +178,10 @@
                         
                         $.getJSON("/rest/format/" + formatId, function(formatData) {
                             $("#formatString" + formatData.formatId).replaceWith(formatData.name)
+                        });
+                        
+                        $.getJSON("/rest/status/" + statusId, function(statusData) {
+                            $("#statusString" + statusData.statusId).replaceWith(statusData.name)
                         });
                     }
                 });
@@ -246,8 +251,8 @@
                                         <th class="col-md-3">Title</th>
                                         <th class="col-md-3">Series</th>
                                         <th class="col-md-2">No. In Series</th>
-                                        <th class="col-md-2">Description</th>
-                                        <th class="col-md-1">Format</th>
+                                        <th class="col-md-2">Format</th>
+                                        <th class="col-md-2">Status</th>
                                         <th class="col-md-1">No. Pages</th>
                                     </tr>
                                 </table>

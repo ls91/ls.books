@@ -13,6 +13,7 @@ import ls.books.dao.AuthorDao;
 import ls.books.dao.BookDao;
 import ls.books.dao.FormatDao;
 import ls.books.dao.SeriesDao;
+import ls.books.dao.StatusDao;
 
 import org.junit.After;
 import org.junit.Before;
@@ -72,11 +73,13 @@ public class SchemaBuilderTest {
         File databaseTraceFile = new File(System.getProperty("user.home") + "/testDbName2.trace.db");
         
         FormatDao formatDao = new DBI(dataSource).open(FormatDao.class);
+        StatusDao statusDao = new DBI(dataSource).open(StatusDao.class);
         AuthorDao authorDao = new DBI(dataSource).open(AuthorDao.class);
         SeriesDao seriesDao = new DBI(dataSource).open(SeriesDao.class);
         BookDao bookDao = new DBI(dataSource).open(BookDao.class);
 
         assertEquals(0, formatDao.getFormats().size());
+        assertEquals(0, statusDao.getStatuses().size());
         assertEquals(0, authorDao.getAuthors().size());
         assertEquals(0, seriesDao.getSeries().size());
         assertEquals(0, bookDao.getBooks().size());
@@ -84,11 +87,13 @@ public class SchemaBuilderTest {
         SchemaBuilder.populateWithSampleData(dataSource);
         
         assertEquals(2, formatDao.getFormats().size());
+        assertEquals(2, statusDao.getStatuses().size());
         assertEquals(3, authorDao.getAuthors().size());
         assertEquals(9, seriesDao.getSeries().size());
         assertEquals(3, bookDao.getBooks().size());
         
         formatDao.close();
+        statusDao.close();
         authorDao.close();
         seriesDao.close();
         bookDao.close();

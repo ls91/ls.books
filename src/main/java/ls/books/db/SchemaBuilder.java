@@ -55,8 +55,8 @@ public class SchemaBuilder {
         formatDao.close();
 
         StatusDao statusDao = new DBI(dataSource).open(StatusDao.class);
-        statusDao.createStatus(new Status(1, "Paperback"));
-        statusDao.createStatus(new Status(1, "Hardback"));
+        statusDao.createStatus(new Status(1, "Owned"));
+        statusDao.createStatus(new Status(1, "To Order"));
         statusDao.close();
 
         AuthorDao authorDao = new DBI(dataSource).open(AuthorDao.class);
@@ -78,9 +78,9 @@ public class SchemaBuilder {
         seriesDao.close();
 
         BookDao bookDao = new DBI(dataSource).open(BookDao.class);
-        bookDao.createBook(new Book("978-1-84983-109-3", "Serpent", 2, 1, 1, 474, ""));
-        bookDao.createBook(new Book("978-1-84739-971-7", "Blue Gold", 2, 2, 1, 378, ""));
-        bookDao.createBook(new Book("0-140-29736-7", "Fire Ice", 2, 3, 1, 434, ""));
+        bookDao.createBook(new Book("978-1-84983-109-3", "Serpent", 2, 1, 1, 1, 474, ""));
+        bookDao.createBook(new Book("978-1-84739-971-7", "Blue Gold", 2, 2, 1, 2, 378, ""));
+        bookDao.createBook(new Book("0-140-29736-7", "Fire Ice", 2, 3, 1, 1, 434, ""));
         bookDao.close();
     }
 }

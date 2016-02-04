@@ -18,6 +18,7 @@ public class BookMapper implements ResultSetMapper<Book> {
                 , r.getInt(BookDao.ColumnName.SERIES_ID.name())
                 , r.getInt(BookDao.ColumnName.NO_SERIES.name())
                 , r.getInt(BookDao.ColumnName.FORMAT_ID.name())
+                , r.getInt(BookDao.ColumnName.STATUS_ID.name())
                 , r.getInt(BookDao.ColumnName.NO_PAGES.name())
                 , r.getString(BookDao.ColumnName.NOTES.name())
                 );

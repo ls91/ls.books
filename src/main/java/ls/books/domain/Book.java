@@ -7,17 +7,19 @@ public class Book {
     private int seriesId;
     private int noSeries;
     private int formatId;
+    private int statusId;
     private int noPages;
     private String notes;
 
     public Book() {}
     
-    public Book(final String isbn, final String title, final int seriesId, final int noSeries, final int formatId, final int noPages, final String notes) {
+    public Book(final String isbn, final String title, final int seriesId, final int noSeries, final int formatId, final int statusId, final int noPages, final String notes) {
         this.isbn = isbn;
         this.title = title;
         this.seriesId = seriesId;
         this.noSeries = noSeries;
         this.formatId = formatId;
+        this.statusId = statusId;
         this.noPages = noPages;
         this.notes = notes;
     }
@@ -62,6 +64,14 @@ public class Book {
         this.formatId = formatId;
     }
 
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(final int statusId) {
+        this.statusId = statusId;
+    }
+
     public int getNoPages() {
         return noPages;
     }
@@ -91,6 +101,8 @@ public class Book {
         builder.append(noSeries);
         builder.append("\nFormat ID: ");
         builder.append(formatId);
+        builder.append("\nStatus ID: ");
+        builder.append(statusId);
         builder.append("\nNo. pages: ");
         builder.append(noPages);
         builder.append("\nNotes: ");
@@ -103,7 +115,7 @@ public class Book {
         boolean result = false;
         if (other instanceof Book) {
             Book that = (Book) other;
-            result = (isbn == that.getIsbn() && title.equals(that.getTitle()) && seriesId == that.getSeriesId() && noSeries == that.getNoSeries() && formatId == that.getFormatId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
+            result = (isbn == that.getIsbn() && title.equals(that.getTitle()) && seriesId == that.getSeriesId() && noSeries == that.getNoSeries() && formatId == that.getFormatId() && statusId == that.getStatusId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
         }
         return result;
     }

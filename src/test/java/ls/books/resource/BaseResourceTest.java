@@ -33,8 +33,8 @@ public class BaseResourceTest {
     
     @Test
     public void staticConstantsShouldEqual() {
-        assertEquals("%s %d deleted", BaseResource.ENTITY_DELETED);
-        assertEquals("%s %d successfully updated", BaseResource.ENTITY_UPDATED);
+        assertEquals("%s %s deleted", BaseResource.ENTITY_DELETED);
+        assertEquals("%s %s successfully updated", BaseResource.ENTITY_UPDATED);
     }
     
     @Test
