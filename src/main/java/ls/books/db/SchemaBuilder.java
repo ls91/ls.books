@@ -9,10 +9,12 @@ import ls.books.dao.BookDao;
 import ls.books.dao.FormatDao;
 import ls.books.dao.SchemaBuilderDao;
 import ls.books.dao.SeriesDao;
+import ls.books.dao.StatusDao;
 import ls.books.domain.Author;
 import ls.books.domain.Book;
 import ls.books.domain.Format;
 import ls.books.domain.Series;
+import ls.books.domain.Status;
 
 import org.h2.jdbcx.JdbcDataSource;
 import org.skife.jdbi.v2.DBI;
@@ -51,6 +53,11 @@ public class SchemaBuilder {
         formatDao.createFormat(new Format(1, "Paperback"));
         formatDao.createFormat(new Format(1, "Hardback"));
         formatDao.close();
+
+        StatusDao statusDao = new DBI(dataSource).open(StatusDao.class);
+        statusDao.createStatus(new Status(1, "Paperback"));
+        statusDao.createStatus(new Status(1, "Hardback"));
+        statusDao.close();
 
         AuthorDao authorDao = new DBI(dataSource).open(AuthorDao.class);
         authorDao.createAuthor(new Author(1, "Cussler", "Clive"));

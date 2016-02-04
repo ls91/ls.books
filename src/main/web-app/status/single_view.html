@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <title>ls.books - Format</title>
+        <title>ls.books - Status</title>
 
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -25,46 +25,46 @@
                 
                 var url = $.url();
                 
-                if (url.param('formatId') == undefined) {
+                if (url.param('statusId') == undefined) {
                     //We are creating
                     $('#createButton').prop('disabled', false);
                 } else {
                     //We are loading
-                    getFormat(url.param('formatId'));
+                    getStatus(url.param('statusId'));
                 }
             });
             
-            function getFormat(id) {
-                $.getJSON("/rest/format/" + id, function(data) {
-                    $("#formatId").val(data.formatId);
+            function getStatus(id) {
+                $.getJSON("/rest/status/" + id, function(data) {
+                    $("#statusId").val(data.statusId);
                     $("#name").val(data.name);
                     
                     $('#updateButton').prop('disabled', false);
                     $('#deleteButton').prop('disabled', false);
                 }).fail(function() {
                     BootstrapDialog.show({
-                        title: 'Format Not Found',
-                        message: 'The Format you were looking for could not be found, please try a different one.'
+                        title: 'Status Not Found',
+                        message: 'The Status you were looking for could not be found, please try a different one.'
                     });
                     
                     $('#createButton').prop('disabled', false);
                 });
             }
             
-            function createFormat() {
+            function createStatus() {
                 $.ajax({
-                    url: '/rest/format',
+                    url: '/rest/status',
                     method: 'POST',
                     contentType: 'application/json',
                     processData: false,
                     dataType: 'json',
                     data: JSON.stringify({
-                        formatId: $("#formatId").val(),
+                        statusId: $("#statusId").val(),
                         name: $("#name").val()
                     }),
                     success: function(data) {
                         console.log(data);
-                        window.location.replace("/format/single_view.html?formatId=" + data);
+                        window.location.replace("/status/single_view.html?statusId=" + data);
                     },
                     error: function(error) {
                         console.log(error);
@@ -72,15 +72,15 @@
                 });
             }
             
-            function updateFormat() {
+            function updateStatus() {
                 $.ajax({
-                    url: '/rest/format',
+                    url: '/rest/status',
                     method: 'PUT',
                     contentType: 'application/json',
                     processData: false,
                     dataType: 'json',
                     data: JSON.stringify({
-                        formatId: $("#formatId").val(),
+                        statusId: $("#statusId").val(),
                         name: $("#name").val()
                     }),
                     success: function(data) {
@@ -95,24 +95,24 @@
                 });
             }
             
-            function deleteFormat() {
+            function deleteStatus() {
                 BootstrapDialog.confirm({
                     title: 'WARNING',
-                    message: 'Are you sure you want to delete this format?',
+                    message: 'Are you sure you want to delete this status?',
                     type: BootstrapDialog.TYPE_WARNING,
                     closable: true,
                     btnOKClass: 'btn-warning',
                     callback: function(result) {
                         if (result) {
                             $.ajax({
-                                url: '/rest/format/' + $("#formatId").val(),
+                                url: '/rest/status/' + $("#statusId").val(),
                                 method: 'DELETE',
                                 contentType: 'application/json',
                                 processData: false,
                                 dataType: 'json',
                                 success: function(data) {
                                     console.log(data);
-                                    window.location.replace('/format/results_view.html');
+                                    window.location.replace('/status/results_view.html');
                                 },
                                 error: function(error) {
                                     console.log(error);
@@ -135,7 +135,7 @@
                 <div class="row"> <!-- Header -->
                     <div class="col-md-12">
                         <div class="page-header">
-                            <h1>Format</h1>
+                            <h1>Status</h1>
                         </div>
                     </div>
                 </div> <!-- Header -->
@@ -148,22 +148,22 @@
                                 <input type="text" class="form-control" id="name" placeholder="Name">
                             </div>
                             
-                            <input type="hidden" id="formatId" />
+                            <input type="hidden" id="statusId" />
                         </form>
                     </div>
                 </div> <!-- Form -->
                 
                 <div class="row"> <!-- Buttons -->
                     <div class="col-md-4">
-                        <button id="createButton" type="submit" class="btn btn-default" onClick="createFormat();" disabled>Create</button>
+                        <button id="createButton" type="submit" class="btn btn-default" onClick="createStatus();" disabled>Create</button>
                     </div>
                     
                     <div class="col-md-4">
-                        <button id="updateButton" type="submit" class="btn btn-default" onClick="updateFormat();" disabled>Update</button>
+                        <button id="updateButton" type="submit" class="btn btn-default" onClick="updateStatus();" disabled>Update</button>
                     </div>
                     
                     <div class="col-md-4">
-                        <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteFormat();" disabled>Delete</button>
+                        <button id="deleteButton" type="submit" class="btn btn-default" onClick="deleteStatus();" disabled>Delete</button>
                     </div>
                 </div> <!-- Buttons -->
                 
