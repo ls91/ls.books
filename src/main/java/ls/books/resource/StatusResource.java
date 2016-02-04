@@ -47,7 +47,6 @@ public class StatusResource extends BaseResource {
             status.setStatusId(statusDao.createStatus(status));
             return buildEntityCreatedResponse(status.getStatusId(), STATUS_URL);
         } catch (UnableToExecuteStatementException e) {
-            e.printStackTrace();
             if (e.getMessage().contains("Unique index or primary key violation")) {
                 return build404Response("Create Failed, Status already exists.");
             } else {
@@ -89,7 +88,6 @@ public class StatusResource extends BaseResource {
             statusDao.updateStatus(status);
             return buildEntityUpdatedResponse(Entity.Status, status.getStatusId());
         } catch (UnableToExecuteStatementException e) {
-            e.printStackTrace();
             if (e.getMessage().contains("Unique index or primary key violation")) {
                 return build404Response("Update Failed, New status already exists.");
             } else {
