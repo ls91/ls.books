@@ -35,6 +35,7 @@ public class SchemaBuilder {
 
         //BUILD TABLES
         dao.createFormatTable();
+        dao.createStatusTable();
         dao.createAuthorTable();
         dao.createSeriesTable();
         dao.createBookTable();

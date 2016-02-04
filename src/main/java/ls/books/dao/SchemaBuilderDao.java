@@ -25,6 +25,13 @@ public interface SchemaBuilderDao {
             + ",NAME        VARCHAR2(100)   NOT NULL"
             + ")")
     void createFormatTable();
+    
+    @SqlUpdate("CREATE TABLE STATUS ("
+            + " STATUS_ID   NUMBER          PRIMARY KEY AUTO_INCREMENT"
+            + ",NAME        VARCHAR2(100)   NOT NULL"
+            + ",UNIQUE KEY STATUS_NAME(NAME)"
+            + ")")
+    void createStatusTable();
 
     @SqlUpdate("CREATE TABLE BOOK ("
             + " ISBN        VARCHAR2(17)    PRIMARY KEY"

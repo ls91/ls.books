@@ -4,5 +4,6 @@ public enum Entity {
     Series,
     Author,
     Format,
-    Book
+    Book,
+    Status
 }
