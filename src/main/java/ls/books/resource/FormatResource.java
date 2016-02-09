@@ -46,7 +46,11 @@ public class FormatResource extends BaseResource {
             format.setFormatId(formatDao.createFormat(format));
             return buildEntityCreatedResponse(format.getFormatId(), FORMAT_URL);
         } catch (Exception e) {
-            return build404Response();
+            if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.FORMAT(NAME)")) {
+                return build404Response("A format with that name already exists.");
+            } else {
+                return build404Response();
+            }
         }
     }
 
@@ -83,7 +87,11 @@ public class FormatResource extends BaseResource {
             formatDao.updateFormat(format);
             return buildEntityUpdatedResponse(Entity.Format, format.getFormatId());
         } catch (Exception e) {
-            return build404Response();
+            if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.FORMAT(NAME)")) {
+                return build404Response("A format with that name already exists.");
+            } else {
+                return build404Response();
+            }
         }
     }
 
@@ -93,7 +101,16 @@ public class FormatResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFormat(@PathParam("id") int id) {
         init();
-        formatDao.deleteFormatById(id);
-        return buildEntityDeletedResponse(Entity.Format, id);
+        try {
+            formatDao.deleteFormatById(id);
+            return buildEntityDeletedResponse(Entity.Format, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (e.getMessage().contains("Referential integrity constraint violation") && e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(FORMAT_ID) REFERENCES PUBLIC.FORMAT(FORMAT_ID)")) {
+                return build404Response("Books of this format still exist in the system.");
+            } else {
+                return build404Response();
+            }
+        }
     }
 }

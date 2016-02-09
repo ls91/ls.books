@@ -24,6 +24,8 @@ public interface SchemaBuilderDao {
     @SqlUpdate("CREATE TABLE FORMAT ("
             + " FORMAT_ID   NUMBER          PRIMARY KEY AUTO_INCREMENT"
             + ",NAME        VARCHAR2(100)   NOT NULL"
+            + ",UNIQUE KEY FORMAT_NAME(NAME)"
+            + ""
             + ")")
     void createFormatTable();
     
