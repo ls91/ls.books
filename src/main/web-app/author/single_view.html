@@ -67,11 +67,14 @@
                         firstName: $("#firstName").val()
                     }),
                     success: function(data) {
-                        console.log(data);
                         window.location.replace("/author/single_view.html?authorId=" + data);
                     },
                     error: function(error) {
-                        console.log(error);
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: 'Create Failed',
+                            message: error.responseText,
+                        });
                     }
                 });
             }
@@ -89,13 +92,17 @@
                         firstName: $("#firstName").val()
                     }),
                     success: function(data) {
-                        console.log(data);
                         BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_SUCCESS,
                             title: 'Update Successful'
                         });
                     },
                     error: function(error) {
-                        console.log(error);
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: 'Update Failed',
+                            message: error.responseText,
+                        });
                     }
                 });
             }
@@ -116,13 +123,13 @@
                                 processData: false,
                                 dataType: 'json',
                                 success: function(data) {
-                                    console.log(data);
                                     window.location.replace('/author/results_view.html');
                                 },
                                 error: function(error) {
                                     BootstrapDialog.show({
-                                        title: 'Delete Failed',
-                                        message: error.responseText
+                                        type: BootstrapDialog.TYPE_WARNING,
+                                        title: 'Create Failed',
+                                        message: error.responseText,
                                     });
                                 }
                             });

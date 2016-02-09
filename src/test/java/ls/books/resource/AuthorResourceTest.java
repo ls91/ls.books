@@ -89,7 +89,7 @@ public class AuthorResourceTest {
 
     @Test
     public void staticConstantsShouldEqual() {
-        assertEquals("/rest/author/%d", AuthorResource.AUTHOR_URL);
+        assertEquals("/rest/author/%s", AuthorResource.AUTHOR_URL);
     }
     
     @Test

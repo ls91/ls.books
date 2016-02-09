@@ -8,6 +8,7 @@ public interface SchemaBuilderDao {
             + " AUTHOR_ID   NUMBER          PRIMARY KEY AUTO_INCREMENT"
             + ",LAST_NAME   VARCHAR2(500)   NOT NULL"
             + ",FIRST_NAME  VARCHAR2(500)   NOT NULL"
+            + ",UNIQUE KEY AUTHOR_NAME(LAST_NAME, FIRST_NAME)"
             + ")")
     void createAuthorTable();
 

@@ -28,7 +28,7 @@ import org.skife.jdbi.v2.exceptions.UnableToExecuteStatementException;
 @Path("/rest/author")
 public class AuthorResource extends BaseResource {
 
-    protected static final String AUTHOR_URL = "/rest/author/%d";
+    protected static final String AUTHOR_URL = "/rest/author/%s";
 
     private AuthorDao authorDao = null;
     private SeriesDao seriesDao = null;
@@ -55,7 +55,12 @@ public class AuthorResource extends BaseResource {
             seriesDao.createSeries(new Series(0, author.getAuthorId(), "", ""));
             return buildEntityCreatedResponse(author.getAuthorId(), AUTHOR_URL);
         } catch (Exception e) {
-            return build404Response();
+            if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.AUTHOR(LAST_NAME, FIRST_NAME)")) {
+                return build404Response("An author of that name already exists");
+            } else {
+                e.printStackTrace();
+                return build404Response(e.getMessage());
+            }
         }
     }
 
@@ -108,7 +113,11 @@ public class AuthorResource extends BaseResource {
             authorDao.updateAuthor(author);
             return buildEntityUpdatedResponse(Entity.Author, author.getAuthorId());
         } catch (Exception e) {
-            return build404Response();
+            if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.AUTHOR(LAST_NAME, FIRST_NAME)")) {
+                return build404Response("An author of that name already exists");
+            } else {
+                return build404Response(e.getMessage());
+            }
         }
     }
 
@@ -126,7 +135,7 @@ public class AuthorResource extends BaseResource {
             if (e.getMessage().contains("PUBLIC.SERIES FOREIGN KEY(AUTHOR_ID) REFERENCES PUBLIC.AUTHOR(AUTHOR_ID)")) {
                 return build404Response("Delete Failed, Author has existing series.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
