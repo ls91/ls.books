@@ -49,7 +49,7 @@ public class FormatResource extends BaseResource {
             if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.FORMAT(NAME)")) {
                 return build404Response("A format with that name already exists.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
@@ -72,7 +72,7 @@ public class FormatResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return build404Response();
+            return build404Response("The format " + id + " could not be found.");
         }
     }
 
@@ -90,7 +90,7 @@ public class FormatResource extends BaseResource {
             if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.FORMAT(NAME)")) {
                 return build404Response("A format with that name already exists.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
@@ -109,7 +109,7 @@ public class FormatResource extends BaseResource {
             if (e.getMessage().contains("Referential integrity constraint violation") && e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(FORMAT_ID) REFERENCES PUBLIC.FORMAT(FORMAT_ID)")) {
                 return build404Response("Books of this format still exist in the system.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }

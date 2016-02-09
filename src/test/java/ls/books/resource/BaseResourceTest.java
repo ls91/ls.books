@@ -1,7 +1,6 @@
 package ls.books.resource;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
@@ -39,10 +38,10 @@ public class BaseResourceTest {
     
     @Test
     public void buildCreatedOkResponseShouldReturnTheResponseContainingTheIdPassedIn() throws URISyntaxException {
-        Response result = baseResource.buildEntityCreatedResponse(5, "rest/api/%d");
+        Response result = baseResource.buildEntityCreatedResponse(5, "rest/api/%s");
         
         assertEquals(new URI("rest/api/5"), result.getHeaders().get("Location").get(0));
-        assertEquals("5", result.getEntity());
+        assertEquals("\"5\"", result.getEntity());
     }
     
     @Test
@@ -62,11 +61,6 @@ public class BaseResourceTest {
     @Test
     public void buildOkResponseShouldReturnThePassedInObjectAsJsonInTheBody() {
         assertEquals("{\"formatId\":1,\"name\":\"FORMAT\"}", baseResource.buildOkResponse(new Format(1, "FORMAT")).getEntity());
-    }
-    
-    @Test
-    public void buildResponseShouldHaveAnEmptyBodyIfTheNoArgVersionIsCalled() {
-        assertNull(baseResource.build404Response().getEntity());
     }
     
     @Test

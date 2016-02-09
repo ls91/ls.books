@@ -82,7 +82,7 @@ public class AuthorResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return build404Response();
+            return build404Response("The author " + id + " could not be found.");
         }
     }
     

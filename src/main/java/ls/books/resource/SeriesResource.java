@@ -52,7 +52,7 @@ public class SeriesResource extends BaseResource {
             if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("SERIES(SERIES_NAME, AUTHOR_ID)")) {
                 return build404Response("A series with that name already exists for that author.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
@@ -75,7 +75,7 @@ public class SeriesResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return build404Response();
+            return build404Response("The series " + id + " could not be found.");
         }
     }
 
@@ -102,7 +102,7 @@ public class SeriesResource extends BaseResource {
             if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("SERIES(SERIES_NAME, AUTHOR_ID)")) {
                 return build404Response("The new series matches an existing record for that author.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
@@ -120,7 +120,7 @@ public class SeriesResource extends BaseResource {
             if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
                 return build404Response("The series cannot be deleted as it has books that belong to it.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }

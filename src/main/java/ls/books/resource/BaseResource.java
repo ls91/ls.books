@@ -57,10 +57,6 @@ public class BaseResource {
         return Response.ok().cacheControl(cacheControl).entity(jsonBuilder.toJson(object)).build();
     }
 
-    protected Response build404Response() {
-        return Response.status(404).cacheControl(cacheControl).build();
-    }
-
     protected Response build404Response(final Object object) {
         return Response.status(404).cacheControl(cacheControl).entity(jsonBuilder.toJson(object)).build();
     }

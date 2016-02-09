@@ -41,10 +41,11 @@
                     
                     $('#updateButton').prop('disabled', false);
                     $('#deleteButton').prop('disabled', false);
-                }).fail(function() {
+                }).fail(function(error) {
                     BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
                         title: 'Format Not Found',
-                        message: 'The Format you were looking for could not be found, please try a different one.'
+                        message: error.responseText,
                     });
                     
                     $('#createButton').prop('disabled', false);

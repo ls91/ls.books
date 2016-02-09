@@ -78,7 +78,7 @@ public class BookResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return build404Response();
+            return build404Response("The book " + id + " could not be found.");
         }
     }
     

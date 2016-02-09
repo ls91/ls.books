@@ -50,7 +50,7 @@ public class StatusResource extends BaseResource {
             if (e.getMessage().contains("Unique index or primary key violation")) {
                 return build404Response("Create Failed, Status already exists.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
@@ -73,7 +73,7 @@ public class StatusResource extends BaseResource {
         if (result != null) {
             return buildOkResponse(result);
         } else {
-            return build404Response();
+            return build404Response("The status " + id + " could not be found.");
         }
     }
 
@@ -91,7 +91,7 @@ public class StatusResource extends BaseResource {
             if (e.getMessage().contains("Unique index or primary key violation")) {
                 return build404Response("Update Failed, New status already exists.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
@@ -102,7 +102,15 @@ public class StatusResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteStatus(@PathParam("id") int id) {
         init();
-        statusDao.deleteStatusById(id);
-        return buildEntityDeletedResponse(Entity.Status, id);
+        try {
+            statusDao.deleteStatusById(id);
+            return buildEntityDeletedResponse(Entity.Status, id);
+        } catch (Exception e) {
+            if (e.getMessage().contains("Referential integrity constraint violation") && e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(STATUS_ID) REFERENCES PUBLIC.STATUS(STATUS_ID)")) {
+                return build404Response("Delete Failed, status is in use by books.");
+            } else {
+                return build404Response(e.getMessage());
+            }
+        }
     }
 }
