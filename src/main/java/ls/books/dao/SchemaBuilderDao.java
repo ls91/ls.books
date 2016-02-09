@@ -17,6 +17,7 @@ public interface SchemaBuilderDao {
             + ",SERIES_NAME VARCHAR2(500)   NOT NULL"
             + ",DESCRIPTION VARCHAR2(1000)"
             + ",FOREIGN KEY (AUTHOR_ID) REFERENCES AUTHOR(AUTHOR_ID)"
+            + ",UNIQUE KEY AUTHOR_SERIES(SERIES_NAME, AUTHOR_ID)"
             + ")")
     void createSeriesTable();
 

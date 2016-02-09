@@ -49,7 +49,11 @@ public class SeriesResource extends BaseResource {
             series.setSeriesId(seriesDao.createSeries(series));
             return buildEntityCreatedResponse(series.getSeriesId(), SERIES_URL);
         } catch (Exception e) {
-            return build404Response();
+            if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("SERIES(SERIES_NAME, AUTHOR_ID)")) {
+                return build404Response("A series with that name already exists for that author.");
+            } else {
+                return build404Response();
+            }
         }
     }
 
@@ -95,7 +99,11 @@ public class SeriesResource extends BaseResource {
             seriesDao.updateSeries(series);
             return buildEntityUpdatedResponse(Entity.Series, series.getSeriesId());
         } catch (Exception e) {
-            return build404Response();
+            if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("SERIES(SERIES_NAME, AUTHOR_ID)")) {
+                return build404Response("The new series matches an existing record for that author.");
+            } else {
+                return build404Response();
+            }
         }
     }
 
@@ -105,7 +113,15 @@ public class SeriesResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteSeries(@PathParam("id") int id) {
         init();
-        seriesDao.deleteSeriesById(id);
-        return buildEntityDeletedResponse(Entity.Series, id);
+        try {
+            seriesDao.deleteSeriesById(id);
+            return buildEntityDeletedResponse(Entity.Series, id);
+        } catch (Exception e) {
+            if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
+                return build404Response("The series cannot be deleted as it has books that belong to it.");
+            } else {
+                return build404Response();
+            }
+        }
     }
 }
