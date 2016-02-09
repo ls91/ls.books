@@ -46,7 +46,17 @@ public class BookResource extends BaseResource {
             bookDao.createBook(book);
             return buildEntityCreatedResponse(book.getIsbn(), BOOK_URL);
         } catch (Exception e) {
-            return build404Response();
+            if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(STATUS_ID) REFERENCES PUBLIC.STATUS(STATUS_ID)")) {
+                return build404Response("Update Failed, Status doesn't exists.");
+            } else if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(FORMAT_ID) REFERENCES PUBLIC.FORMAT(FORMAT_ID)")) {
+                return build404Response("Update Failed, Format doesn't exists.");
+            } else if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
+                return build404Response("Update Failed, Series doesn't exists.");
+            } else if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.BOOK(ISBN)")) {
+                return build404Response("A book with that ISBN already exists.");
+            } else {
+                return build404Response(e.getMessage());
+            }
         }
     }
 
@@ -86,12 +96,14 @@ public class BookResource extends BaseResource {
             e.printStackTrace();
             if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(STATUS_ID) REFERENCES PUBLIC.STATUS(STATUS_ID)")) {
                 return build404Response("Update Failed, Status doesn't exists.");
-            } if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(FORMAT_ID) REFERENCES PUBLIC.FORMAT(FORMAT_ID)")) {
+            } else if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(FORMAT_ID) REFERENCES PUBLIC.FORMAT(FORMAT_ID)")) {
                 return build404Response("Update Failed, Format doesn't exists.");
-            } if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
+            } else if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
                 return build404Response("Update Failed, Series doesn't exists.");
+            } else if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.BOOK(ISBN)")) {
+                return build404Response("A book with that ISBN already exists.");
             } else {
-                return build404Response();
+                return build404Response(e.getMessage());
             }
         }
     }
@@ -102,7 +114,6 @@ public class BookResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteBook(@PathParam("id") String id) {
         init();
-
         bookDao.deleteBookById(id);
         return buildEntityDeletedResponse(Entity.Book, id);
     }
