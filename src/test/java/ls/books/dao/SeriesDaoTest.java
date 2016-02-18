@@ -136,7 +136,7 @@ public class SeriesDaoTest {
         Series series3 = new Series(3, 1, "Not as above", "but description contains super mario");
         testSeriesDao.createSeries(series3);
         
-        Series series4 = new Series(4, 1, "Not as above", "");
+        Series series4 = new Series(4, 1, "Not as above2", "");
         testSeriesDao.createSeries(series4);
         
         assertEquals(4, testSeriesDao.getSeries().size());

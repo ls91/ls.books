@@ -16,6 +16,7 @@ public interface BookDao {
     public enum ColumnName {
         ISBN,
         TITLE,
+        AUTHOR_ID,
         SERIES_ID,
         NO_SERIES,
         FORMAT_ID,
@@ -27,6 +28,7 @@ public interface BookDao {
     //Create
     @SqlUpdate("insert into book(isbn"
             + "                 ,title"
+            + "                 ,author_id"
             + "                 ,series_id"
             + "                 ,no_series"
             + "                 ,format_id"
@@ -36,6 +38,7 @@ public interface BookDao {
             + "                 )"
             + "           values(:book.isbn"
             + "                 ,:book.title"
+            + "                 ,:book.authorId"
             + "                 ,:book.seriesId"
             + "                 ,:book.noSeries"
             + "                 ,:book.formatId"
@@ -47,6 +50,7 @@ public interface BookDao {
     //Read
     @SqlQuery("select   b.isbn, "
             + "         b.title, "
+            + "         b.author_id, "
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
@@ -68,6 +72,7 @@ public interface BookDao {
 
     @SqlQuery("select   isbn, "
             + "         title, "
+            + "         author_id, "
             + "         series_id, "
             + "         no_series, "
             + "         format_id, "
@@ -81,6 +86,7 @@ public interface BookDao {
 
     @SqlQuery("select   b.isbn, "
             + "         b.title, "
+            + "         b.author_id, "
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
@@ -103,6 +109,7 @@ public interface BookDao {
 
     @SqlQuery("select   b.isbn, "
             + "         b.title, "
+            + "         b.author_id, "
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
@@ -126,6 +133,7 @@ public interface BookDao {
     //Update
     @SqlUpdate("update  book"
             + " set     title       =   :book.title"
+            + " ,       author_id   =   :book.authorId"
             + " ,       series_id   =   :book.seriesId"
             + " ,       no_series   =   :book.noSeries"
             + " ,       format_id   =   :book.formatId"

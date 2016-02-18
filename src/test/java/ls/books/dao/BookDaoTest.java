@@ -71,10 +71,10 @@ public class BookDaoTest {
     public void createBookShouldAddAnewRecordToTheBookTable() {
         assertEquals(0, testBookDao.getBooks().size());
 
-        testBookDao.createBook(new Book("0", "title", 1, 0, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book("0", "title", 1, 1, 0, 1, 1, 1, "notes"));
         
         assertEquals(1, testBookDao.getBooks().size());
-        assertEquals(new Book("0", "title", 1, 0, 1, 1, 1, "notes"), testBookDao.getBooks().get(0));
+        assertEquals(new Book("0", "title", 1, 1, 0, 1, 1, 1, "notes"), testBookDao.getBooks().get(0));
     }
     
     @Test
@@ -82,8 +82,8 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
 
         try {
-            testBookDao.createBook(new Book("0", "title",1, 1, 1, 1, 1, "notes"));
-            testBookDao.createBook(new Book("0", "title",1, 1, 1, 1, 1, "notes"));
+            testBookDao.createBook(new Book("0", "title", 1, 1, 1, 1, 1, 1, "notes"));
+            testBookDao.createBook(new Book("0", "title", 1, 1, 1, 1, 1, 1, "notes"));
             fail("Second insert shouldn't succeed as the ISBN's are the same");
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Unique index or primary key violation:"));
@@ -91,7 +91,22 @@ public class BookDaoTest {
         }
         
         assertEquals(1, testBookDao.getBooks().size());
-        assertEquals(new Book("0", "title", 1, 1, 1, 1, 1, "notes"), testBookDao.getBooks().get(0));
+        assertEquals(new Book("0", "title", 1, 1, 1, 1, 1, 1, "notes"), testBookDao.getBooks().get(0));
+    }
+    
+    @Test
+    public void createBookShouldFailIfAuthorDoesntExist() {
+        assertEquals(0, testBookDao.getBooks().size());
+
+        try {
+            testBookDao.createBook(new Book("0", "title", 100, 1, 0, 1, 1, 1, "notes"));
+            fail("Second insert shouldn't succeed as the series doesnt exist");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Referential integrity constraint violation:"));
+            assertTrue(e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(AUTHOR_ID) REFERENCES PUBLIC.AUTHOR(AUTHOR_ID)"));
+        }
+        
+        assertEquals(0, testBookDao.getBooks().size());
     }
     
     @Test
@@ -99,7 +114,7 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
 
         try {
-            testBookDao.createBook(new Book("0", "title", 100, 0, 1, 1, 1, "notes"));
+            testBookDao.createBook(new Book("0", "title", 1, 100, 0, 1, 1, 1, "notes"));
             fail("Second insert shouldn't succeed as the series doesnt exist");
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Referential integrity constraint violation:"));
@@ -114,7 +129,7 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
 
         try {
-            testBookDao.createBook(new Book("0", "title", 1, 0, 1, 5, 1, "notes"));
+            testBookDao.createBook(new Book("0", "title", 1, 1, 0, 1, 5, 1, "notes"));
             fail("Second insert shouldn't succeed as the series doesnt exist");
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Referential integrity constraint violation:"));
@@ -129,7 +144,7 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
 
         try {
-            testBookDao.createBook(new Book("0", "title", 1, 0, 100, 1, 1, "notes"));
+            testBookDao.createBook(new Book("0", "title", 1, 1, 0, 100, 1, 1, "notes"));
             fail("Second insert shouldn't succeed as the series doesnt exist");
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Referential integrity constraint violation:"));
@@ -145,15 +160,15 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
         assertEquals(3, testSeriesDao.getSeries().size());
         
-        Book book1 = new Book("324", "TITLE1", 1, 1, 1, 1, 100, "NOTE");
-        Book book2 = new Book("322", "TITLE2", 2, 1, 1, 1, 100, "NOTE");
-        Book book3 = new Book("45", "TITLE3", 3, 1, 1, 1, 100, "NOTE");
-        Book book4 = new Book("435", "TITLE4", 3, 2, 1, 1, 100, "NOTE");
-        Book book5 = new Book("757", "TITLE5", 2, 2, 1, 1, 100, "NOTE");
-        Book book6 = new Book("5456", "TITLE6", 2, 2, 1, 1, 100, "NOTE");
-        Book book7 = new Book("678", "TITLE7", 1, 1, 1, 1, 100, "NOTE");
-        Book book8 = new Book("23", "TITLE8", 2, 2, 1, 1, 100, "NOTE");
-        Book book9 = new Book("436", "TITLE9", 1, 1, 1, 1, 100, "NOTE");
+        Book book1 = new Book("324", "TITLE1", 1, 1, 1, 1, 1, 100, "NOTE");
+        Book book2 = new Book("322", "TITLE2", 1, 2, 1, 1, 1, 100, "NOTE");
+        Book book3 = new Book("45", "TITLE3", 1, 3, 1, 1, 1, 100, "NOTE");
+        Book book4 = new Book("435", "TITLE4", 1, 3, 2, 1, 1, 100, "NOTE");
+        Book book5 = new Book("757", "TITLE5", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book6 = new Book("5456", "TITLE6", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book7 = new Book("678", "TITLE7", 1, 1, 1, 1, 1, 100, "NOTE");
+        Book book8 = new Book("23", "TITLE8", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book9 = new Book("436", "TITLE9", 1, 1, 1, 1, 1, 100, "NOTE");
         
         testBookDao.createBook(book1);
         testBookDao.createBook(book2);
@@ -184,15 +199,15 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
         assertEquals(3, testSeriesDao.getSeries().size());
         
-        Book book1 = new Book("324", "TITLE1", 1, 1, 1, 1, 100, "NOTE");
-        Book book2 = new Book("322", "TITLE2", 2, 1, 1, 1, 100, "NOTE");
-        Book book3 = new Book("45", "TITLE3", 3, 1, 1, 1, 100, "NOTE");
-        Book book4 = new Book("435", "TITLE4", 3, 2, 1, 1, 100, "NOTE");
-        Book book5 = new Book("757", "TITLE5", 2, 2, 1, 1, 100, "NOTE");
-        Book book6 = new Book("5456", "TITLE6", 2, 2, 1, 1, 100, "NOTE");
-        Book book7 = new Book("678", "TITLE7", 1, 1, 1, 1, 100, "NOTE");
-        Book book8 = new Book("23", "TITLE8", 2, 2, 1, 1, 100, "NOTE");
-        Book book9 = new Book("436", "TITLE9", 1, 1, 1, 1, 100, "NOTE");
+        Book book1 = new Book("324", "TITLE1", 1, 1, 1, 1, 1, 100, "NOTE");
+        Book book2 = new Book("322", "TITLE2", 1, 2, 1, 1, 1, 100, "NOTE");
+        Book book3 = new Book("45", "TITLE3", 1, 3, 1, 1, 1, 100, "NOTE");
+        Book book4 = new Book("435", "TITLE4", 1, 3, 2, 1, 1, 100, "NOTE");
+        Book book5 = new Book("757", "TITLE5", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book6 = new Book("5456", "TITLE6", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book7 = new Book("678", "TITLE7", 1, 1, 1, 1, 1, 100, "NOTE");
+        Book book8 = new Book("23", "TITLE8", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book9 = new Book("436", "TITLE9", 1, 1, 1, 1, 1, 100, "NOTE");
         
         testBookDao.createBook(book1);
         testBookDao.createBook(book2);
@@ -217,15 +232,15 @@ public class BookDaoTest {
         assertEquals(0, testBookDao.getBooks().size());
         assertEquals(3, testSeriesDao.getSeries().size());
         
-        Book book1 = new Book("324", "TITLE1", 1, 1, 1, 1, 100, "NOTE");
-        Book book2 = new Book("322", "TITLE2", 2, 1, 1, 1, 100, "NOTE");
-        Book book3 = new Book("45", "TITLE3", 3, 1, 1, 1, 100, "NOTE");
-        Book book4 = new Book("435", "TITLE4", 3, 2, 1, 1, 100, "NOTE");
-        Book book5 = new Book("757", "TITLE5", 2, 2, 1, 1, 100, "NOTE");
-        Book book6 = new Book("5456", "TITLE6", 2, 2, 1, 1, 100, "NOTE");
-        Book book7 = new Book("678", "TITLE7", 1, 1, 1, 1, 100, "NOTE");
-        Book book8 = new Book("23", "TITLE8", 2, 2, 1, 1, 100, "NOTE");
-        Book book9 = new Book("436", "TITLE9", 1, 1, 1, 1, 100, "NOTE");
+        Book book1 = new Book("324", "TITLE1", 1, 1, 1, 1, 1, 100, "NOTE");
+        Book book2 = new Book("322", "TITLE2", 1, 2, 1, 1, 1, 100, "NOTE");
+        Book book3 = new Book("45", "TITLE3", 1, 3, 1, 1, 1, 100, "NOTE");
+        Book book4 = new Book("435", "TITLE4", 1, 3, 2, 1, 1, 100, "NOTE");
+        Book book5 = new Book("757", "TITLE5", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book6 = new Book("5456", "TITLE6", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book7 = new Book("678", "TITLE7", 1, 1, 1, 1, 1, 100, "NOTE");
+        Book book8 = new Book("23", "TITLE8", 1, 2, 2, 1, 1, 100, "NOTE");
+        Book book9 = new Book("436", "TITLE9", 1, 1, 1, 1, 1, 100, "NOTE");
         
         testBookDao.createBook(book1);
         testBookDao.createBook(book2);
@@ -250,8 +265,8 @@ public class BookDaoTest {
     public void findBookByIdShouldReturnTheBookAsSelectedById() throws SQLException {
         assertEquals(0, testBookDao.getBooks().size());
         
-        Book book1 = new Book("55", "TITLE1", 1, 1, 1, 1, 100, "NOTE");
-        Book book2 = new Book("3434", "TITLE2", 2, 1, 1, 1, 100, "NOTE");
+        Book book1 = new Book("55", "TITLE1", 1, 1, 1, 1, 1, 100, "NOTE");
+        Book book2 = new Book("3434", "TITLE2", 1, 2, 1, 1, 1, 100, "NOTE");
         testBookDao.createBook(book1);
         testBookDao.createBook(book2);
         
@@ -263,7 +278,7 @@ public class BookDaoTest {
     //Update
     @Test
     public void updateBookShouldModifyTheExistingRecordWithAnyAttributeThatChanges() {
-        Book book = new Book("3434", "TITLE1", 1, 1, 1, 1, 100, "NOTE");
+        Book book = new Book("3434", "TITLE1", 1, 1, 1, 1, 1, 100, "NOTE");
         testBookDao.createBook(book);
         Book result = testBookDao.findBookByIsbn("3434");
         assertEquals(book, result);
@@ -284,7 +299,7 @@ public class BookDaoTest {
     //Delete
     @Test
     public void deleteAuthorByIdShouldRemoveTheAuthorFromTheTable() {
-        Book book = new Book("2", "TITLE1", 1, 1, 1, 1, 100, "NOTE");
+        Book book = new Book("2", "TITLE1", 1, 1, 1, 1, 1, 100, "NOTE");
         testBookDao.createBook(book);
         assertEquals(book, testBookDao.findBookByIsbn("2"));
 

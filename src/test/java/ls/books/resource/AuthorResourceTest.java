@@ -108,7 +108,7 @@ public class AuthorResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.post(authorJson).write(baos);
         
-        assertEquals("1", baos.toString());
+        assertEquals("\"1\"", baos.toString());
 
         assertEquals(1, testSeriesDao.findSeriesByAuthorId(1).size());
         assertEquals(new Author(1, "Foo", "Bar"), testAuthorDao.findAuthorById(1));
@@ -173,8 +173,8 @@ public class AuthorResourceTest {
     @Test
     public void getAuthorWithNoQueryParametersShouldReturnAllAuthorsInTheDatabase() throws ResourceException, IOException {
         Author author1 = new Author(1, "lastName", "firstName");
-        Author author2 = new Author(2, "lastName", "firstName");
-        Author author3 = new Author(3, "lastName", "firstName");
+        Author author2 = new Author(2, "lastName2", "firstName");
+        Author author3 = new Author(3, "lastName3", "firstName");
         
         testAuthorDao.createAuthor(author1);
         testAuthorDao.createAuthor(author2);
@@ -183,7 +183,7 @@ public class AuthorResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.get().write(baos);
         
-        assertEquals("[{\"authorId\":1,\"lastName\":\"lastName\",\"firstName\":\"firstName\"},{\"authorId\":2,\"lastName\":\"lastName\",\"firstName\":\"firstName\"},{\"authorId\":3,\"lastName\":\"lastName\",\"firstName\":\"firstName\"}]", baos.toString());
+        assertEquals("[{\"authorId\":1,\"lastName\":\"lastName\",\"firstName\":\"firstName\"},{\"authorId\":2,\"lastName\":\"lastName2\",\"firstName\":\"firstName\"},{\"authorId\":3,\"lastName\":\"lastName3\",\"firstName\":\"firstName\"}]", baos.toString());
     }
     
     @Test
@@ -207,7 +207,7 @@ public class AuthorResourceTest {
     @Test
     public void getAuthorSeriesWhenSeriesExistShouldReturnThoseSeriesAsaList() throws ResourceException, IOException {
         testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
-        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        testAuthorDao.createAuthor(new Author(1, "lastName2", "firstName"));
         testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
         testSeriesDao.createSeries(new Series(1, 1, "seriesName2", "description"));
         testSeriesDao.createSeries(new Series(1, 2, "seriesName3", "description"));
@@ -231,18 +231,18 @@ public class AuthorResourceTest {
     @Test
     public void getAuthorBooksWhenBooksExistShouldReturnThoseBooksAsaList() throws ResourceException, IOException {
         testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
-        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        testAuthorDao.createAuthor(new Author(1, "lastName2", "firstName"));
         testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
         testSeriesDao.createSeries(new Series(1, 1, "seriesName2", "description"));
         testFormatDao.createFormat(new Format(1, "name"));
         testStatusDao.createStatus(new Status(1, "status"));
-        testBookDao.createBook(new Book("isbn", "title", 1, 0, 1, 1, 5, "notes"));
-        testBookDao.createBook(new Book("isbn2", "title", 1, 0, 1, 1, 5, "notes"));
+        testBookDao.createBook(new Book("isbn", "title", 1, 1, 0, 1, 1, 5, "notes"));
+        testBookDao.createBook(new Book("isbn2", "title", 1, 1, 0, 1, 1, 5, "notes"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/books");
         resource.get().write(baos);
         
-        assertEquals("[{\"isbn\":\"isbn\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"},{\"isbn\":\"isbn2\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"}]", baos.toString());
+        assertEquals("[{\"isbn\":\"isbn\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"},{\"isbn\":\"isbn2\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"}]", baos.toString());
     }
     
     @Test
