@@ -30,33 +30,27 @@
                     for (var i = 0; i < data.length; i++) {
                         var isbn = data[i].isbn;
                         var title = data[i].title;
+                        var authorId = data[i].authorId;
                         var seriesId = data[i].seriesId;
                         var noSeries = data[i].noSeries;
-                        var formatId = data[i].formatId;
-                        var statusId = data[i].statusId;
                         
                         
                         var tr  = "<tr>";
                         var td1 = '<td><a href="/book/single_view.html?isbn=' + isbn + '">' + isbn + '</a></td>';
                         var td2 = "<td>" + title + "</td>";
-                        var td3 = '<td><a href="/series/single_view.html?seriesId=' + seriesId + '"><div id="seriesString' + seriesId + '" /></div></a></td>';
-                        var td4 = "<td>" + noSeries + "</td>";
-                        var td5 = '<td><div id="formatString' + formatId + '" /></div></td>';
-                        var td6 = '<td><div id="statusString' + statusId + '" /></div></td>';
+                        var td3 = '<td><a href="/author/single_view.html?authorId=' + authorId + '"><div id="authorString' + authorId + '" /></div></a></td>';
+                        var td4= '<td><a href="/series/single_view.html?seriesId=' + seriesId + '"><div id="seriesString' + seriesId + '" /></div></a></td>';
+                        var td5 = "<td>" + noSeries + "</td>";
                         var tr2 = "</tr>";
                         
-                        $("#resultsView").append(tr + td1 + td2 + td3 + td4 + td5 + td6 + tr2);
+                        $("#resultsView").append(tr + td1 + td2 + td3 + td4 + td5 + tr2);
                         
                         $.getJSON("/rest/series/" + seriesId, function(seriesData) {
                             $("#seriesString" + seriesData.seriesId).replaceWith(seriesData.seriesName)
                         });
                         
-                        $.getJSON("/rest/format/" + formatId, function(formatData) {
-                            $("#formatString" + formatData.formatId).replaceWith(formatData.name)
-                        });
-                        
-                        $.getJSON("/rest/status/" + statusId, function(statusData) {
-                            $("#statusString" + statusData.statusId).replaceWith(statusData.name)
+                        $.getJSON("/rest/author/" + authorId, function(authorData) {
+                            $("#authorString" + authorData.authorId).replaceWith(authorData.lastName + ", " + authorData.firstName)
                         });
                     }
                 });
@@ -89,12 +83,11 @@
                     <div class="col-md-12">
                         <table class="table table-hover" id="resultsView">
                             <tr>
-                                <th class="col-md-3">ISBN</th>
+                                <th class="col-md-2">ISBN</th>
                                 <th class="col-md-3">Title</th>
+                                <th class="col-md-3">Author</th>
                                 <th class="col-md-3">Series</th>
                                 <th class="col-md-1">No. Series</th>
-                                <th class="col-md-1">Format</th>
-                                <th class="col-md-1">Status</th>
                             </tr>
                         </table>
                     </div>

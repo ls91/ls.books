@@ -23,7 +23,7 @@
                     $("#nav-bar-container-div").replaceWith(data);
                 });
                 
-                populateSeriesDropDown();
+                populateAuthorDropDown();
                 populateFormatDropDown();
                 populateStatusDropDown();
                 
@@ -41,8 +41,11 @@
             
             function getBook(id) {
                 $.getJSON("/rest/book/" + id, function(data) {
+                    populateSeriesDropDown(data.authorId, data.seriesId);
+                    
                     $("#isbn").val(data.isbn);
                     $("#title").val(data.title);
+                    $("#authorId").val(data.authorId);
                     $("#seriesId").val(data.seriesId);
                     $("#noSeries").val(data.noSeries);
                     $("#formatId").val(data.formatId);
@@ -74,6 +77,7 @@
                     data: JSON.stringify({
                         isbn: $("#isbn").val(),
                         title: $("#title").val(),
+                        authorId: $("#authorId").val(),
                         seriesId: $("#seriesId").val(),
                         noSeries: $("#noSeries").val(),
                         formatId: $("#formatId").val(),
@@ -104,6 +108,7 @@
                     data: JSON.stringify({
                         isbn: $("#isbn").val(),
                         title: $("#title").val(),
+                        authorId: $("#authorId").val(),
                         seriesId: $("#seriesId").val(),
                         noSeries: $("#noSeries").val(),
                         formatId: $("#formatId").val(),
@@ -156,13 +161,30 @@
                 });
             }
             
-            function populateSeriesDropDown() {
-                $.getJSON("/rest/series", function(data) {
+            function populateAuthorDropDown() {
+                $.getJSON("/rest/author", function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#authorId')
+                            .append($("<option></option>")
+                            .attr("value", data[i].authorId)
+                            .text(data[i].lastName + ", " + data[i].firstName));
+                    }
+                });
+            }
+            
+            function populateSeriesDropDown(authorId, seriesId) {
+                $('#seriesId').empty();
+                
+                $.getJSON("/rest/author/" + authorId + "/series", function(data) {
                     for (var i = 0; i < data.length; i++) {
                         $('#seriesId')
                             .append($("<option></option>")
                             .attr("value", data[i].seriesId)
                             .text(data[i].seriesName));
+                    }
+                    
+                    if (seriesId != null) {
+                        $('#seriesId').val(seriesId);
                     }
                 });
             }
@@ -223,7 +245,14 @@
                     
                     <div class="row"> <!-- Row 2 -->
                         <div class="col-md-12">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-5">
+                                <label for="authorId">Author</label>
+                                <select class="form-control" id="authorId" onchange="populateSeriesDropDown(this.value);">
+                                    <option>Select an Author</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group col-md-5">
                                 <label for="seriesId">Series</label>
                                 <select class="form-control" id="seriesId">
                                 </select>
@@ -233,7 +262,11 @@
                                 <label for="noSeries">No. Series</label>
                                 <input type="text" class="form-control" id="noSeries" placeholder="No. Series">
                             </div>
-                            
+                        </div>
+                    </div> <!-- Row 2 -->
+                    
+                    <div class="row"> <!-- Row 3 -->
+                        <div class="col-md-12">
                             <div class="form-group  col-md-2">
                                 <label for="formatId">Format</label>
                                 <select class="form-control" id="formatId">
@@ -251,16 +284,16 @@
                                 <input type="text" class="form-control" id="noPages" placeholder="No. Pages">
                             </div>
                         </div>
-                    </div> <!-- Row 2 -->
+                    </div> <!-- Rows 3 -->
                     
-                    <div class="row"> <!-- Row 3 -->
+                    <div class="row"> <!-- Row 4 -->
                         <div class="col-md-12">
                             <div class="form-group col-md-12">
                                 <label for="notes">Notes</label>
                                 <textarea class="form-control" cols="40" id="description" name="notes" rows="10"></textarea>
                             </div>
                         </div>
-                    </div> <!-- Row 3 -->
+                    </div> <!-- Row 4 -->
                 </form>
                 
                 <div class="row"> <!-- Buttons -->
