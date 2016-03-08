@@ -1,6 +1,7 @@
 package ls.books.resource;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
@@ -128,12 +129,18 @@ public class AuthorResource extends BaseResource {
     public Response deleteAuthor(@PathParam("id") int id) {
         init();
 
+        List<Series> authorSeries = seriesDao.findSeriesByAuthorId(id);
         try {
+            if (authorSeries.size() == 1 && authorSeries.get(0).getSeriesName().equals("")) {
+                seriesDao.deleteSeriesById(authorSeries.get(0).getSeriesId());
+            }
             authorDao.deleteAuthorById(id);
             return buildEntityDeletedResponse(Entity.Author, id);
         } catch (UnableToExecuteStatementException e) {
             if (e.getMessage().contains("PUBLIC.SERIES FOREIGN KEY(AUTHOR_ID) REFERENCES PUBLIC.AUTHOR(AUTHOR_ID)")) {
                 return build404Response("Delete Failed, Author has existing series.");
+            } else if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
+                return build404Response("Delete Failed, Author has existing books.");
             } else {
                 return build404Response(e.getMessage());
             }

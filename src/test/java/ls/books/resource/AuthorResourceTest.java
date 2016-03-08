@@ -171,6 +171,45 @@ public class AuthorResourceTest {
     }
     
     @Test
+    public void deleteAuthorShouldDeleteTheBlankSeriesIfItIsTheOnlySeriesAssociatedWithTheAuthorAndHasNoAssociatedBooks() throws ResourceException, IOException, JSONException {
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        testSeriesDao.createSeries(new Series(1, 1, "", "description"));
+        
+        assertEquals(new Author(1, "lastName", "firstName"), testAuthorDao.getAuthors().get(0));
+        assertEquals(new Series(1, 1, "", "description"), testSeriesDao.getSeries().get(0));
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
+        resource.delete().write(baos);
+        assertEquals("\"Author 1 deleted\"", baos.toString());
+        
+        assertNull(testAuthorDao.findAuthorById(1));
+        assertNull(testSeriesDao.findSeriesById(1));
+    }
+    
+    @Test
+    public void deleteAuthorShouldReturnAfailureMessageTheBlankSeriesIsTheOnlySeriesAssociatedWithTheAuthorButHasAssociatedBooks() throws ResourceException, IOException, JSONException {
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+        testSeriesDao.createSeries(new Series(1, 1, "", "description"));
+        testFormatDao.createFormat(new Format(1, "name"));
+        testStatusDao.createStatus(new Status(1, "status"));
+        testBookDao.createBook(new Book("isbn", "title", 1, 1, 1, 1, 1, 1, "notes"));
+        
+        assertEquals(new Author(1, "lastName", "firstName"), testAuthorDao.findAuthorById(1));
+        assertEquals(new Series(1, 1, "", "description"), testSeriesDao.getSeries().get(0));
+        
+        ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
+        try {
+            resource.delete().write(baos);
+            fail("A 404 should have been raised.");
+        } catch (ResourceException e) {
+            assertEquals("\"Delete Failed, Author has existing books.\"", resource.getResponseEntity().getText());
+        }
+        
+        assertEquals(new Author(1, "lastName", "firstName"), testAuthorDao.findAuthorById(1));
+        assertEquals(new Series(1, 1, "", "description"), testSeriesDao.getSeries().get(0));
+    }
+    
+    @Test
     public void getAuthorWithNoQueryParametersShouldReturnAllAuthorsInTheDatabase() throws ResourceException, IOException {
         Author author1 = new Author(1, "lastName", "firstName");
         Author author2 = new Author(2, "lastName2", "firstName");
