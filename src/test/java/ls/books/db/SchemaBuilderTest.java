@@ -87,7 +87,7 @@ public class SchemaBuilderTest {
         SchemaBuilder.populateWithSampleData(dataSource);
         
         assertEquals(2, formatDao.getFormats().size());
-        assertEquals(2, statusDao.getStatuses().size());
+        assertEquals(3, statusDao.getStatuses().size());
         assertEquals(3, authorDao.getAuthors().size());
         assertEquals(9, seriesDao.getSeries().size());
         assertEquals(3, bookDao.getBooks().size());

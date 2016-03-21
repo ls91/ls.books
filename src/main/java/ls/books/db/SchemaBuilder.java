@@ -55,8 +55,9 @@ public class SchemaBuilder {
         formatDao.close();
 
         StatusDao statusDao = new DBI(dataSource).open(StatusDao.class);
-        statusDao.createStatus(new Status(1, "Owned"));
         statusDao.createStatus(new Status(1, "To Order"));
+        statusDao.createStatus(new Status(1, "Owned - Unread"));
+        statusDao.createStatus(new Status(1, "Owned - Read"));
         statusDao.close();
 
         AuthorDao authorDao = new DBI(dataSource).open(AuthorDao.class);
