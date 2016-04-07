@@ -131,4 +131,9 @@ public class Book {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
 }

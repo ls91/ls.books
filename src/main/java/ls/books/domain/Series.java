@@ -71,4 +71,9 @@ public class Series {
         }
         return result;
     }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
 }
