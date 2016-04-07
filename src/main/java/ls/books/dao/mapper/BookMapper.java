@@ -13,7 +13,8 @@ public class BookMapper implements ResultSetMapper<Book> {
 
     @Override
     public Book map(int index, ResultSet r, StatementContext ctx) throws SQLException {
-        return new Book(r.getString(BookDao.ColumnName.ISBN.name())
+        return new Book(r.getInt(BookDao.ColumnName.BOOK_ID.name())
+                , r.getString(BookDao.ColumnName.ISBN.name())
                 , r.getString(BookDao.ColumnName.TITLE.name())
                 , r.getInt(BookDao.ColumnName.AUTHOR_ID.name())
                 , r.getInt(BookDao.ColumnName.SERIES_ID.name())

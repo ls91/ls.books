@@ -157,6 +157,7 @@
                 //Get Books in series
                 $.getJSON("/rest/series/" + id + "/books", function(data) {
                     for (var i = 0; i < data.length; i++) {
+                        var bookId = data[i].bookId;
                         var isbn = data[i].isbn;
                         var title = data[i].title;
                         var seriesId = data[i].seriesId;
@@ -167,7 +168,7 @@
                         var notes = data[i].notes;
                         
                         var tr  = '<tr>';
-                        var td1 = '<td><a href="/book/single_view.html?isbn=' + isbn + '">' + title + '</a></td>';
+                        var td1 = '<td><a href="/book/single_view.html?bookId=' + bookId + '">' + title + '</a></td>';
                         var td2 = '<td><div id="seriesString' + seriesId + '" /></div></td>';
                         var td3 = '<td>' + noSeries + '</td>';
                         var td4 = '<td><div id="formatString' + formatId + '" /></div></td>';

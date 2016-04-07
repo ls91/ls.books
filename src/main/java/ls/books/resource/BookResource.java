@@ -43,8 +43,8 @@ public class BookResource extends BaseResource {
         init();
 
         try {
-            bookDao.createBook(book);
-            return buildEntityCreatedResponse(book.getIsbn(), BOOK_URL);
+            book.setBookId(bookDao.createBook(book));
+            return buildEntityCreatedResponse(book.getBookId(), BOOK_URL);
         } catch (Exception e) {
             if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(STATUS_ID) REFERENCES PUBLIC.STATUS(STATUS_ID)")) {
                 return build404Response("Update Failed, Status doesn't exists.");
@@ -71,9 +71,9 @@ public class BookResource extends BaseResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBookByBookId(@PathParam("id") String id) {
+    public Response getBookByBookId(@PathParam("id") int id) {
         init();
-        Book result = bookDao.findBookByIsbn(id);
+        Book result = bookDao.findBookById(id);
 
         if (result != null) {
             return buildOkResponse(result);
@@ -91,7 +91,7 @@ public class BookResource extends BaseResource {
 
         try {
             bookDao.updateBook(book);
-            return buildEntityUpdatedResponse(Entity.Book, book.getIsbn());
+            return buildEntityUpdatedResponse(Entity.Book, book.getBookId());
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(STATUS_ID) REFERENCES PUBLIC.STATUS(STATUS_ID)")) {
@@ -100,6 +100,8 @@ public class BookResource extends BaseResource {
                 return build404Response("Update Failed, Format doesn't exists.");
             } else if (e.getMessage().contains("PUBLIC.BOOK FOREIGN KEY(SERIES_ID) REFERENCES PUBLIC.SERIES(SERIES_ID)")) {
                 return build404Response("Update Failed, Series doesn't exists.");
+            } else if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.BOOK(BOOK_ID)")) {
+                return build404Response("A book with that ID already exists.");
             } else if (e.getMessage().contains("Unique index or primary key violation") && e.getMessage().contains("PUBLIC.BOOK(ISBN)")) {
                 return build404Response("A book with that ISBN already exists.");
             } else {
@@ -112,7 +114,7 @@ public class BookResource extends BaseResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteBook(@PathParam("id") String id) {
+    public Response deleteBook(@PathParam("id") int id) {
         init();
         bookDao.deleteBookById(id);
         return buildEntityDeletedResponse(Entity.Book, id);

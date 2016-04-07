@@ -29,20 +29,19 @@
                 
                 var url = $.url();
                 
-                if (url.param('isbn') == undefined) {
+                if (url.param('bookId') == undefined) {
                     //We are creating
                     $('#createButton').prop('disabled', false);
-                    $('#isbn').prop('disabled', false);
                 } else {
                     //We are loading
-                    getBook(url.param('isbn'));
+                    getBook(url.param('bookId'));
                 }
             });
             
             function getBook(id) {
                 $.getJSON("/rest/book/" + id, function(data) {
                     populateSeriesDropDown(data.authorId, data.seriesId);
-                    
+                    $("#bookId").val(data.bookId);
                     $("#isbn").val(data.isbn);
                     $("#title").val(data.title);
                     $("#authorId").val(data.authorId);
@@ -75,6 +74,7 @@
                     processData: false,
                     dataType: 'json',
                     data: JSON.stringify({
+                        bookId: $("#bookId").val(),
                         isbn: $("#isbn").val(),
                         title: $("#title").val(),
                         authorId: $("#authorId").val(),
@@ -86,7 +86,7 @@
                         notes: $("#notes").val()
                     }),
                     success: function(data) {
-                        window.location.replace("/book/single_view.html?isbn=" + data);
+                        window.location.replace("/book/single_view.html?bookId=" + data);
                     },
                     error: function(error) {
                         BootstrapDialog.show({
@@ -106,6 +106,7 @@
                     processData: false,
                     dataType: 'json',
                     data: JSON.stringify({
+                        bookId: $("#bookId").val(),
                         isbn: $("#isbn").val(),
                         title: $("#title").val(),
                         authorId: $("#authorId").val(),
@@ -140,7 +141,7 @@
                     callback: function(result) {
                         if (result) {
                             $.ajax({
-                                url: '/rest/book/' + $("#isbn").val(),
+                                url: '/rest/book/' + $("#bookId").val(),
                                 method: 'DELETE',
                                 contentType: 'application/json',
                                 processData: false,
@@ -231,9 +232,11 @@
                 <form>
                     <div class="row"> <!-- Row 1 -->
                         <div class="col-md-12">
+                            <input type="hidden" id="bookId">
+                            
                             <div class="form-group col-md-4">
                                 <label for="isbn">ISBN</label>
-                                <input type="text" class="form-control" id="isbn" placeholder="ISBN" disabled>
+                                <input type="text" class="form-control" id="isbn" placeholder="ISBN">
                             </div>
                             
                             <div class="form-group  col-md-8">

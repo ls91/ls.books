@@ -7,6 +7,7 @@ import ls.books.domain.Book;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
@@ -14,6 +15,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 public interface BookDao {
 
     public enum ColumnName {
+        BOOK_ID,
         ISBN,
         TITLE,
         AUTHOR_ID,
@@ -45,10 +47,12 @@ public interface BookDao {
             + "                 ,:book.statusId"
             + "                 ,:book.noPages"
             + "                 ,:book.notes)")
-    void createBook(@BindBean("book") Book book);
+    @GetGeneratedKeys
+    int createBook(@BindBean("book") Book book);
 
     //Read
-    @SqlQuery("select   b.isbn, "
+    @SqlQuery("select   b.book_id, "
+            + "         b.isbn, "
             + "         b.title, "
             + "         b.author_id, "
             + "         b.series_id, "
@@ -70,7 +74,8 @@ public interface BookDao {
     @Mapper(BookMapper.class)
     List<Book> getBooks();
 
-    @SqlQuery("select   isbn, "
+    @SqlQuery("select   book_id, "
+            + "         isbn, "
             + "         title, "
             + "         author_id, "
             + "         series_id, "
@@ -80,11 +85,12 @@ public interface BookDao {
             + "         no_pages, "
             + "         notes "
             + "from     book "
-            + "where    isbn        =   :isbn")
+            + "where    book_id     =   :bookId")
     @Mapper(BookMapper.class)
-    Book findBookByIsbn(@Bind("isbn") String isbn);
+    Book findBookById(@Bind("bookId") int bookId);
 
-    @SqlQuery("select   b.isbn, "
+    @SqlQuery("select   b.book_id, "
+            + "         b.isbn, "
             + "         b.title, "
             + "         b.author_id, "
             + "         b.series_id, "
@@ -107,7 +113,8 @@ public interface BookDao {
     @Mapper(BookMapper.class)
     List<Book> findBooksByAuthorId(@Bind("id") int id);
 
-    @SqlQuery("select   b.isbn, "
+    @SqlQuery("select   b.book_id, "
+            + "         b.isbn, "
             + "         b.title, "
             + "         b.author_id, "
             + "         b.series_id, "
@@ -132,7 +139,8 @@ public interface BookDao {
 
     //Update
     @SqlUpdate("update  book"
-            + " set     title       =   :book.title"
+            + " set     isbn        =   :book.isbn"
+            + ",        title       =   :book.title"
             + " ,       author_id   =   :book.authorId"
             + " ,       series_id   =   :book.seriesId"
             + " ,       no_series   =   :book.noSeries"
@@ -140,13 +148,13 @@ public interface BookDao {
             + " ,       status_id   =   :book.statusId"
             + " ,       no_pages    =   :book.noPages"
             + " ,       notes       =   :book.notes"
-            + " where   isbn        =   :book.isbn")
+            + " where   book_id     =   :book.bookId")
     void updateBook(@BindBean("book") Book book);
 
     //Delete
     @SqlUpdate("delete from book"
-            + " where isbn = :isbn")
-    void deleteBookById(@Bind("isbn") String isbn);
+            + " where book_id = :bookId")
+    void deleteBookById(@Bind("bookId") int bookId);
 
     void close();
 }

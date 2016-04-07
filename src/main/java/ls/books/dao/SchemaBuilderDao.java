@@ -38,7 +38,8 @@ public interface SchemaBuilderDao {
     void createStatusTable();
 
     @SqlUpdate("CREATE TABLE BOOK ("
-            + " ISBN        VARCHAR2(17)    PRIMARY KEY"
+            + " BOOK_ID     NUMBER          PRIMARY KEY AUTO_INCREMENT"
+            + ",ISBN        VARCHAR2(17)    NOT NULL"
             + ",TITLE       VARCHAR2(100)   NOT NULL"
             + ",AUTHOR_ID   NUMBER          NOT NULL"
             + ",SERIES_ID   NUMBER          NOT NULL"
@@ -51,6 +52,7 @@ public interface SchemaBuilderDao {
             + ",FOREIGN KEY (SERIES_ID) REFERENCES SERIES(SERIES_ID)"
             + ",FOREIGN KEY (FORMAT_ID) REFERENCES FORMAT(FORMAT_ID)"
             + ",FOREIGN KEY (STATUS_ID) REFERENCES STATUS(STATUS_ID)"
+            + ",UNIQUE KEY ISBN(ISBN)"
             + ")")
     void createBookTable();
 
