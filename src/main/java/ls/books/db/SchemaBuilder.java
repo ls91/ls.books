@@ -4,6 +4,9 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.h2.jdbcx.JdbcDataSource;
+import org.skife.jdbi.v2.DBI;
+
 import ls.books.dao.AuthorDao;
 import ls.books.dao.BookDao;
 import ls.books.dao.FormatDao;
@@ -15,9 +18,6 @@ import ls.books.domain.Book;
 import ls.books.domain.Format;
 import ls.books.domain.Series;
 import ls.books.domain.Status;
-
-import org.h2.jdbcx.JdbcDataSource;
-import org.skife.jdbi.v2.DBI;
 
 public class SchemaBuilder {
 
