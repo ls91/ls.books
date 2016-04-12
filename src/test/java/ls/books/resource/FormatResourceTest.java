@@ -85,6 +85,7 @@ public class FormatResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/format");
         resource.post(formatJson).write(baos);
+        resource.release();
         
         assertEquals("\"1\"", baos.toString());
 
@@ -107,6 +108,7 @@ public class FormatResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/format");
         resource.setMethod(Method.PUT);
         resource.put(formatJson).write(baos);
+        resource.release();
 
         assertEquals("\"Format 1 successfully updated\"", baos.toString());
         assertEquals(new Format(1, "Foo Updated"), testFormatDao.findFormatById(1));
@@ -122,6 +124,7 @@ public class FormatResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/format/1");
         resource.delete().write(baos);
+        resource.release();
         
         assertEquals("\"Format 1 deleted\"", baos.toString());
         
@@ -136,6 +139,7 @@ public class FormatResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/format");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"formatId\":1,\"name\":\"NAME 1\"},{\"formatId\":2,\"name\":\"NAME 2\"},{\"formatId\":3,\"name\":\"NAME 3\"}]", baos.toString());
     }
@@ -144,6 +148,7 @@ public class FormatResourceTest {
     public void getFormatWithNoQueryParameterAndNoEntriesInTheDbShouldReturnAnEmptyList() throws ResourceException, IOException {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/format");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[]", baos.toString());
     }
@@ -156,6 +161,7 @@ public class FormatResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/format/2");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("{\"formatId\":2,\"name\":\"NAME 2\"}", baos.toString());
     }
@@ -173,5 +179,6 @@ public class FormatResourceTest {
         } catch (ResourceException e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
     }
 }

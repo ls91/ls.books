@@ -123,6 +123,7 @@ public class BookResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book");
         resource.post(bookJson).write(baos);
+        resource.release();
         
         assertEquals("\"1\"", baos.toString());
 
@@ -153,6 +154,7 @@ public class BookResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book");
         resource.setMethod(Method.PUT);
         resource.put(bookJson).write(baos);
+        resource.release();
 
         assertEquals("\"Book 1 successfully updated\"", baos.toString());
         assertEquals(new Book(1, "2", "Bar", 1, 3, 4, 2, 2, 6, "hey"), testBookDao.findBookById(1));
@@ -187,7 +189,7 @@ public class BookResourceTest {
         } catch (Exception e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
-        
+        resource.release();
         assertEquals(book, testBookDao.findBookById(1));
     }
     
@@ -220,6 +222,7 @@ public class BookResourceTest {
         } catch (Exception e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
         
         assertEquals(book, testBookDao.findBookById(1));
     }
@@ -253,6 +256,7 @@ public class BookResourceTest {
         } catch (Exception e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
         
         assertEquals(book, testBookDao.findBookById(1));
     }
@@ -286,6 +290,7 @@ public class BookResourceTest {
         } catch (Exception e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
         
         assertEquals(book, testBookDao.findBookById(1));
     }
@@ -298,6 +303,7 @@ public class BookResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book/1");
         resource.delete().write(baos);
+        resource.release();
         
         assertEquals("\"Book 1 deleted\"", baos.toString());
         
@@ -312,6 +318,7 @@ public class BookResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"bookId\":1,\"isbn\":\"1\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"bookId\":2,\"isbn\":\"2\",\"title\":\"title2\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"bookId\":3,\"isbn\":\"3\",\"title\":\"title3\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
     }
@@ -320,6 +327,7 @@ public class BookResourceTest {
     public void getBookWithNoQueryParameterAndNoEntriesInTheDbShouldReturnAnEmptyList() throws ResourceException, IOException {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[]", baos.toString());
     }
@@ -332,6 +340,7 @@ public class BookResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book/2");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("{\"bookId\":2,\"isbn\":\"2\",\"title\":\"title2\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}", baos.toString());
     }
@@ -345,5 +354,6 @@ public class BookResourceTest {
         } catch (ResourceException e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
     }
 }

@@ -83,6 +83,7 @@ public class StatusResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/status");
         resource.post(statusJson).write(baos);
+        resource.release();
         
         assertEquals("\"1\"", baos.toString());
 
@@ -107,7 +108,8 @@ public class StatusResourceTest {
         } catch (ResourceException e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
-
+        resource.release();
+        
         assertEquals(1, testStatusDao.getStatuses().size());
     }
     
@@ -125,6 +127,7 @@ public class StatusResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/status");
         resource.setMethod(Method.PUT);
         resource.put(statusJson).write(baos);
+        resource.release();
 
         assertEquals("\"Status 1 successfully updated\"", baos.toString());
         assertEquals(new Status(1, "Foo Updated"), testStatusDao.findStatusById(1));
@@ -155,7 +158,8 @@ public class StatusResourceTest {
         } catch (ResourceException e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
-
+        resource.release();
+        
         assertEquals(2, testStatusDao.getStatuses().size());
         assertEquals(status, testStatusDao.findStatusById(1));
         assertEquals(status2, testStatusDao.findStatusById(2));
@@ -171,6 +175,7 @@ public class StatusResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/status/1");
         resource.delete().write(baos);
+        resource.release();
         
         assertEquals("\"Status 1 deleted\"", baos.toString());
         
@@ -185,6 +190,7 @@ public class StatusResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/status");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"statusId\":1,\"name\":\"NAME 1\"},{\"statusId\":2,\"name\":\"NAME 2\"},{\"statusId\":3,\"name\":\"NAME 3\"}]", baos.toString());
     }
@@ -193,6 +199,7 @@ public class StatusResourceTest {
     public void getStatusWithNoQueryParameterAndNoEntriesInTheDbShouldReturnAnEmptyList() throws ResourceException, IOException {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/status");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[]", baos.toString());
     }
@@ -205,6 +212,7 @@ public class StatusResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/status/2");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("{\"statusId\":2,\"name\":\"NAME 2\"}", baos.toString());
     }
@@ -222,5 +230,6 @@ public class StatusResourceTest {
         } catch (ResourceException e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
     }
 }

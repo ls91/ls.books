@@ -111,6 +111,7 @@ public class SeriesResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series");
         resource.post(seriesJson).write(baos);
+        resource.release();
         
         assertEquals("\"1\"", baos.toString());
 
@@ -139,6 +140,7 @@ public class SeriesResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series");
         resource.setMethod(Method.PUT);
         resource.put(seriesJson).write(baos);
+        resource.release();
 
         assertEquals("\"Series 1 successfully updated\"", baos.toString());
         assertEquals(new Series(1, 2, "name", ""), testSeriesDao.findSeriesById(1));
@@ -156,6 +158,7 @@ public class SeriesResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series/1");
         resource.delete().write(baos);
+        resource.release();
         
         assertEquals("\"Series 1 deleted\"", baos.toString());
         
@@ -164,20 +167,15 @@ public class SeriesResourceTest {
     
     @Test
     public void getSeriesWithNoQueryParametersShouldReturnAllSeriesInTheDatabase() throws ResourceException, IOException {
-        Author author1 = new Author(1, "lastName", "firstName");
-        testAuthorDao.createAuthor(author1);
-        
-        Series series1 = new Series(1, 1, "seriesName1", "description");
-        testSeriesDao.createSeries(series1);
-        
-        Series series2 = new Series(2, 1, "seriesName2", "description");
-        testSeriesDao.createSeries(series2);
-        
-        Series series3 = new Series(3, 1, "seriesName3", "description");
-        testSeriesDao.createSeries(series3);
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+
+        testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
+        testSeriesDao.createSeries(new Series(2, 1, "seriesName2", "description"));
+        testSeriesDao.createSeries(new Series(3, 1, "seriesName3", "description"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"seriesId\":1,\"authorId\":1,\"seriesName\":\"seriesName1\",\"description\":\"description\"},{\"seriesId\":2,\"authorId\":1,\"seriesName\":\"seriesName2\",\"description\":\"description\"},{\"seriesId\":3,\"authorId\":1,\"seriesName\":\"seriesName3\",\"description\":\"description\"}]", baos.toString());
     }
@@ -186,26 +184,22 @@ public class SeriesResourceTest {
     public void getSeriesWithNoQueryParameterAndNoEntriesInTheDbShouldReturnAnEmptyList() throws ResourceException, IOException {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[]", baos.toString());
     }
     
     @Test
     public void getSeriesWithAqueryParameterShouldReturnThatSeriesFromTheDatabase() throws ResourceException, IOException {
-        Author author1 = new Author(1, "lastName", "firstName");
-        testAuthorDao.createAuthor(author1);
-        
-        Series series1 = new Series(1, 1, "seriesName1", "description");
-        testSeriesDao.createSeries(series1);
-        
-        Series series2 = new Series(2, 1, "seriesName2", "description");
-        testSeriesDao.createSeries(series2);
-        
-        Series series3 = new Series(3, 1, "seriesName3", "description");
-        testSeriesDao.createSeries(series3);
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+
+        testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
+        testSeriesDao.createSeries(new Series(2, 1, "seriesName2", "description"));
+        testSeriesDao.createSeries(new Series(3, 1, "seriesName3", "description"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series/2");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("{\"seriesId\":2,\"authorId\":1,\"seriesName\":\"seriesName2\",\"description\":\"description\"}", baos.toString());
     }
@@ -226,6 +220,7 @@ public class SeriesResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series/2/books");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"bookId\":3,\"isbn\":\"3\",\"title\":\"title3\",\"authorId\":1,\"seriesId\":2,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
         
@@ -237,17 +232,11 @@ public class SeriesResourceTest {
     
     @Test
     public void getSeriesWithAqueryParameterWithAnIdForAnonExistantSeriesShouldReturnA404() throws ResourceException, IOException {
-        Author author1 = new Author(1, "lastName", "firstName");
-        testAuthorDao.createAuthor(author1);
-        
-        Series series1 = new Series(1, 1, "seriesName1", "description");
-        testSeriesDao.createSeries(series1);
-        
-        Series series2 = new Series(2, 1, "seriesName2", "description");
-        testSeriesDao.createSeries(series2);
-        
-        Series series3 = new Series(3, 1, "seriesName3", "description");
-        testSeriesDao.createSeries(series3);
+        testAuthorDao.createAuthor(new Author(1, "lastName", "firstName"));
+
+        testSeriesDao.createSeries(new Series(1, 1, "seriesName1", "description"));
+        testSeriesDao.createSeries(new Series(2, 1, "seriesName2", "description"));
+        testSeriesDao.createSeries(new Series(3, 1, "seriesName3", "description"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/series/4");
         try {
@@ -256,5 +245,6 @@ public class SeriesResourceTest {
         } catch (ResourceException e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
     }
 }

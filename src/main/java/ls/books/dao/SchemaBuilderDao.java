@@ -39,7 +39,7 @@ public interface SchemaBuilderDao {
 
     @SqlUpdate("CREATE TABLE BOOK ("
             + " BOOK_ID     NUMBER          PRIMARY KEY AUTO_INCREMENT"
-            + ",ISBN        VARCHAR2(17)    NOT NULL"
+            + ",ISBN        VARCHAR2(18)    NOT NULL"
             + ",TITLE       VARCHAR2(100)   NOT NULL"
             + ",AUTHOR_ID   NUMBER          NOT NULL"
             + ",SERIES_ID   NUMBER          NOT NULL"

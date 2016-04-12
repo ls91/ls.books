@@ -107,6 +107,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.post(authorJson).write(baos);
+        resource.release();
         
         assertEquals("\"1\"", baos.toString());
 
@@ -132,6 +133,7 @@ public class AuthorResourceTest {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.setMethod(Method.PUT);
         resource.put(authorJson).write(baos);
+        resource.release();
 
         assertEquals("\"Author 1 successfully updated\"", baos.toString());
         assertEquals(new Author(1, "Foo Updated", "Bar Updated"), testAuthorDao.findAuthorById(1));
@@ -148,6 +150,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
         resource.delete().write(baos);
+        resource.release();
         
         assertEquals("\"Author 1 deleted\"", baos.toString());
         
@@ -166,7 +169,7 @@ public class AuthorResourceTest {
         } catch (ResourceException e) {
             assertEquals("\"Delete Failed, Author has existing series.\"", resource.getResponseEntity().getText());
         }
-        
+        resource.release();
         assertEquals(new Author(1, "lastName", "firstName"), testAuthorDao.findAuthorById(1));
     }
     
@@ -180,6 +183,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1");
         resource.delete().write(baos);
+        resource.release();
         assertEquals("\"Author 1 deleted\"", baos.toString());
         
         assertNull(testAuthorDao.findAuthorById(1));
@@ -204,7 +208,7 @@ public class AuthorResourceTest {
         } catch (ResourceException e) {
             assertEquals("\"Delete Failed, Author has existing books.\"", resource.getResponseEntity().getText());
         }
-        
+        resource.release();
         assertEquals(new Author(1, "lastName", "firstName"), testAuthorDao.findAuthorById(1));
         assertEquals(new Series(1, 1, "", "description"), testSeriesDao.getSeries().get(0));
     }
@@ -221,6 +225,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"authorId\":1,\"lastName\":\"lastName\",\"firstName\":\"firstName\"},{\"authorId\":2,\"lastName\":\"lastName2\",\"firstName\":\"firstName\"},{\"authorId\":3,\"lastName\":\"lastName3\",\"firstName\":\"firstName\"}]", baos.toString());
     }
@@ -229,6 +234,7 @@ public class AuthorResourceTest {
     public void getAuthorWithNoQueryParameterAndNoEntriesInTheDbShouldReturnAnEmptyList() throws ResourceException, IOException {
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[]", baos.toString());
     }
@@ -239,6 +245,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/series");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[]", baos.toString());
     }
@@ -253,6 +260,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/series");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"seriesId\":1,\"authorId\":1,\"seriesName\":\"seriesName1\",\"description\":\"description\"},{\"seriesId\":2,\"authorId\":1,\"seriesName\":\"seriesName2\",\"description\":\"description\"}]", baos.toString());
     }
@@ -263,6 +271,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/books");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[]", baos.toString());
     }
@@ -280,6 +289,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/books");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("[{\"bookId\":1,\"isbn\":\"isbn\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"},{\"bookId\":2,\"isbn\":\"isbn2\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"}]", baos.toString());
     }
@@ -296,6 +306,7 @@ public class AuthorResourceTest {
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/2");
         resource.get().write(baos);
+        resource.release();
         
         assertEquals("{\"authorId\":2,\"lastName\":\"lastName2\",\"firstName\":\"firstName2\"}", baos.toString());
     }
@@ -317,5 +328,6 @@ public class AuthorResourceTest {
         } catch (ResourceException e) {
             assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
         }
+        resource.release();
     }
 }
