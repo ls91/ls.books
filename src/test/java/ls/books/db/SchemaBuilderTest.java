@@ -28,7 +28,8 @@ public class SchemaBuilderTest {
     
     @Before
     public void setup() throws ClassNotFoundException, SQLException {
-        dataSource = SchemaBuilder.buildSchema("jdbc:h2:~/testDatabaseName", "password");
+        dataSource = SchemaBuilder.getDataSource("testDatabaseName", "password");
+        SchemaBuilder.buildSchema(dataSource);
     }
     
     @After
@@ -57,7 +58,8 @@ public class SchemaBuilderTest {
         
         assertFalse(databaseFile.exists());
         
-        SchemaBuilder.buildSchema("jdbc:h2:~/testDbName", "password");
+        dataSource = SchemaBuilder.getDataSource("testDbName", "password");
+        SchemaBuilder.buildSchema(dataSource);
         
         assertTrue(databaseFile.exists());
         
@@ -67,7 +69,8 @@ public class SchemaBuilderTest {
     
     @Test
     public void populateWithSampleDataShouldAddFormatsSeriesAuthorsAndBooks() throws ClassNotFoundException, SQLException {
-        DataSource dataSource = SchemaBuilder.buildSchema("jdbc:h2:~/testDbName2", "password");
+        dataSource = SchemaBuilder.getDataSource("testDbName2", "password");
+        SchemaBuilder.buildSchema(dataSource);
         
         File databaseFile = new File(System.getProperty("user.home") + "/testDbName2.mv.db");
         File databaseTraceFile = new File(System.getProperty("user.home") + "/testDbName2.trace.db");

@@ -21,7 +21,9 @@ import ls.books.domain.Status;
 
 public class SchemaBuilder {
 
-    protected static DataSource getDataSource(final String url, final String password) {
+    public static DataSource getDataSource(final String databaseName, final String password) {
+        String url = (databaseName == null) ? "jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1" : "jdbc:h2:~/" + databaseName;
+        
         DataSource dataSource = new JdbcDataSource();
         ((JdbcDataSource) dataSource).setURL(url);
         ((JdbcDataSource) dataSource).setUser("ls.books");
@@ -30,9 +32,7 @@ public class SchemaBuilder {
         return dataSource;
     }
 
-    public static DataSource buildSchema(final String url, final String password) throws SQLException, ClassNotFoundException {
-        DataSource dataSource = getDataSource(url, password);
-
+    public static void buildSchema(final DataSource dataSource) throws SQLException, ClassNotFoundException {
         SchemaBuilderDao dao = new DBI(dataSource).open(SchemaBuilderDao.class);
 
         //BUILD TABLES
@@ -44,8 +44,6 @@ public class SchemaBuilder {
         
         //CLEANUP
         dao.close();
-
-        return dataSource;
     }
 
     public static void populateWithSampleData(final DataSource dataSource) {

@@ -28,7 +28,8 @@ public class FrontendResourceTest {
 
     @Before
     public void setup() throws Exception {
-        dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
+        dataSource = SchemaBuilder.getDataSource(null, "password");
+        SchemaBuilder.buildSchema(dataSource);
 
         baos = new ByteArrayOutputStream();
 

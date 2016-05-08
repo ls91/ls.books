@@ -25,7 +25,8 @@ public class FormatDaoTest {
 
     @Before
     public void setup() throws ClassNotFoundException, SQLException {
-        dataSource = SchemaBuilder.buildSchema("jdbc:h2:mem:ls-books;DB_CLOSE_DELAY=-1", "password");
+        dataSource = SchemaBuilder.getDataSource(null, "password");
+        SchemaBuilder.buildSchema(dataSource);
 
         testFormatDao = new DBI(dataSource).open(FormatDao.class);
     }
