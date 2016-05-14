@@ -197,7 +197,7 @@ public class AuthorResourceTest {
         testSeriesDao.createSeries(new Series(1, 1, "", "description"));
         testFormatDao.createFormat(new Format(1, "name"));
         testStatusDao.createStatus(new Status(1, "status"));
-        testBookDao.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, "notes"));
         
         assertEquals(new Author(1, "lastName", "firstName"), testAuthorDao.findAuthorById(1));
         assertEquals(new Series(1, 1, "", "description"), testSeriesDao.getSeries().get(0));
@@ -285,14 +285,14 @@ public class AuthorResourceTest {
         testSeriesDao.createSeries(new Series(1, 1, "seriesName2", "description"));
         testFormatDao.createFormat(new Format(1, "name"));
         testStatusDao.createStatus(new Status(1, "status"));
-        testBookDao.createBook(new Book(1, "isbn", "title", 1, 1, 0, 1, 1, 5, "notes"));
-        testBookDao.createBook(new Book(2, "isbn2", "title", 1, 1, 0, 1, 1, 5, "notes"));
+        testBookDao.createBook(new Book(1, "isbn", "title", 1, 0, 1, 1, 5, "notes"));
+        testBookDao.createBook(new Book(2, "isbn2", "title", 1, 0, 1, 1, 5, "notes"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/author/1/books");
         resource.get().write(baos);
         resource.release();
         
-        assertEquals("[{\"bookId\":1,\"isbn\":\"isbn\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"},{\"bookId\":2,\"isbn\":\"isbn2\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"}]", baos.toString());
+        assertEquals("[{\"authorId\":1,\"bookId\":1,\"isbn\":\"isbn\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"},{\"authorId\":1,\"bookId\":2,\"isbn\":\"isbn2\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":0,\"formatId\":1,\"statusId\":1,\"noPages\":5,\"notes\":\"notes\"}]", baos.toString());
     }
     
     @Test

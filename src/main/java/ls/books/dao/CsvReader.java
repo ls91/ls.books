@@ -182,7 +182,6 @@ public class CsvReader {
             object.put("bookId", "0");
             object.put("isbn", book.getIsbn());
             object.put("title", book.getTitle());
-            object.put("authorId", Integer.toString(book.getAuthorId()));
             object.put("seriesId", Integer.toString(book.getSeriesId()));
             object.put("noSeries", Integer.toString(book.getNoSeries()));
             object.put("formatId", Integer.toString(book.getFormatId()));
@@ -221,7 +220,6 @@ public class CsvReader {
                 createBook(new Book(0
                                    ,lineParts[ISBN_POSITION].replaceAll("\"", "")
                                    ,lineParts[TITLE_POSITION].replaceAll("\"", "")
-                                   ,authorId
                                    ,seriesId
                                    ,Integer.parseInt(lineParts[SERIES_NO_POSITION].replaceAll("\"", ""))
                                    ,formatId

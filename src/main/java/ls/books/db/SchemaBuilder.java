@@ -77,9 +77,9 @@ public class SchemaBuilder {
         seriesDao.close();
 
         BookDao bookDao = new DBI(dataSource).open(BookDao.class);
-        bookDao.createBook(new Book(0, "978-1-84983-109-3", "Serpent", 1, 2, 1, 1, 1, 474, ""));
-        bookDao.createBook(new Book(0, "978-1-84739-971-7", "Blue Gold", 1, 2, 2, 1, 2, 378, ""));
-        bookDao.createBook(new Book(0, "0-140-29736-7", "Fire Ice", 1, 2, 3, 1, 1, 434, ""));
+        bookDao.createBook(new Book(0, "978-1-84983-109-3", "Serpent", 2, 1, 1, 1, 474, ""));
+        bookDao.createBook(new Book(0, "978-1-84739-971-7", "Blue Gold", 2, 2, 1, 2, 378, ""));
+        bookDao.createBook(new Book(0, "0-140-29736-7", "Fire Ice", 2, 3, 1, 1, 434, ""));
         bookDao.close();
     }
 }

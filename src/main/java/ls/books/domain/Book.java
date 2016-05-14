@@ -2,24 +2,22 @@ package ls.books.domain;
 
 public class Book {
 
-    private int bookId;
-    private String isbn;
-    private String title;
-    private int authorId;
-    private int seriesId;
-    private int noSeries;
-    private int formatId;
-    private int statusId;
-    private int noPages;
-    private String notes;
+    protected int bookId;
+    protected String isbn;
+    protected String title;
+    protected int seriesId;
+    protected int noSeries;
+    protected int formatId;
+    protected int statusId;
+    protected int noPages;
+    protected String notes;
 
     public Book() {}
     
-    public Book(final int bookId, final String isbn, final String title, final int authorId, final int seriesId, final int noSeries, final int formatId, final int statusId, final int noPages, final String notes) {
+    public Book(final int bookId, final String isbn, final String title, final int seriesId, final int noSeries, final int formatId, final int statusId, final int noPages, final String notes) {
         this.bookId = bookId;
         this.isbn = isbn;
         this.title = title;
-        this.authorId = authorId;
         this.seriesId = seriesId;
         this.noSeries = noSeries;
         this.formatId = formatId;
@@ -50,14 +48,6 @@ public class Book {
 
     public void setTitle(final String title) {
         this.title = title;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(final int authorId) {
-        this.authorId = authorId;
     }
 
     public int getSeriesId() {
@@ -117,8 +107,6 @@ public class Book {
         builder.append(isbn);
         builder.append("\nTitle: ");
         builder.append(title);
-        builder.append("\nAuthor ID: ");
-        builder.append(authorId);
         builder.append("\nSeries ID: ");
         builder.append(seriesId);
         builder.append("\nNo. series: ");
@@ -139,7 +127,7 @@ public class Book {
         boolean result = false;
         if (other instanceof Book) {
             Book that = (Book) other;
-            result = (bookId == that.getBookId() && isbn.equals(that.getIsbn()) && title.equals(that.getTitle()) && authorId == that.getAuthorId() && seriesId == that.getSeriesId() && noSeries == that.getNoSeries() && formatId == that.getFormatId() && statusId == that.getStatusId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
+            result = (bookId == that.getBookId() && isbn.equals(that.getIsbn()) && title.equals(that.getTitle()) && seriesId == that.getSeriesId() && noSeries == that.getNoSeries() && formatId == that.getFormatId() && statusId == that.getStatusId() && noPages == that.getNoPages() && notes.equals(that.getNotes()));
         }
         return result;
     }

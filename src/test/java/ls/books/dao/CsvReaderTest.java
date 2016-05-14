@@ -249,12 +249,12 @@ public class CsvReaderTest {
         csvReader.createStatus(new Status(0, "name"));
         csvReader.createAuthor(new Author(0, "lastName", "firstName"));
         
-        assertEquals(1, csvReader.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes")));
+        assertEquals(1, csvReader.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, "notes")));
         
         assertEquals(1, bookDao.getBooks().size());
         assertEquals(1, csvReader.books.size());
-        assertEquals(new Book(1, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes"), bookDao.getBooks().get(0));
-        assertEquals(new Integer(1), csvReader.books.get(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes")));
+        assertEquals(new Book(1, "isbn", "title", 1, 1, 1, 1, 1, "notes"), bookDao.getBooks().get(0));
+        assertEquals(new Integer(1), csvReader.books.get(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, "notes")));
     }
     
     @Test
@@ -267,18 +267,18 @@ public class CsvReaderTest {
         csvReader.createStatus(new Status(0, "name"));
         csvReader.createAuthor(new Author(0, "lastName", "firstName"));
         
-        assertEquals(1, csvReader.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes")));
+        assertEquals(1, csvReader.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, "notes")));
         
         assertEquals(1, bookDao.getBooks().size());
         assertEquals(1, csvReader.books.size());
-        assertEquals(new Book(1, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes"), bookDao.getBooks().get(0));
-        assertEquals(new Integer(1), csvReader.books.get(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes")));
+        assertEquals(new Book(1, "isbn", "title", 1, 1, 1, 1, 1, "notes"), bookDao.getBooks().get(0));
+        assertEquals(new Integer(1), csvReader.books.get(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, "notes")));
     
-        assertEquals(1, csvReader.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes")));
+        assertEquals(1, csvReader.createBook(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, "notes")));
         
         assertEquals(1, bookDao.getBooks().size());
         assertEquals(1, csvReader.books.size());
-        assertEquals(new Book(1, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes"), bookDao.getBooks().get(0));
-        assertEquals(new Integer(1), csvReader.books.get(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, 1, "notes")));
+        assertEquals(new Book(1, "isbn", "title", 1, 1, 1, 1, 1, "notes"), bookDao.getBooks().get(0));
+        assertEquals(new Integer(1), csvReader.books.get(new Book(0, "isbn", "title", 1, 1, 1, 1, 1, "notes")));
     }
 }

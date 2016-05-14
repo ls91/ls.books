@@ -2,8 +2,9 @@ package ls.books.dao;
 
 import java.util.List;
 
-import ls.books.dao.mapper.BookMapper;
+import ls.books.dao.mapper.BookWithAuthorMapper;
 import ls.books.domain.Book;
+import ls.books.domain.BookWithAuthor;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
@@ -18,19 +19,18 @@ public interface BookDao {
         BOOK_ID,
         ISBN,
         TITLE,
-        AUTHOR_ID,
         SERIES_ID,
         NO_SERIES,
         FORMAT_ID,
         STATUS_ID,
         NO_PAGES,
-        NOTES
+        NOTES,
+        AUTHOR_ID
     }
 
     //Create
     @SqlUpdate("insert into book(isbn"
             + "                 ,title"
-            + "                 ,author_id"
             + "                 ,series_id"
             + "                 ,no_series"
             + "                 ,format_id"
@@ -40,7 +40,6 @@ public interface BookDao {
             + "                 )"
             + "           values(:book.isbn"
             + "                 ,:book.title"
-            + "                 ,:book.authorId"
             + "                 ,:book.seriesId"
             + "                 ,:book.noSeries"
             + "                 ,:book.formatId"
@@ -54,13 +53,13 @@ public interface BookDao {
     @SqlQuery("select   b.book_id, "
             + "         b.isbn, "
             + "         b.title, "
-            + "         b.author_id, "
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
             + "         b.status_id, "
             + "         b.no_pages, "
-            + "         b.notes "
+            + "         b.notes, "
+            + "         a.author_id "
             + "from     book b "
             + "join     series s "
             + "     on  b.series_id = s.series_id "
@@ -71,34 +70,38 @@ public interface BookDao {
             + "         s.series_name, "
             + "         b.no_series, "
             + "         b.title")
-    @Mapper(BookMapper.class)
-    List<Book> getBooks();
-
-    @SqlQuery("select   book_id, "
-            + "         isbn, "
-            + "         title, "
-            + "         author_id, "
-            + "         series_id, "
-            + "         no_series, "
-            + "         format_id, "
-            + "         status_id, "
-            + "         no_pages, "
-            + "         notes "
-            + "from     book "
-            + "where    book_id     =   :bookId")
-    @Mapper(BookMapper.class)
-    Book findBookById(@Bind("bookId") int bookId);
+    @Mapper(BookWithAuthorMapper.class)
+    List<BookWithAuthor> getBooks();
 
     @SqlQuery("select   b.book_id, "
             + "         b.isbn, "
             + "         b.title, "
-            + "         b.author_id, "
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
             + "         b.status_id, "
             + "         b.no_pages, "
-            + "         b.notes "
+            + "         b.notes , "
+            + "         a.author_id "
+            + "from     book b "
+            + "join     series s "
+            + "     on  b.series_id = s.series_id "
+            + "join     author a "
+            + "     on  s.author_id = a.author_id "
+            + "where    book_id     =   :bookId")
+    @Mapper(BookWithAuthorMapper.class)
+    BookWithAuthor findBookById(@Bind("bookId") int bookId);
+
+    @SqlQuery("select   b.book_id, "
+            + "         b.isbn, "
+            + "         b.title, "
+            + "         b.series_id, "
+            + "         b.no_series, "
+            + "         b.format_id, "
+            + "         b.status_id, "
+            + "         b.no_pages, "
+            + "         b.notes, "
+            + "         a.author_id "
             + "from     book b "
             + "join     series s "
             + "     on  b.series_id = s.series_id "
@@ -110,19 +113,19 @@ public interface BookDao {
             + "         s.series_name, "
             + "         b.no_series, "
             + "         b.title")
-    @Mapper(BookMapper.class)
-    List<Book> findBooksByAuthorId(@Bind("id") int id);
+    @Mapper(BookWithAuthorMapper.class)
+    List<BookWithAuthor> findBooksByAuthorId(@Bind("id") int id);
 
     @SqlQuery("select   b.book_id, "
             + "         b.isbn, "
             + "         b.title, "
-            + "         b.author_id, "
             + "         b.series_id, "
             + "         b.no_series, "
             + "         b.format_id, "
             + "         b.status_id, "
             + "         b.no_pages, "
-            + "         b.notes "
+            + "         b.notes, "
+            + "         a.author_id "
             + "from     book b "
             + "join     series s "
             + "     on  b.series_id = s.series_id "
@@ -134,14 +137,13 @@ public interface BookDao {
             + "         s.series_name, "
             + "         b.no_series, "
             + "         b.title")
-    @Mapper(BookMapper.class)
-    List<Book> findBooksBySeriesId(@Bind("id") int id);
+    @Mapper(BookWithAuthorMapper.class)
+    List<BookWithAuthor> findBooksBySeriesId(@Bind("id") int id);
 
     //Update
     @SqlUpdate("update  book"
             + " set     isbn        =   :book.isbn"
             + ",        title       =   :book.title"
-            + " ,       author_id   =   :book.authorId"
             + " ,       series_id   =   :book.seriesId"
             + " ,       no_series   =   :book.noSeries"
             + " ,       format_id   =   :book.formatId"

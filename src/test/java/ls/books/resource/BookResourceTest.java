@@ -111,7 +111,6 @@ public class BookResourceTest {
         newBook.put("bookId", "1");
         newBook.put("isbn", "123");
         newBook.put("title", "Bar");
-        newBook.put("authorId", "1");
         newBook.put("seriesId", "1");
         newBook.put("noSeries", "1");
         newBook.put("formatId", "1");
@@ -128,12 +127,12 @@ public class BookResourceTest {
         
         assertEquals("\"1\"", baos.toString());
 
-        assertEquals(new Book(1, "123", "Bar", 1, 1, 1, 1, 1, 1, "hey"), testBookDao.findBookById(1));
+        assertEquals(new Book(1, "123", "Bar", 1, 1, 1, 1, 1, "hey"), testBookDao.findBookById(1));
     }
     
     @Test
     public void putBookShouldUpdateAnExistingRecordWithTheNewValuesIgnoringTheId() throws ResourceException, IOException, JSONException {
-        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes");
+        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, "notes");
         testBookDao.createBook(book);
         assertEquals(book, testBookDao.findBookById(1));
         
@@ -141,7 +140,6 @@ public class BookResourceTest {
         updatedBook.put("bookId", "1");
         updatedBook.put("isbn", "2");
         updatedBook.put("title", "Bar");
-        updatedBook.put("authorId", "2");
         updatedBook.put("seriesId", "3");
         updatedBook.put("noSeries", "4");
         updatedBook.put("formatId", "2");
@@ -158,12 +156,12 @@ public class BookResourceTest {
         resource.release();
 
         assertEquals("\"Book 1 successfully updated\"", baos.toString());
-        assertEquals(new Book(1, "2", "Bar", 1, 3, 4, 2, 2, 6, "hey"), testBookDao.findBookById(1));
+        assertEquals(new Book(1, "2", "Bar", 3, 4, 2, 2, 6, "hey"), testBookDao.findBookById(1));
     }
     
     @Test
     public void putBookShouldNotUpdateAnExistingRecordIfTheStatusDoesntExist() throws ResourceException, IOException, JSONException {
-        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes");
+        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, "notes");
         testBookDao.createBook(book);
         assertEquals(book, testBookDao.findBookById(1));
         
@@ -171,7 +169,6 @@ public class BookResourceTest {
         updatedBook.put("bookId", "1");
         updatedBook.put("isbn", "1");
         updatedBook.put("title", "Bar");
-        updatedBook.put("authorId", "1");
         updatedBook.put("seriesId", "3");
         updatedBook.put("noSeries", "4");
         updatedBook.put("formatId", "2");
@@ -196,7 +193,7 @@ public class BookResourceTest {
     
     @Test
     public void putBookShouldNotUpdateAnExistingRecordIfTheFormatDoesntExist() throws ResourceException, IOException, JSONException {
-        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes");
+        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, "notes");
         testBookDao.createBook(book);
         assertEquals(book, testBookDao.findBookById(1));
         
@@ -204,7 +201,6 @@ public class BookResourceTest {
         updatedBook.put("bookId", "1");
         updatedBook.put("isbn", "1");
         updatedBook.put("title", "Bar");
-        updatedBook.put("authorId", "1");
         updatedBook.put("seriesId", "3");
         updatedBook.put("noSeries", "4");
         updatedBook.put("formatId", "5");
@@ -230,7 +226,7 @@ public class BookResourceTest {
     
     @Test
     public void putBookShouldNotUpdateAnExistingRecordIfTheSeriesDoesntExist() throws ResourceException, IOException, JSONException {
-        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes");
+        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, "notes");
         testBookDao.createBook(book);
         assertEquals(book, testBookDao.findBookById(1));
         
@@ -238,7 +234,6 @@ public class BookResourceTest {
         updatedBook.put("bookId", "1");
         updatedBook.put("isbn", "1");
         updatedBook.put("title", "Bar");
-        updatedBook.put("authorId", "1");
         updatedBook.put("seriesId", "7");
         updatedBook.put("noSeries", "1");
         updatedBook.put("formatId", "1");
@@ -263,42 +258,8 @@ public class BookResourceTest {
     }
     
     @Test
-    public void putBookShouldNotUpdateAnExistingRecordIfTheAuthorDoesntExist() throws ResourceException, IOException, JSONException {
-        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes");
-        testBookDao.createBook(book);
-        assertEquals(book, testBookDao.findBookById(1));
-        
-        JSONObject updatedBook = new JSONObject();
-        updatedBook.put("bookId", "1");
-        updatedBook.put("isbn", "1");
-        updatedBook.put("title", "Bar");
-        updatedBook.put("authorId", "100");
-        updatedBook.put("seriesId", "1");
-        updatedBook.put("noSeries", "1");
-        updatedBook.put("formatId", "1");
-        updatedBook.put("statusId", "1");
-        updatedBook.put("noPages", "6");
-        updatedBook.put("notes", "hey");
-        
-        StringRepresentation bookJson = new StringRepresentation(updatedBook.toString());
-        bookJson.setMediaType(MediaType.APPLICATION_JSON);
-
-        ClientResource resource = new ClientResource("http://localhost:8182/rest/book");
-        resource.setMethod(Method.PUT);
-        try {
-            resource.put(bookJson).write(baos);
-            fail("Update should have failed as the new author doesnt exist");
-        } catch (Exception e) {
-            assertEquals("Not Found (404) - The server has not found anything matching the request URI", e.getMessage());
-        }
-        resource.release();
-        
-        assertEquals(book, testBookDao.findBookById(1));
-    }
-    
-    @Test
     public void deleteBookShouldRemoveTheBookFromTheDatabase() throws ResourceException, IOException {
-        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes");
+        Book book = new Book(1, "1", "title", 1, 1, 1, 1, 1, "notes");
         testBookDao.createBook(book);
         assertEquals(book, testBookDao.findBookById(1));
         
@@ -313,15 +274,15 @@ public class BookResourceTest {
     
     @Test
     public void getBookWithNoQueryParametersShouldReturnAllBooksInTheDatabase() throws ResourceException, IOException {
-        testBookDao.createBook(new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes"));
-        testBookDao.createBook(new Book(2, "2", "title2", 1, 1, 1, 1, 1, 1, "notes"));
-        testBookDao.createBook(new Book(3, "3", "title3", 1, 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book(1, "1", "title", 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book(2, "2", "title2", 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book(3, "3", "title3", 1, 1, 1, 1, 1, "notes"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book");
         resource.get().write(baos);
         resource.release();
         
-        assertEquals("[{\"bookId\":1,\"isbn\":\"1\",\"title\":\"title\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"bookId\":2,\"isbn\":\"2\",\"title\":\"title2\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"bookId\":3,\"isbn\":\"3\",\"title\":\"title3\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
+        assertEquals("[{\"authorId\":1,\"bookId\":1,\"isbn\":\"1\",\"title\":\"title\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"authorId\":1,\"bookId\":2,\"isbn\":\"2\",\"title\":\"title2\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"},{\"authorId\":1,\"bookId\":3,\"isbn\":\"3\",\"title\":\"title3\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}]", baos.toString());
     }
     
     @Test
@@ -335,15 +296,15 @@ public class BookResourceTest {
     
     @Test
     public void getBookWithAqueryParameterShouldReturnThatBookFromTheDatabase() throws ResourceException, IOException {
-        testBookDao.createBook(new Book(1, "1", "title", 1, 1, 1, 1, 1, 1, "notes"));
-        testBookDao.createBook(new Book(2, "2", "title2", 1, 1, 1, 1, 1, 1, "notes"));
-        testBookDao.createBook(new Book(3, "3", "title3", 1, 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book(1, "1", "title", 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book(2, "2", "title2", 1, 1, 1, 1, 1, "notes"));
+        testBookDao.createBook(new Book(3, "3", "title3", 1, 1, 1, 1, 1, "notes"));
         
         ClientResource resource = new ClientResource("http://localhost:8182/rest/book/2");
         resource.get().write(baos);
         resource.release();
         
-        assertEquals("{\"bookId\":2,\"isbn\":\"2\",\"title\":\"title2\",\"authorId\":1,\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}", baos.toString());
+        assertEquals("{\"authorId\":1,\"bookId\":2,\"isbn\":\"2\",\"title\":\"title2\",\"seriesId\":1,\"noSeries\":1,\"formatId\":1,\"statusId\":1,\"noPages\":1,\"notes\":\"notes\"}", baos.toString());
     }
     
     @Test
